@@ -186,7 +186,7 @@
         </mxGraphModel>
     </diagram>
     <diagram id="rrxQGw-qfcZb3jM8qoyy" name="Stacks">
-        <mxGraphModel dx="2486" dy="787" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="850" math="0" shadow="0">
+        <mxGraphModel dx="2296" dy="787" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="850" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
@@ -238,7 +238,7 @@
                 <mxCell id="KNl_Z6PwFf-Zt_AIpXmG-2" value="Semantic Kernel&amp;nbsp;&lt;br&gt;(C#) / langchain" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
                     <mxGeometry x="285" y="482.5" width="185" height="60" as="geometry"/>
                 </mxCell>
-                <mxCell id="KNl_Z6PwFf-Zt_AIpXmG-3" value="ollama-python" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                <mxCell id="KNl_Z6PwFf-Zt_AIpXmG-3" value="OllamaSharp (C#) / &lt;br&gt;ollama-python" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
                     <mxGeometry x="285" y="550" width="185" height="60" as="geometry"/>
                 </mxCell>
                 <mxCell id="KNl_Z6PwFf-Zt_AIpXmG-4" value="Local LLMs" style="aspect=fixed;html=1;points=[];align=center;image;fontSize=12;image=img/lib/azure2/containers/Container_Instances.svg;" vertex="1" parent="1">
@@ -275,7 +275,7 @@
                     <mxGeometry x="60" y="300" width="290" height="40" as="geometry"/>
                 </mxCell>
                 <mxCell id="KNl_Z6PwFf-Zt_AIpXmG-18" value="Python (Pandas) / PyArrow (Standalone Dataset)" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-                    <mxGeometry x="384" y="310" width="290" height="40" as="geometry"/>
+                    <mxGeometry x="380" y="300" width="290" height="40" as="geometry"/>
                 </mxCell>
             </root>
         </mxGraphModel>
