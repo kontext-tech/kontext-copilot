@@ -1,8 +1,19 @@
-﻿@inherits LayoutComponentBase
+﻿@using Kontext.AI.ClientApp.Components
+@inherits LayoutComponentBase
+
+<FluentDialogProvider />
 
 <FluentLayout>
-    <FluentHeader>
-        Kontext
+    <FluentHeader Class="siteheader">
+        <a href="/">
+            <div class="logo" role="presentation" aria-hidden="true" itemprop="logo" itemscope="itemscope">
+                <img src="/logo.svg" alt="Kontext AI" itemprop="image" />
+            </div>
+        </a>
+        <FluentSpacer />
+        <div class="settings">
+            <Settings />
+        </div>
     </FluentHeader>
     <FluentStack Class="main" Orientation="Orientation.Horizontal" Width="100%">
         <NavMenu />
