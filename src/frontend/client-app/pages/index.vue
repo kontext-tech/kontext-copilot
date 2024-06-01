@@ -1,11 +1,15 @@
 <script setup lang="ts">
 const route = useRoute()
+const clicked = () => {
+  alert('Button clicked!')
+}
 </script>
 
 <template>
   <div>
-    <h1>Nuxt Routing set up successfully!</h1>
     <p>Current route: {{ route.path }}</p>
-    <a href="https://nuxt.com/docs/getting-started/routing" target="_blank">Learn more about Nuxt Routing</a>
   </div>
+
+  <b-button button="primary" @click="clicked"> Primary Button
+  </b-button>
 </template>
