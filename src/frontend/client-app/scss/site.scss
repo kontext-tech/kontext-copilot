@@ -1,2 +1,15 @@
 @import "./_kontext.scss";
 @import "bootstrap/scss/bootstrap";
+
+.header-row {
+    margin-bottom: $spacer;
+    height: 60px;
+    max-height: 60px;
+}
+
+/*Full width for offcans for vw <=md*/
+.offcanvas-md {
+    @include media-breakpoint-down(md) {
+        width: 100vw !important;
+    }
+}

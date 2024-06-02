@@ -19,6 +19,8 @@
   },
   "devDependencies": {
     "@nuxtjs/google-fonts": "^3.2.0",
-    "sass": "^1.77.4"
+    "sass": "^1.77.4",
+    "sass-loader": "^14.2.1",
+    "typescript": "^5.4.5"
   }
 }

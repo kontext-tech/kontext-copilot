@@ -17,9 +17,12 @@ export default defineNuxtConfig({
       link: [
         { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' },
       ]
-    }
+    },
   },
-
+  devServer: {
+    port: 8080,
+    host: 'localhost',
+  },
   css: [
     '~/scss/site.scss'
   ],
@@ -27,7 +30,7 @@ export default defineNuxtConfig({
   modules: ["usebootstrap"],
   usebootstrap: {
     bootstrap: {
-      prefix: `k-`
+      prefix: ``
     },
     html: {
       prefix: `B`
