@@ -25,19 +25,11 @@
                     <b-a toggle="collapse" class="d-flex d-md-none text-muted me-3" href="#sidebar">
                         <Icon name="material-symbols:menu" size="24" />
                     </b-a>
-                    <ol class="breadcrumb mb-0">
-                        <li class="breadcrumb-item">
-                            <a href="/" class="d-flex align-items-center">
-                                <Icon name="material-symbols:home-outline" size="24" />
-                                Home
-                            </a>
-                        </li>
-                    </ol>
+                    <h1 class="fs-6 mb-0 pb-0 fw-bold">{{ route.meta['title'] ?? route.name }}</h1>
                 </div>
                 <div class="px-4">
                     <slot name="main" />
                 </div>
-
             </div>
         </div>
     </div>
@@ -47,6 +39,9 @@
 import logo from '~/assets/images/logo.svg'
 import logoWhite from '~/assets/images/logo-white.svg'
 import Sidebar from '~/components/sidebar.vue'
+
+const route = useRoute()
+
 </script>
 
 <style scoped></style>

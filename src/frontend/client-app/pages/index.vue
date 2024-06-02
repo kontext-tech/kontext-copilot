@@ -1,15 +1,13 @@
-<script setup lang="ts">
-const route = useRoute()
-const clicked = () => {
-  alert('Button clicked!')
-}
-</script>
-
 <template>
-  <div>
-    <p>Current route: {{ route.path }}</p>
-  </div>
-
-  <b-button button="primary" @click="clicked"> Primary Button
+  <b-button button="primary"> Primary Button
   </b-button>
 </template>
+
+<script setup lang="ts">
+
+definePageMeta({
+  title: 'Home',
+  description: 'This is the home page',
+})
+
+</script>
