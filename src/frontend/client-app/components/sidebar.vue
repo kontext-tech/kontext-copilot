@@ -1,13 +1,14 @@
 <template>
     <ul class="nav nav-pills flex-column mb-auto flex-fill">
         <template v-for="item in navItems">
-            <NavItem v-bind="item" />
+            <SidebarNavItem v-bind="item" />
         </template>
     </ul>
 </template>
 
 <script setup lang="ts">
 import type { NavItemProps } from '~/types/UIProps';
+import SidebarNavItem from './sidebar-nav-item.vue';
 
 
 const navItems = ref<NavItemProps[]>([

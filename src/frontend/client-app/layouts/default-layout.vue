@@ -3,7 +3,7 @@
         <div class="row g-0 flex-nowrap">
             <Collapse :id="sideBarId" class="col-lg-2 col-md-3 d-flex flex-column 
                     flex-shrink-0 offcanvas-md offcanvas-start border-end min-vh-100">
-                <div class="px-3 header-row d-flex align-items-center bg-primary">
+                <div class="px-4 header-row d-flex align-items-center bg-primary">
                     <b-a toggle="collapse" class="d-flex d-md-none text-white me-3" :href="'#' + sideBarId"
                         :id="toogleId2">
                         <Icon name="material-symbols:menu" size="24" />
@@ -29,7 +29,7 @@
                     </b-a>
                     <h1 class="fs-6 mb-0 pb-0 fw-bold">{{ route.meta['title'] ?? route.name }}</h1>
                 </div>
-                <div class="px-3">
+                <div class="px-4">
                     <slot name="main" />
                 </div>
             </div>
@@ -53,9 +53,9 @@ watchEffect(() => {
     )
 });
 
-const sideBarId = 'sideBar' + useId()
-const toogleId1 = 'toogle' + useId()
-const toogleId2 = 'toogle' + useId()
+const sideBarId = 'sidebar-' + useId()
+const toogleId1 = 'toogle1-' + useId()
+const toogleId2 = 'toogle2-' + useId()
 
 </script>
 

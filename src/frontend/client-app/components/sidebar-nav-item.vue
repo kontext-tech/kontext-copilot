@@ -10,7 +10,7 @@
             <Collapse :key="id" :id="collapseId" ref="collapseEl" :class="collapseClasses">
                 <ul class="nav flex-column ms-3">
                     <template v-for="child in props.children">
-                        <NavItem v-bind="child" />
+                        <SidebarNavItem v-bind="child" />
                     </template>
                 </ul>
             </Collapse>

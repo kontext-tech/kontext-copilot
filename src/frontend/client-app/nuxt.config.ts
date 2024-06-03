@@ -27,7 +27,7 @@ export default defineNuxtConfig({
     '~/assets/scss/site.scss'
   ],
 
-  modules: ["usebootstrap"],
+  modules: ["usebootstrap", '@nuxtjs/color-mode'],
   usebootstrap: {
     bootstrap: {
       prefix: ``
@@ -40,5 +40,14 @@ export default defineNuxtConfig({
     iconset: 'material-symbols',
     sizes: [16, 20, 24, 32, 48],
     defaultSize: 24
+  },
+  colorMode: {
+    preference: 'system', 
+    fallback: 'light', 
+    hid: 'nuxt-color-mode-script',
+    globalName: '__NUXT_COLOR_MODE__',
+    componentName: 'ColorScheme',
+    dataValue:'bs-theme',
+    storageKey: 'kontext-color-mode'
   }
 });

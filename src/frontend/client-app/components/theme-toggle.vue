@@ -1,0 +1,66 @@
+<template>
+    <ButtonGroup :id="btnId" class="btn-outline-secondary">
+        <DropdownToggle button="secondary" class="d-flex align-items-center">
+            <Icon :name="preferenceIcon" class="me-3" />
+            {{ preferenceText }}
+        </DropdownToggle>
+        <DropdownMenu alignment="end">
+            <DropdownItem key="light" @click="setPreference('light')">
+                <div class="d-flex align-items-center cursor-pointer">
+                    <Icon name="material-symbols:light-mode-outline" class="me-3" /> <span>Light</span>
+                    <Icon v-if="preference === 'light'" name="material-symbols:check" class="ms-auto text-primary" />
+                </div>
+
+            </DropdownItem>
+            <DropdownItem key="dark" @click="setPreference('dark')">
+                <div class="d-flex align-items-center cursor-pointer">
+                    <Icon name="material-symbols:dark-mode-outline" class="me-3" /> <span>Dark</span>
+                    <Icon v-if="preference === 'dark'" name="material-symbols:check" class="ms-auto text-primary" />
+                </div>
+            </DropdownItem>
+            <DropdownItem key="system" @click="setPreference('system')">
+                <div class="d-flex align-items-center cursor-pointer">
+                    <Icon name="material-symbols:computer-outline" class="me-3" /> <span>System</span>
+                    <Icon v-if="preference === 'system'" name="material-symbols:check" class="ms-auto text-primary" />
+                </div>
+            </DropdownItem>
+        </DropdownMenu>
+    </ButtonGroup>
+</template>
+
+<script setup lang="ts">
+const btnId = 'btn-theme-toogle-' + useId()
+const colorMode = useColorMode()
+const preference = ref(colorMode.preference)
+
+
+watch(preference, (value) => {
+    colorMode.preference = value
+})
+
+const preferenceText = computed(() => {
+    switch (colorMode.preference) {
+        case 'light':
+            return 'Light'
+        case 'dark':
+            return 'Dark'
+        default:
+            return 'System'
+    }
+})
+
+const preferenceIcon = computed(() => {
+    switch (colorMode.preference) {
+        case 'light':
+            return 'material-symbols:light-mode-outline'
+        case 'dark':
+            return 'material-symbols:dark-mode-outline'
+        default:
+            return 'material-symbols:computer-outline'
+    }
+})
+
+const setPreference = (mode: string) => {
+    preference.value = mode
+}
+</script>
