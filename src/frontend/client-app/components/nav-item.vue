@@ -36,7 +36,7 @@ const isChildActive = ref(false)
 const hasChildren = computed(() => props.children && props.children?.length > 0)
 
 const collapseEl = ref(null)
-const collapseId = ref('sidebarCollapse-' + props.id)
+const collapseId = ref('collapse-' + props.id + useId())
 
 watchEffect(() => {
     isActive.value = route.path === props.to
