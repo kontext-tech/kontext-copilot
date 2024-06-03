@@ -1,6 +1,5 @@
 <template>
-  <b-button button="primary"> Primary Button
-  </b-button>
+  <b-button button="primary">Primary Button</b-button>
 </template>
 
 <script setup lang="ts">

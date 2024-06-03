@@ -58,7 +58,7 @@ const onClick = () => {
 </script>
 
 <style lang="scss" scoped>
-@import '../scss/_kontext.scss';
+@import '../assets/scss/_kontext.scss';
 
 .nav-item {
     a {

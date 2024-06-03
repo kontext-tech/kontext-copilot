@@ -27,7 +27,7 @@
                     </b-a>
                     <h1 class="fs-6 mb-0 pb-0 fw-bold">{{ route.meta['title'] ?? route.name }}</h1>
                 </div>
-                <div class="px-4">
+                <div class="px-3">
                     <slot name="main" />
                 </div>
             </div>
@@ -41,6 +41,15 @@ import logoWhite from '~/assets/images/logo-white.svg'
 import Sidebar from '~/components/sidebar.vue'
 
 const route = useRoute()
+const appConfig = useAppConfig()
+
+watchEffect(() => {
+    useHead(
+        {
+            title: route.meta['title'] || appConfig.appName,
+        }
+    )
+});
 
 </script>
 

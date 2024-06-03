@@ -24,7 +24,7 @@ export default defineNuxtConfig({
     host: 'localhost',
   },
   css: [
-    '~/scss/site.scss'
+    '~/assets/scss/site.scss'
   ],
 
   modules: ["usebootstrap"],
