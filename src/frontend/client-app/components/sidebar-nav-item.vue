@@ -64,14 +64,24 @@ const onClick = () => {
     a {
         color: $text-muted;
 
-        &:hover {
-            background-color: $body-tertiary-bg;
-            color: $primary-text;
-        }
-
+        &:hover,
         &.active {
             background-color: $body-tertiary-bg;
             color: $primary-text;
+        }
+    }
+}
+
+/*Dark mode*/
+@include color-mode(dark) {
+    .nav-item {
+        a {
+
+            &:hover,
+            &.active {
+                background-color: $primary-bg-subtle-dark;
+                color: $primary-text-dark;
+            }
         }
     }
 }
