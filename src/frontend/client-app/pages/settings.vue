@@ -13,7 +13,7 @@
             </NavLink>
         </NavItem>
     </NavList>
-    <TabContent>
+    <TabContent :id="tabContentId">
         <TabPane :id="generalTabId" active>
             <div class="d-flex justify-content-between align-items-center">
                 <div>
@@ -36,8 +36,10 @@
 </template>
 
 <script setup lang="ts">
-const generalTabId = ref('tab-general-' + useId())
-const llmsTabId = ref('tab-llms-' + useId())
+const id = useId()
+const generalTabId = 'tab-general-' + id
+const llmsTabId = 'tab-llms-' + id
+const tabContentId = 'tab-content-' + id
 
 definePageMeta({
     title: 'Settings',
