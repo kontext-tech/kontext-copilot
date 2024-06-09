@@ -1,10 +1,18 @@
 @import "./_kontext.scss";
 @import "bootstrap/scss/bootstrap";
 
-.header-row {
+.header-primary {
     margin-bottom: $spacer;
     height: 60px;
     max-height: 60px;
+}
+
+.header-secondary {
+    margin-bottom: $spacer;
+    height: 60px;
+    max-height: 60px;
+    padding-top: $spacer;
+    margin-top: calc(-1 * $spacer);
 }
 
 /*Full width for offcans for vw <=md*/
@@ -16,4 +24,31 @@
 
 .cursor-pointer {
     cursor: pointer;
+}
+
+/*Layout related*/
+
+.sidebar-col {
+    width: var(--#{$variable-prefix}sidebar-width, $kontext-sidebar-width) !important;
+    min-width: var(--#{$variable-prefix}sidebar-width, $kontext-sidebar-width) !important;
+    max-width: var(--#{$variable-prefix}sidebar-width, $kontext-sidebar-width) !important;
+
+    @include media-breakpoint-down(md) {
+        width: 100%;
+    }
+}
+
+.main-col {
+    width: 100%;
+
+    @include media-breakpoint-up(md) {
+        width: calc(100vw - #{$kontext-sidebar-width});
+    }
+
+
+    .main {
+        max-height: calc(100vh - 60px);
+        overflow-y: auto;
+    }
+
 }

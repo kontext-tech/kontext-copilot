@@ -1,9 +1,8 @@
 <template>
     <div class="container-fluid p-0">
         <div class="row g-0 flex-nowrap">
-            <Collapse :id="sideBarId" class="col-lg-2 col-md-3 d-flex flex-column 
-                    flex-shrink-0 offcanvas-md offcanvas-start border-end min-vh-100">
-                <div class="px-4 header-row d-flex align-items-center bg-primary">
+            <Collapse :id="sideBarId" class="sidebar-col d-flex flex-column offcanvas-md offcanvas-start border-end min-vh-100 flex-shrink-0 flex-grow-1">
+                <div class="px-4 header-primary d-flex align-items-center bg-primary">
                     <b-a toggle="collapse" class="d-flex d-md-none text-white me-3" :href="'#' + sideBarId"
                         :id="toogleId2">
                         <Icon name="material-symbols:menu" size="24" />
@@ -21,15 +20,15 @@
                 </div>
             </Collapse>
 
-            <div class="col-lg-10 col-md-9">
-                <div class="header-row d-flex align-items-center border-bottom px-4">
+            <div class="main-col d-flex flex-column">
+                <div class="header-primary d-flex align-items-center border-bottom px-4">
                     <b-a toggle="collapse" class="d-flex d-md-none text-muted me-3" :href="'#' + sideBarId"
                         :id="toogleId1">
                         <Icon name="material-symbols:menu" size="24" />
                     </b-a>
                     <h1 class="fs-6 mb-0 pb-0 fw-bold">{{ route.meta['title'] ?? route.name }}</h1>
                 </div>
-                <div class="px-4">
+                <div class="main flex-grow-1">
                     <slot name="main" />
                 </div>
             </div>

@@ -6,6 +6,9 @@
       </template>
       <template #aside>
       </template>
+      <template #footer>
+        <slot name="footerapp" />
+      </template>
     </DefaultLayout>
   </NuxtLayout>
 </template>

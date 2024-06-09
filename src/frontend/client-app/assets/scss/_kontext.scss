@@ -297,3 +297,13 @@ $editor-border-color: $border-color;
 $editor-primary-color: $kontext-primary;
 // #009bf2
 $editor-primary-color2: $kontext-primary-600;
+
+/*Kontext specific*/
+$font-size-base: 14px;
+$kontext-sidebar-width: 280px;
+
+$kontext-chat-input-height: 200px;
+
+:root{
+    --#{$variable-prefix}sidebar-width: $kontext-sidebar-width;
+}

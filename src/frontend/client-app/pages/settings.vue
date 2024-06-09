@@ -1,5 +1,5 @@
 <template>
-    <NavList nav="tabs" tablist margin="b-3">
+    <NavList nav="tabs" tablist margin="b-3" class="px-4">
         <NavItem>
             <NavLink :id="'navtab-' + generalTabId" active toggle="tab" :tab="'#' + generalTabId"
                 class="d-flex align-items-center cursor-pointer">
@@ -13,7 +13,7 @@
             </NavLink>
         </NavItem>
     </NavList>
-    <TabContent :id="tabContentId">
+    <TabContent :id="tabContentId" class="px-4">
         <TabPane :id="generalTabId" active>
             <div class="d-flex justify-content-between align-items-center">
                 <div>
