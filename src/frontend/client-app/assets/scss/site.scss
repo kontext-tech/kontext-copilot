@@ -3,14 +3,14 @@
 
 .header-primary {
     margin-bottom: $spacer;
-    height: 60px;
-    max-height: 60px;
+    height: $kontext-header-height;
+    max-height: $kontext-header-height;
 }
 
 .header-secondary {
     margin-bottom: $spacer;
-    height: 60px;
-    max-height: 60px;
+    height: $kontext-header-height;
+    max-height: $kontext-header-height;
     padding-top: $spacer;
     margin-top: calc(-1 * $spacer);
 }
@@ -45,10 +45,13 @@
         width: calc(100vw - #{$kontext-sidebar-width});
     }
 
+}
 
-    .main {
-        max-height: calc(100vh - 60px);
-        overflow-y: auto;
-    }
-
+/*Rounded circle*/
+.rounded-circle {
+    width: $kontext-rounded-circle-size;
+    height: $kontext-rounded-circle-size;
+    line-height: $kontext-rounded-circle-size;
+    text-align: center;
+    justify-content: center;
 }

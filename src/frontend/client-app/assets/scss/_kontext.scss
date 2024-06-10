@@ -302,7 +302,9 @@ $editor-primary-color2: $kontext-primary-600;
 $font-size-base: 14px;
 $kontext-sidebar-width: 280px;
 
-$kontext-chat-input-height: 200px;
+$kontext-chat-input-height: 60px;
+$kontext-rounded-circle-size: 50px;
+$kontext-header-height: 50px;
 
 :root{
     --#{$variable-prefix}sidebar-width: $kontext-sidebar-width;

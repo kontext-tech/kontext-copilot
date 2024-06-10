@@ -2,14 +2,17 @@
   <div class="header-secondary px-4 border-bottom">
     Chat settings
   </div>
-  <div class="chat-main flex-grow-1 flex-shrink-1 px-4">
-    Chat content
+  <div class="chat-main flex-grow-1 flex-shrink-1 d-flex flex-column justify-content-center">
+    <template v-for="message in chatHistory">
+      <ChatMessage :message="ollmaMessageToChatMessage(message)" />
+    </template>
   </div>
 
-  <div class="chat-input d-flex justify-content-center">
+  <div class="chat-input d-flex justify-content-center bg-body-tertiary bg-opacity-75">
     <div class="input-group">
-      <textarea class="form-control chat-textarea" type="text" placeholder="Type a message..." />
-      <button class="btn btn-outline-primary" type="button">
+      <textarea class="form-control chat-textarea" type="text" v-model="userInput" placeholder="Type a message..."
+        @keydown.enter.prevent="sendMessage" :disabled="generating"></textarea>
+      <button class="btn btn-outline-primary" type="button" :disabled="sendButtonDisabled" @onclick="sendMessage">
         <Icon name="material-symbols:send" size="24" />
       </button>
     </div>
@@ -18,20 +21,75 @@
 </template>
 
 <script setup lang="ts">
+import ollama, { type Message } from 'ollama'
+import ChatMessage from '~/components/chat/chat-message.vue';
+
+const userInput = ref<string>('')
+
+const sendButtonDisabled = computed(() => userInput.value.trim().length === 0 || generating.value)
+
+const generating = ref(false)
+
+const chatHistory = ref<Message[]>([])
+
+const currentResponse = ref<Message | null>(null)
+
 definePageMeta({
   title: 'New chat',
 })
+
+/* Send user input and getting response */
+const sendMessage = async () => {
+  generating.value = true
+  chatHistory.value.push({ role: 'user', content: userInput.value })
+  userInput.value = ''
+  const response = await ollama.chat({
+    model: 'llama3',
+    messages: chatHistory.value,
+  })
+  // console.log(response.message.content)
+  currentResponse.value = response.message
+  chatHistory.value.push({ role: 'assistant', content: response.message.content })
+  generating.value = false
+
+}
+
 </script>
+
+
 <style scoped lang="scss">
 @import "../assets/scss/_kontext.scss";
 @import "bootstrap/scss/bootstrap";
 
+.chat-main {
+  overflow-y: auto;
+  // margin-top: 1rem;
+  padding: 1rem;
+  padding-top: calc(2 * #{$spacer} + #{$kontext-header-height});
+  max-height: calc(100vh - 2 * #{$kontext-header-height} - #{$spacer} - #{$kontext-chat-input-height} - 4 * #{$spacer});
+
+  .card {
+    width: 75% !important;
+  }
+
+  @include media-breakpoint-down(md) {
+    max-height: calc(100vh - 2 * #{$kontext-header-height} - #{$kontext-chat-input-height} - 1rem);
+
+    .card {
+      width: 100% !important;
+    }
+  }
+}
+
 .chat-input {
   position: fixed;
-  bottom: 1rem;
+  bottom: 0;
   left: 0;
   margin-inline-start: #{$kontext-sidebar-width};
-  padding: 1rem;
+  padding-top: calc(2* $spacer);
+  padding-bottom: calc(2* $spacer);
+  padding-left: $spacer;
+  padding-right: $spacer;
   width: calc(100vw - #{$kontext-sidebar-width});
 
   @include media-breakpoint-down(md) {
@@ -44,11 +102,14 @@ definePageMeta({
 
     @include media-breakpoint-down(md) {
       width: 100%;
+      padding-left: $spacer;
+      padding-right: $spacer;
     }
   }
 
   .chat-textarea {
     max-height: $kontext-chat-input-height;
+    height: $kontext-chat-input-height;
     overflow-y: auto;
   }
 }
