@@ -2,16 +2,17 @@
   <div class="header-secondary px-4 border-bottom">
     Chat settings
   </div>
-  <div class="chat-main d-flex flex-column justify-content-center overflow-y-scroll" ref="chatMain">
+  <div class="chat-main d-flex flex-column justify-content-center overflow-y-auto" ref="chatMain">
     <template v-for="message in chatHistory">
       <ChatMessage :message="ollmaMessageToChatMessage(message)" />
     </template>
+    <ChatMessage :message="currentResponse" v-if="generating" />
   </div>
 
   <div class="chat-input d-flex justify-content-center bg-body-tertiary bg-opacity-75">
     <div class="input-group">
-      <textarea ref="chatInput" class="form-control chat-textarea" type="text" v-model="userInput" placeholder="Type a message..."
-        @keydown.enter.prevent="sendMessage" :disabled="generating"></textarea>
+      <textarea ref="chatInput" class="form-control chat-textarea" type="text" v-model="userInput"
+        placeholder="Type a message..." @keydown.enter.prevent="sendMessage" :disabled="generating"></textarea>
       <button class="btn btn-outline-primary" type="button" :disabled="sendButtonDisabled" @onclick="sendMessage">
         <Icon name="material-symbols:send" size="24" />
       </button>
@@ -23,6 +24,7 @@
 <script setup lang="ts">
 import ollama, { type Message } from 'ollama'
 import ChatMessage from '~/components/chat/chat-message.vue';
+import { ChatRole, type IChatMessage } from '~/types/Models';
 
 const userInput = ref<string>('')
 
@@ -32,7 +34,7 @@ const generating = ref(false)
 
 const chatHistory = ref<Message[]>([])
 
-const currentResponse = ref<Message | null>(null)
+const currentResponse = ref<IChatMessage>({ role: ChatRole.ASSISTANT, message: '', generating: false })
 
 const chatMain = ref<HTMLElement | null>(null)
 
@@ -40,7 +42,7 @@ const chatInput = ref<HTMLTextAreaElement | null>(null)
 
 
 definePageMeta({
-  title: 'New chat',
+  title: 'New chat (Ollama)',
 })
 
 const scrollToBottom = async () => {
@@ -49,7 +51,7 @@ const scrollToBottom = async () => {
   if (chatMain.value) {
     chatMain.value.scrollTop = chatMain.value.scrollHeight
   }
-  if(chatInput.value) {
+  if (chatInput.value) {
     chatInput.value.focus()
   }
 }
@@ -60,15 +62,24 @@ const sendMessage = async () => {
   chatHistory.value.push({ role: 'user', content: userInput.value })
   userInput.value = ''
   await scrollToBottom()
+  currentResponse.value.generating = true
   const response = await ollama.chat({
     model: 'llama3',
     messages: chatHistory.value,
+    stream: true,
   })
-  // console.log(response.message.content)
-  currentResponse.value = response.message
-  chatHistory.value.push({ role: 'assistant', content: response.message.content })
-  generating.value = false
-  await scrollToBottom()
+  for await (const part of response) {
+    currentResponse.value.message += part.message.content
+    await scrollToBottom()
+    if (part.done) {
+      chatHistory.value.push({ role: 'assistant', content: currentResponse.value.message || '' })
+      generating.value = false
+      /* Reset the value */
+      currentResponse.value.message = ""
+      await scrollToBottom()
+    }
+  }
+
 }
 
 </script>

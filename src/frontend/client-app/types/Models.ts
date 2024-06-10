@@ -7,4 +7,5 @@ export enum ChatRole {
 export interface IChatMessage {
     message: string;
     role: ChatRole;
+    generating?: boolean;
 }
