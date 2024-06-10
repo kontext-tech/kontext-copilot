@@ -2,7 +2,7 @@
   <div class="header-secondary px-4 border-bottom">
     Chat settings
   </div>
-  <div class="chat-main flex-grow-1 flex-shrink-1 d-flex flex-column justify-content-center" ref="chatMain">
+  <div class="chat-main d-flex flex-column justify-content-center overflow-y-scroll" ref="chatMain">
     <template v-for="message in chatHistory">
       <ChatMessage :message="ollmaMessageToChatMessage(message)" />
     </template>
@@ -84,7 +84,7 @@ const sendMessage = async () => {
   padding: 1rem;
   // padding-top: calc(2 * #{$spacer} + #{$kontext-header-height});
   max-height: calc(100vh - 2 * #{$kontext-header-height} - #{$spacer} - #{$kontext-chat-input-height} - 4 * #{$spacer});
-  height: auto;
+  height: calc(100vh - 2 * #{$kontext-header-height} - #{$spacer} - #{$kontext-chat-input-height} - 4 * #{$spacer});
 
   .card {
     width: 75% !important;
