@@ -2,7 +2,7 @@
   <div class="header-secondary px-4 border-bottom">
     Chat settings
   </div>
-  <div class="chat-main flex-grow-1 flex-shrink-1 d-flex flex-column justify-content-center">
+  <div class="chat-main flex-grow-1 flex-shrink-1 d-flex flex-column justify-content-center" ref="chatMain">
     <template v-for="message in chatHistory">
       <ChatMessage :message="ollmaMessageToChatMessage(message)" />
     </template>
@@ -10,7 +10,7 @@
 
   <div class="chat-input d-flex justify-content-center bg-body-tertiary bg-opacity-75">
     <div class="input-group">
-      <textarea class="form-control chat-textarea" type="text" v-model="userInput" placeholder="Type a message..."
+      <textarea ref="chatInput" class="form-control chat-textarea" type="text" v-model="userInput" placeholder="Type a message..."
         @keydown.enter.prevent="sendMessage" :disabled="generating"></textarea>
       <button class="btn btn-outline-primary" type="button" :disabled="sendButtonDisabled" @onclick="sendMessage">
         <Icon name="material-symbols:send" size="24" />
@@ -34,15 +34,32 @@ const chatHistory = ref<Message[]>([])
 
 const currentResponse = ref<Message | null>(null)
 
+const chatMain = ref<HTMLElement | null>(null)
+
+const chatInput = ref<HTMLTextAreaElement | null>(null)
+
+
 definePageMeta({
   title: 'New chat',
 })
+
+const scrollToBottom = async () => {
+  // Scroll to the bottom of the chat-main element
+  await nextTick()
+  if (chatMain.value) {
+    chatMain.value.scrollTop = chatMain.value.scrollHeight
+  }
+  if(chatInput.value) {
+    chatInput.value.focus()
+  }
+}
 
 /* Send user input and getting response */
 const sendMessage = async () => {
   generating.value = true
   chatHistory.value.push({ role: 'user', content: userInput.value })
   userInput.value = ''
+  await scrollToBottom()
   const response = await ollama.chat({
     model: 'llama3',
     messages: chatHistory.value,
@@ -51,7 +68,7 @@ const sendMessage = async () => {
   currentResponse.value = response.message
   chatHistory.value.push({ role: 'assistant', content: response.message.content })
   generating.value = false
-
+  await scrollToBottom()
 }
 
 </script>
@@ -65,8 +82,9 @@ const sendMessage = async () => {
   overflow-y: auto;
   // margin-top: 1rem;
   padding: 1rem;
-  padding-top: calc(2 * #{$spacer} + #{$kontext-header-height});
+  // padding-top: calc(2 * #{$spacer} + #{$kontext-header-height});
   max-height: calc(100vh - 2 * #{$kontext-header-height} - #{$spacer} - #{$kontext-chat-input-height} - 4 * #{$spacer});
+  height: auto;
 
   .card {
     width: 75% !important;

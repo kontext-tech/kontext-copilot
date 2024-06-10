@@ -8,8 +8,7 @@
                 </span>
                 {{ getRoleName(message.role) }}
             </div>
-            <p>
-                {{ message.message }}
+            <p v-html="htmlMessage">
             </p>
         </div>
     </div>
@@ -17,8 +16,15 @@
 
 <script setup lang="ts">
 import type { ChatMessageProps } from '~/types/UIProps';
+import markdownit from 'markdown-it';
 
 const props = defineProps<ChatMessageProps>()
+
+const md = new markdownit()
+
+const htmlMessage = computed(() => {
+    return md.render(props.message.message)
+})
 
 </script>
 
