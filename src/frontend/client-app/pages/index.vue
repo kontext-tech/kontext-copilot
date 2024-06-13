@@ -1,5 +1,5 @@
 <template>
-  <div class="px-4">
+  <div class="px-4 mt-3">
     <h4>Welcome!</h4>
     <div class="col-md-4">
       <div class="card shadow-sm">

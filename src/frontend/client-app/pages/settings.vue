@@ -1,5 +1,5 @@
 <template>
-    <NavList nav="tabs" tablist margin="b-3" class="px-4">
+    <NavList nav="tabs" tablist margin="b-3" class="px-4 mt-3">
         <NavItem>
             <NavLink :id="'navtab-' + generalTabId" active toggle="tab" :tab="'#' + generalTabId"
                 class="d-flex align-items-center cursor-pointer">
@@ -27,9 +27,7 @@
         </TabPane>
 
         <TabPane :id="llmsTabId">
-            <p>
-                TBA
-            </p>
+            <LlmSettings />
         </TabPane>
     </TabContent>
 

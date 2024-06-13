@@ -11,7 +11,7 @@
             <p v-html="htmlMessage">
             </p>
         </div>
-        <div class="card-footer bg-transparent border-top-0">
+        <div class="card-footer bg-transparent border-top-0" v-if="!message.generating">
             <button @click="copyMessage" class="btn">
                 <Icon name="material-symbols:content-copy-outline" size="18" />
             </button>

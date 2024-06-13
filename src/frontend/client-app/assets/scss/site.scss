@@ -2,7 +2,7 @@
 @import "bootstrap/scss/bootstrap";
 
 .header-primary {
-    margin-bottom: $spacer;
+    // margin-bottom: $spacer;
     height: $kontext-header-height;
     max-height: $kontext-header-height;
 }
@@ -11,8 +11,8 @@
     margin-bottom: $spacer;
     height: $kontext-header-height;
     max-height: $kontext-header-height;
-    padding-top: $spacer;
-    margin-top: calc(-1 * $spacer);
+    // padding-top: $spacer;
+    // margin-top: calc(-1 * $spacer);
 }
 
 /*Full width for offcans for vw <=md*/

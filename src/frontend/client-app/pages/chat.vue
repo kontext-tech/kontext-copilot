@@ -1,7 +1,27 @@
 <template>
-  <div class="header-secondary px-4 border-bottom">
-    Chat settings
+  <div class="header-secondary px-4 border-bottom d-flex align-items-center">
+    <b-button button="primary" toggle="modal" target="#llmsSettingsModal">
+      <Icon name="material-symbols:neurology-outline" size="20" /> LLMs settings
+    </b-button>
   </div>
+  <Modal id="llmsSettingsModal">
+    <ModalDialog>
+      <ModalContent>
+        <ModalHeader>
+          <ModalTitle>LLMs settings</ModalTitle>
+          <CloseButton dismiss="modal" />
+        </ModalHeader>
+        <ModalBody>
+          <LlmSettings />
+        </ModalBody>
+        <ModalFooter>
+          <b-button button="secondary" dismiss="modal">
+            Close
+          </b-button>
+        </ModalFooter>
+      </ModalContent>
+    </ModalDialog>
+  </Modal>
   <div class="chat-main d-flex flex-column justify-content-center overflow-y-auto" ref="chatMain">
     <template v-for="message in chatHistory">
       <ChatMessage :message="ollmaMessageToChatMessage(message)" />
@@ -9,7 +29,7 @@
     <ChatMessage :message="currentResponse" v-if="generating" />
   </div>
 
-  <div class="chat-input d-flex justify-content-center bg-body-tertiary bg-opacity-75">
+  <div class="chat-input d-flex justify-content-center bg-opacity-75">
     <div class="input-group">
       <textarea ref="chatInput" class="form-control chat-textarea" type="text" v-model="userInput"
         placeholder="Type a message..." @keydown.enter.prevent="sendMessage" :disabled="generating"></textarea>
@@ -25,6 +45,11 @@
 import ollama, { type Message } from 'ollama'
 import ChatMessage from '~/components/chat/chat-message.vue';
 import { ChatRole, type IChatMessage } from '~/types/Models';
+import { useStorage } from '@vueuse/core'
+
+const config = useAppConfig()
+
+const temperature = useStorage(config.settingKeys.llmTemperture, 0.5);
 
 const userInput = ref<string>('')
 
@@ -39,6 +64,7 @@ const currentResponse = ref<IChatMessage>({ role: ChatRole.ASSISTANT, message: '
 const chatMain = ref<HTMLElement | null>(null)
 
 const chatInput = ref<HTMLTextAreaElement | null>(null)
+
 
 
 definePageMeta({
@@ -67,6 +93,7 @@ const sendMessage = async () => {
     model: 'llama3',
     messages: chatHistory.value,
     stream: true,
+    options: { temperature: temperature.value }
   })
   for await (const part of response) {
     currentResponse.value.message += part.message.content

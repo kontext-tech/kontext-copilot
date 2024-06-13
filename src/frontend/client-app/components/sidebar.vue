@@ -1,5 +1,5 @@
 <template>
-    <ul class="nav nav-pills flex-column mb-auto flex-fill">
+    <ul class="nav nav-pills flex-column mb-auto flex-fill mt-3">
         <template v-for="item in navItems">
             <SidebarNavItem v-bind="item" />
         </template>
@@ -14,7 +14,7 @@ import SidebarNavItem from './sidebar-nav-item.vue';
 const navItems = ref<NavItemProps[]>([
   { id: "home", to: '/', icon: 'material-symbols:home-outline', text: 'Home' },
   {
-    id: "chats", icon: 'material-symbols:chat-outline', text: 'Chat', children: [
+    id: "tools", icon: 'material-symbols:tools-wrench-outline', text: 'LLM Utils', children: [
       { id: "newChat", to: '/chat', icon: 'material-symbols:edit-square-outline', text: 'New chat (Ollama)' }
     ]
   },

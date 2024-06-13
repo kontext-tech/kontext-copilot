@@ -12,8 +12,10 @@
   "dependencies": {
     "@popperjs/core": "^2.11.8",
     "@rollup/plugin-yaml": "^4.1.2",
+    "@vueuse/core": "^10.11.0",
     "markdown-it": "^14.1.0",
     "nuxt": "^3.11.2",
+    "nuxt-storage": "^1.2.2",
     "ollama": "^0.5.1",
     "usebootstrap": "^3.5.7",
     "vue": "^3.4.27",
