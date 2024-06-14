@@ -10,6 +10,26 @@
             {{ temperature }}
         </div>
     </div>
+    <hr>
+    <div class="d-flex justify-content-between align-items-center">
+        <div class="col-md-8">
+            <h6>Endpoint</h6>
+            <span class="text-muted">The endpoint for Ollama or OpenAI compatiable LLMs.</span>
+        </div>
+        <div class="col-md-4">
+            <BFormInput id="endpoint" v-model="endpoint" />
+        </div>
+    </div>
+    <hr>
+    <div class="d-flex justify-content-between align-items-center">
+        <div class="col-md-8">
+            <h6>API key</h6>
+            <span class="text-muted">The API key for authenticating with OpenAI services.</span>
+        </div>
+        <div class="col-md-4">
+            <BFormInput id="apikey" v-model="apikey" />
+        </div>
+    </div>
 </template>
 
 <script setup lang="ts">
@@ -17,6 +37,7 @@ import { useStorage } from '@vueuse/core'
 
 const config = useAppConfig()
 
-const temperature = useStorage(config.settingKeys.llmTemperture, 0.5);
-
+const temperature = useStorage(config.settingKeys.llmTemperture, 0.5)
+const endpoint = useStorage(config.settingKeys.llmEndpoint, "http://localhost:11434")
+const apikey = useStorage(config.settingKeys.llmApiKey, "")
 </script>

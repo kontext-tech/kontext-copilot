@@ -15,10 +15,16 @@ const navItems = ref<NavItemProps[]>([
   { id: "home", to: '/', icon: 'material-symbols:home-outline', text: 'Home' },
   {
     id: "tools", icon: 'material-symbols:tools-wrench-outline', text: 'LLM Utils', children: [
-      { id: "newChat", to: '/chat', icon: 'material-symbols:edit-square-outline', text: 'New chat (Ollama)' }
+      { id: "newChat", to: '/chat', icon: 'material-symbols:edit-square-outline', text: 'New chat' },
+      { id: "prompt", to: '/prompt-engineering', icon: 'material-symbols:engineering-outline', text: 'Prompt scratchboard' }
     ]
   },
-  { id: "settings", to: '/settings', icon: 'material-symbols:settings-outline', text: 'Settings' }
+  { id: "llmflow", to: '/dashboards', icon: 'material-symbols:linked-services-outline', text: 'Workflows' },
+  { id: "knowledgebase", to: '/dashboards', icon: 'material-symbols:menu-book-outline', text: 'Knowledge base' },
+  { id: "dataSources", to: '/data-sources', icon: 'material-symbols:database-outline', text: 'Data sources' },
+  // { id: "dataLakes", to: '/data-lakes', icon: 'material-symbols:files-outline', text: 'Datalake' },
+  { id: "databoards", to: '/dashboards', icon: 'material-symbols:dashboard-customize-outline', text: 'Dashboards' },
+  { id: "settings", to: '/settings', icon: 'material-symbols:settings-outline', text: 'Settings' },
 ]);
 
 

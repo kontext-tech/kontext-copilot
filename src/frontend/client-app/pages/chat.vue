@@ -42,7 +42,7 @@
 </template>
 
 <script setup lang="ts">
-import ollama, { type Message } from 'ollama'
+import { Ollama, type Message } from 'ollama'
 import ChatMessage from '~/components/chat/chat-message.vue';
 import { ChatRole, type IChatMessage } from '~/types/Models';
 import { useStorage } from '@vueuse/core'
@@ -50,6 +50,7 @@ import { useStorage } from '@vueuse/core'
 const config = useAppConfig()
 
 const temperature = useStorage(config.settingKeys.llmTemperture, 0.5);
+const endpoint = useStorage(config.settingKeys.llmEndpoint, 'http://localhost:11434');
 
 const userInput = ref<string>('')
 
@@ -66,9 +67,8 @@ const chatMain = ref<HTMLElement | null>(null)
 const chatInput = ref<HTMLTextAreaElement | null>(null)
 
 
-
 definePageMeta({
-  title: 'New chat (Ollama)',
+  title: 'New chat',
 })
 
 const scrollToBottom = async () => {
@@ -89,11 +89,14 @@ const sendMessage = async () => {
   userInput.value = ''
   await scrollToBottom()
   currentResponse.value.generating = true
+
+  const ollama = new Ollama({ host: endpoint.value, })
+
   const response = await ollama.chat({
     model: 'llama3',
     messages: chatHistory.value,
     stream: true,
-    options: { temperature: temperature.value }
+    options: { temperature: temperature.value },
   })
   for await (const part of response) {
     currentResponse.value.message += part.message.content
