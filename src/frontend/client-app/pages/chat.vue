@@ -1,5 +1,5 @@
 <template>
-  <div class="header-secondary px-4 border-bottom d-grid gap-2 d-md-flex align-items-center">
+  <div class="header-secondary px-4 border-bottom d-grid gap-2 d-flex align-items-center">
     <OllamaModelSelector ref="modelSelector" />
     <b-button button="outline-primary" toggle="modal" target="#llmsSettingsModal">
       <Icon name="material-symbols:neurology-outline" size="20" /> LLMs settings

@@ -27,6 +27,7 @@
                         <Icon name="material-symbols:menu" size="24" />
                     </b-a>
                     <h1 class="fs-6 mb-0 pb-0 fw-bold">{{ route.meta['title'] ?? route.name }}</h1>
+                    <ThemeToggle class="ms-auto" />
                 </div>
                 <div class="main flex-grow-1">
                     <slot name="main" />
