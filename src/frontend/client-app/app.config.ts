@@ -5,6 +5,7 @@ export default defineAppConfig(
             llmTemperture: 'llm_temperature',
             llmEndpoint: 'llm_endpoint',
             llmApiKey: 'llm_api_key',
+            llmDefaultModel: 'llm_default_model',
         }
     }
 )

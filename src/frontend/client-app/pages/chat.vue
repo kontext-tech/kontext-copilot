@@ -1,11 +1,12 @@
 <template>
-  <div class="header-secondary px-4 border-bottom d-flex align-items-center">
-    <b-button button="primary" toggle="modal" target="#llmsSettingsModal">
+  <div class="header-secondary px-4 border-bottom d-grid gap-2 d-md-flex align-items-center">
+    <OllamaModelSelector ref="modelSelector" />
+    <b-button button="outline-primary" toggle="modal" target="#llmsSettingsModal">
       <Icon name="material-symbols:neurology-outline" size="20" /> LLMs settings
     </b-button>
   </div>
   <Modal id="llmsSettingsModal">
-    <ModalDialog>
+    <ModalDialog class="modal-lg">
       <ModalContent>
         <ModalHeader>
           <ModalTitle>LLMs settings</ModalTitle>
@@ -42,15 +43,10 @@
 </template>
 
 <script setup lang="ts">
-import { Ollama, type Message } from 'ollama'
+import { type Message } from 'ollama'
 import ChatMessage from '~/components/chat/chat-message.vue';
+import OllamaLlmService from '~/services/OllamaLlmService';
 import { ChatRole, type IChatMessage } from '~/types/Models';
-import { useStorage } from '@vueuse/core'
-
-const config = useAppConfig()
-
-const temperature = useStorage(config.settingKeys.llmTemperture, 0.5);
-const endpoint = useStorage(config.settingKeys.llmEndpoint, 'http://localhost:11434');
 
 const userInput = ref<string>('')
 
@@ -66,6 +62,9 @@ const chatMain = ref<HTMLElement | null>(null)
 
 const chatInput = ref<HTMLTextAreaElement | null>(null)
 
+const service = new OllamaLlmService()
+
+const modelSelector = ref<any>(null)
 
 definePageMeta({
   title: 'New chat',
@@ -90,13 +89,11 @@ const sendMessage = async () => {
   await scrollToBottom()
   currentResponse.value.generating = true
 
-  const ollama = new Ollama({ host: endpoint.value, })
-
-  const response = await ollama.chat({
-    model: 'llama3',
+  const response = await service.ollama.chat({
+    model: modelSelector.value?.selectedModelName || 'llama3',
     messages: chatHistory.value,
     stream: true,
-    options: { temperature: temperature.value },
+    options: { temperature: service.temperature },
   })
   for await (const part of response) {
     currentResponse.value.message += part.message.content

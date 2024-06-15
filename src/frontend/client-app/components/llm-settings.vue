@@ -30,6 +30,16 @@
             <BFormInput id="apikey" v-model="apikey" />
         </div>
     </div>
+    <hr>
+    <div class="d-flex justify-content-between align-items-center">
+        <div class="col-md-8">
+            <h6>Default model</h6>
+            <span class="text-muted">The default model name.</span>
+        </div>
+        <div class="col-md-4">
+            <OllamaModelSelector />
+        </div>
+    </div>
 </template>
 
 <script setup lang="ts">
