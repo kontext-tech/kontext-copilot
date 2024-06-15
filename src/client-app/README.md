@@ -1,8 +1,29 @@
-# Nuxt 3 Minimal Starter
+# Frontend Setup
+
+## Setup Node.js environment
+
+1. Install NVM
+- For Windows: https://github.com/coreybutler/nvm-windows
+- For UNIX-alike or WSL: https://github.com/nvm-sh/nvm
+
+2. Install Node.js version
+
+```
+nvm install 20.14.0
+```
+
+3. Use Node.js
+
+```
+nvm use lts
+```
+
+
+## Nuxt 3 Minimal Starter
 
 Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
 
-## Setup
+### Setup
 
 Make sure to install the dependencies:
 
@@ -20,7 +41,7 @@ yarn install
 bun install
 ```
 
-## Development Server
+### Development Server
 
 Start the development server on `http://localhost:3000`:
 
@@ -38,7 +59,7 @@ yarn dev
 bun run dev
 ```
 
-## Production
+### Production
 
 Build the application for production:
 

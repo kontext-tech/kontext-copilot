@@ -12,7 +12,7 @@
                 "isDefault": true
             },
             "options": {
-                "cwd": "${workspaceFolder}/src/frontend/client-app"
+                "cwd": "${workspaceFolder}/src/client-app"
               }
         }
     ]
