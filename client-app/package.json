@@ -28,6 +28,7 @@
     "@types/markdown-it": "^14.1.1",
     "sass": "^1.77.4",
     "sass-loader": "^14.2.1",
-    "typescript": "^5.4.5"
+    "typescript": "^5.4.5",
+    "vite-plugin-node-polyfills": "^0.22.0"
   }
 }

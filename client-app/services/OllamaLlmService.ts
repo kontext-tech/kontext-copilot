@@ -1,5 +1,5 @@
 import { useStorage } from '@vueuse/core'
-import { Ollama, type ListResponse } from 'ollama'
+import { Ollama, type ListResponse } from 'ollama/browser'
 
 class OllamaLlmService {
     temperature: number

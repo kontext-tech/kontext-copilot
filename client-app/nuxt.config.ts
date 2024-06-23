@@ -1,16 +1,26 @@
-import yaml from "@rollup/plugin-yaml";
+import yaml from "@rollup/plugin-yaml"
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  devtools: { enabled: true},
+  devtools: { enabled: true },
   ssr: false,
   vite: {
     plugins: [
-      yaml()
+      yaml(),
     ]
+  },
+  typescript: {
+    strict: true,
+    builder: 'vite',
+    tsConfig: {
+      compilerOptions: {
+        target: 'esnext',
+      }
+    }
   },
   app:
   {
+    baseURL: '/client/',
     head: {
       title: 'Kontext AI',
       link: [
@@ -41,12 +51,12 @@ export default defineNuxtConfig({
     defaultSize: 24
   },
   colorMode: {
-    preference: 'system', 
-    fallback: 'light', 
+    preference: 'system',
+    fallback: 'light',
     hid: 'nuxt-color-mode-script',
     globalName: '__NUXT_COLOR_MODE__',
     componentName: 'ColorScheme',
-    dataValue:'bs-theme',
+    dataValue: 'bs-theme',
     storageKey: 'kontext-color-mode'
   }
 });

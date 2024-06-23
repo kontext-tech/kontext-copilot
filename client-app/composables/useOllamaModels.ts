@@ -1,4 +1,4 @@
-import type { ModelResponse } from "ollama"
+import type { ModelResponse } from "ollama/browser"
 import OllamaLlmService from "~/services/OllamaLlmService"
 import { useStorage } from '@vueuse/core'
 
