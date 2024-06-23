@@ -1,5 +1,6 @@
 import yaml from "@rollup/plugin-yaml"
 
+const baseURL = '/client/'
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   devtools: { enabled: true },
@@ -20,11 +21,11 @@ export default defineNuxtConfig({
   },
   app:
   {
-    baseURL: '/client/',
+    baseURL: baseURL,
     head: {
       title: 'Kontext AI',
       link: [
-        { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' },
+        { rel: 'icon', type: 'image/svg+xml', href: `${baseURL}favicon.svg` },
       ]
     },
   },
