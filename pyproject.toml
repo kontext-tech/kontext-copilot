@@ -1,0 +1,45 @@
+[tool.poetry]
+name = "kontext-ai"
+version = "0.1.0"
+description = "Kontext AI is an AI empowered tool for data analytics that runs on your local computer."
+authors = ["Kontext <enquiry@kontext.tech>"]
+readme = "README.md"
+homepage = "https://github.com/kontext-tech/kontext-ai"
+repository = "https://github.com/kontext-tech/kontext-ai"
+license = "MIT"
+
+# Include the static website folder in the package
+include = ["kontext_ai/client-app/**/*"]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+fastapi = "^0.111.0"
+ollama = "^0.2.1"
+
+python-dotenv = "^1.0.1"
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.group.dev.dependencies]
+pytest = ">=7.4.3,<9.0.0"
+pytest-asyncio = "^0.23.2"
+pytest-cov = ">=4.1,<6.0"
+pytest-httpserver = "^1.0.8"
+pillow = "^10.2.0"
+ruff = ">=0.1.8,<0.5.0"
+
+[tool.ruff]
+line-length = 999
+indent-width = 2
+
+[tool.ruff.format]
+quote-style = "single"
+indent-style = "space"
+
+[tool.ruff.lint]
+select = ["E", "F", "B"]
+ignore = ["E501"]
+
+[tool.pytest.ini_options]
+addopts = '--doctest-modules --ignore examples'

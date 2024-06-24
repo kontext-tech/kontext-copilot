@@ -1,0 +1,5 @@
+{
+    "python.analysis.extraPaths": [
+        "./kontext_ai/api/llm"
+    ]
+}

@@ -2,10 +2,24 @@
     "version": "2.0.0",
     "tasks": [
         {
+            "label": "ollama:serve",
+            "type": "shell",
+            "command": "ollama serve",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": [],
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            }
+        },
+        {
             "type": "npm",
             "script": "dev",
             "problemMatcher": [],
-            "label": "npm:dev",
+            "label": "client-app:dev",
             "detail": "Run dev script: nuxt dev",
             "group": {
                 "kind": "build",
@@ -13,7 +27,91 @@
             },
             "options": {
                 "cwd": "${workspaceFolder}/client-app"
-              }
-        }
+            }
+        },
+        {
+            "type": "npm",
+            "script": "generate",
+            "problemMatcher": [],
+            "label": "client-app:generate",
+            "detail": "Run generate script: nuxt generate",
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
+            "options": {
+                "cwd": "${workspaceFolder}/client-app"
+            }
+        },
+        {
+            "label": "server-app:fastapi-dev - local",
+            "type": "shell",
+            "detail": "Run Kontext AI local website (KONTEXT_AI_ENV=local); for local development only.",
+            "command": "fastapi",
+            "args": [
+                "dev", // Ensure this matches your FastAPI app instance and file name
+                "--reload",
+                "--host",
+                "localhost",
+                "--port",
+                "8100"
+            ],
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
+            "options": {
+                "cwd": "${workspaceFolder}/kontext_ai",
+                "env": {
+                    "KONTEXT_AI_ENV": "local",
+                    "KONTEXT_AI_PORT": "8100",
+                    "KONTEXT_AI_CLIENTAPP_DIR": "${workspaceFolder}/client-app/.output/public"
+                }
+            }
+        },
+        {
+            "label": "server-app:fastapi-dev - development",
+            "type": "shell",
+            "detail": "Run Kontext AI local website (KONTEXT_AI_ENV=development); for local development withough client app.",
+            "command": "fastapi",
+            "args": [
+                "dev", // Ensure this matches your FastAPI app instance and file name
+                "--reload",
+                "--host",
+                "localhost",
+                "--port",
+                "8100"
+            ],
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
+            "options": {
+                "cwd": "${workspaceFolder}/kontext_ai",
+                "env": {
+                    "KONTEXT_AI_ENV": "development",
+                    "KONTEXT_AI_PORT": "8100",
+                }
+            }
+        },
+        {
+            "label": "build all (build.ps1)",
+            "type": "shell",
+            "command": "powershell",
+            "args": [
+                "-ExecutionPolicy",
+                "Bypass",
+                "-File",
+                "${workspaceFolder}/build.ps1"
+            ],
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
+            "detail": "Execute the build.ps1 script to build the project."
+        },
     ]
 }
