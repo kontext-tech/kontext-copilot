@@ -66,9 +66,7 @@ const service = new OllamaLlmService()
 
 const modelSelector = ref<any>(null)
 
-definePageMeta({
-  title: 'New chat',
-})
+usePageTitle()
 
 const scrollToBottom = async () => {
   // Scroll to the bottom of the chat-main element

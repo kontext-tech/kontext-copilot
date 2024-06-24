@@ -10,8 +10,8 @@
           <p class="text-muted">
             Initiate a chat with LLMs.
           </p>
-          <NuxtLink to="/chat" class="btn btn-outline-primary">
-            <Icon name="material-symbols:edit-square-outline" /> <span class="ms-1">New chat</span>
+          <NuxtLink to="/chat-ollama" class="btn btn-outline-primary">
+            <Icon name="material-symbols:edit-square-outline" /> <span class="ms-1">New chat (Ollama)</span>
           </NuxtLink>
         </div>
       </div>
@@ -21,10 +21,7 @@
 
 <script setup lang="ts">
 
-definePageMeta({
-  title: 'Home',
-  description: 'This is the home page',
-})
+usePageTitle()
 
 const btnId = 'btn' + useId()
 

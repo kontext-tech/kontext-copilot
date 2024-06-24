@@ -39,9 +39,6 @@ const generalTabId = 'tab-general-' + id
 const llmsTabId = 'tab-llms-' + id
 const tabContentId = 'tab-content-' + id
 
-definePageMeta({
-    title: 'Settings',
-})
-
+usePageTitle()
 
 </script>
