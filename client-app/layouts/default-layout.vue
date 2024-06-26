@@ -1,7 +1,7 @@
 <template>
     <div class="position-fixed d-flex overflow-x-hidden overflow-y-hidden inset-0 w-100">
         <Collapse :id="sideBarId"
-            class="position-relative sidebar-col d-flex flex-column align-items-stretch offcanvas-md offcanvas-start border-end flex-shrink-0">
+            class="position-relative-md sidebar-col d-md-flex flex-column align-items-stretch offcanvas-md offcanvas-start border-end flex-shrink-0">
             <div class="px-4 header-primary d-flex align-items-center bg-primary flex-shrink-0">
                 <b-a toggle="collapse" class="d-flex d-md-none text-white me-3" :href="'#' + sideBarId" :id="toogleId2">
                     <Icon name="material-symbols:menu" size="24" />
@@ -16,7 +16,7 @@
                     <div class="flex-grow-1 flex-shrink-1">
                         <slot name="aside" />
                     </div>
-                    <div class="px-1 text-center d-none d-md-flex flex-shrink-0 justify-content-center border-top py-1">
+                    <div class="px-1 text-center d-flex flex-shrink-0 justify-content-center border-top py-1">
                         <small class="mt-1 mb-0 text-muted">
                             @ Kontext 2024
                         </small>
@@ -35,7 +35,7 @@
                     <ThemeToggle class="ms-auto" />
                 </div>
                 <div v-if="$slots['header-secondary']"
-                    class="header-secondary d-flex align-items-center border-bottom flex-shrink-0 px-4 d-grid gap-2">
+                    class="header-secondary d-flex align-items-center border-bottom flex-shrink-0 px-4 d-grid gap-2 flex-wrap">
                     <slot name="header-secondary" />
                 </div>
                 <div class="flex-grow-1 flex-shrink-1 d-flex flex-column overflow-y-auto default-area">
