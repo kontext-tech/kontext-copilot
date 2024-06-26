@@ -36,8 +36,22 @@ Install poetry:
 pip install poetry
 ```
 
+Refer to [https://python-poetry.org/docs/](https://python-poetry.org/docs/) for details about Poetry.
+
 Install packages:
 ```
 poetry install
+```
+
+### Build package
+
+```
+poetry build
+```
+
+### Upload to PyPi
+
+```
+poetry publish
 ```
 

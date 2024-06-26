@@ -18,11 +18,21 @@
             <TabContent :id="tabContentId" class="px-4 w-100">
                 <TabPane :id="generalTabId" active>
                     <div class="d-flex justify-content-between align-items-center">
-                        <div>
+                        <div class="col-md-8">
                             <h6>Theme</h6>
                             <span class="text-muted">Customize color theme.</span>
                         </div>
-                        <ThemeToggle />
+                        <ThemeToggle class="col-md-4" />
+                    </div>
+                    <hr />
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="col-md-8">
+                            <h6>Name</h6>
+                            <span class="text-muted">Your name.</span>
+                        </div>
+                        <div class="col-md-4">
+                            <BFormInput id="username" v-model="username" />
+                        </div>
                     </div>
                     <hr />
 
@@ -45,5 +55,7 @@ const llmsTabId = 'tab-llms-' + id
 const tabContentId = 'tab-content-' + id
 
 usePageTitle()
+
+const username = useUsername()
 
 </script>

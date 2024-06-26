@@ -54,6 +54,8 @@ import DefaultLayout from '~/layouts/default-layout.vue';
 import OllamaLlmService from '~/services/OllamaLlmService';
 import { ChatRole, type IChatMessage } from '~/types/Models';
 
+const username = useUsername()
+
 const userInput = ref<string>('')
 
 const sendButtonDisabled = computed(() => userInput.value.trim().length === 0 || generating.value)
@@ -86,7 +88,7 @@ const scrollToBottom = async () => {
 }
 
 onMounted(async () => {
-  userInput.value = 'Hello.'
+  userInput.value = "Hello, I'm " + username.value + "!"
   await sendMessage()
 })
 
