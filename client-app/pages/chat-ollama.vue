@@ -1,50 +1,56 @@
 <template>
-  <div class="header-secondary px-4 border-bottom d-grid gap-2 d-flex align-items-center">
-    <OllamaModelSelector ref="modelSelector" />
-    <b-button button="outline-primary" toggle="modal" target="#llmsSettingsModal">
-      <Icon name="material-symbols:neurology-outline" size="20" /> LLMs settings
-    </b-button>
-  </div>
-  <Modal id="llmsSettingsModal">
-    <ModalDialog class="modal-lg">
-      <ModalContent>
-        <ModalHeader>
-          <ModalTitle>LLMs settings</ModalTitle>
-          <CloseButton dismiss="modal" />
-        </ModalHeader>
-        <ModalBody>
-          <LlmSettings />
-        </ModalBody>
-        <ModalFooter>
-          <b-button button="secondary" dismiss="modal">
-            Close
-          </b-button>
-        </ModalFooter>
-      </ModalContent>
-    </ModalDialog>
-  </Modal>
-  <div class="chat-main d-flex flex-column justify-content-center overflow-y-auto" ref="chatMain">
-    <template v-for="message in chatHistory">
-      <ChatMessage :message="ollmaMessageToChatMessage(message)" />
-    </template>
-    <ChatMessage :message="currentResponse" v-if="generating" />
-  </div>
+  <NuxtLayout>
+    <DefaultLayout>
+      <template #["header-secondary"]>
+        <OllamaModelSelector ref="modelSelector" />
+        <b-button button="outline-primary" toggle="modal" target="#llmsSettingsModal">
+          <Icon name="material-symbols:neurology-outline" size="20" /> LLMs settings
+        </b-button>
+        <Modal id="llmsSettingsModal">
+          <ModalDialog class="modal-lg">
+            <ModalContent>
+              <ModalHeader>
+                <ModalTitle>LLMs settings</ModalTitle>
+                <CloseButton dismiss="modal" />
+              </ModalHeader>
+              <ModalBody>
+                <LlmSettings />
+              </ModalBody>
+              <ModalFooter>
+                <b-button button="secondary" dismiss="modal">
+                  Close
+                </b-button>
+              </ModalFooter>
+            </ModalContent>
+          </ModalDialog>
+        </Modal>
+      </template>
 
-  <div class="chat-input d-flex justify-content-center bg-opacity-75">
-    <div class="input-group">
-      <textarea ref="chatInput" class="form-control chat-textarea" type="text" v-model="userInput"
-        placeholder="Type a message..." @keydown.enter.prevent="sendMessage" :disabled="generating"></textarea>
-      <button class="btn btn-outline-primary" type="button" :disabled="sendButtonDisabled" @onclick="sendMessage">
-        <Icon name="material-symbols:send" size="24" />
-      </button>
-    </div>
-  </div>
+      <div class="chat-main p-4 d-flex flex-column gap-4 align-self-center justify-content-center w-75" ref="chatMain">
+        <template v-for="message in chatHistory">
+          <ChatMessage :message="ollmaMessageToChatMessage(message)" class="w-100" />
+        </template>
+        <ChatMessage :message="currentResponse" v-if="generating" class="w-100" />
+      </div>
 
+      <div class="chat-input d-flex justify-content-center align-self-center w-75">
+        <div class="input-group w-75">
+          <textarea ref="chatInput" class="form-control chat-textarea" type="text" v-model="userInput"
+            placeholder="Type a message..." @keydown.enter.prevent="sendMessage" :disabled="generating"></textarea>
+          <button class="btn btn-outline-primary" type="button" :disabled="sendButtonDisabled" @click="sendMessage">
+            <Icon name="material-symbols:send" size="24" />
+          </button>
+        </div>
+      </div>
+    </DefaultLayout>
+  </NuxtLayout>
 </template>
+
 
 <script setup lang="ts">
 import { type Message } from 'ollama'
 import ChatMessage from '~/components/chat/chat-message.vue';
+import DefaultLayout from '~/layouts/default-layout.vue';
 import OllamaLlmService from '~/services/OllamaLlmService';
 import { ChatRole, type IChatMessage } from '~/types/Models';
 
@@ -64,20 +70,25 @@ const chatInput = ref<HTMLTextAreaElement | null>(null)
 
 const service = new OllamaLlmService()
 
-const modelSelector = ref<any>(null)
+const modelSelector = ref()
 
 usePageTitle()
 
 const scrollToBottom = async () => {
   // Scroll to the bottom of the chat-main element
   await nextTick()
-  if (chatMain.value) {
-    chatMain.value.scrollTop = chatMain.value.scrollHeight
+  if (chatMain.value && chatMain.value.parentElement) {
+    chatMain.value.parentElement.scrollTop = chatMain.value.scrollHeight
   }
   if (chatInput.value) {
     chatInput.value.focus()
   }
 }
+
+onMounted(async () => {
+  userInput.value = 'Hello.'
+  await sendMessage()
+})
 
 /* Send user input and getting response */
 const sendMessage = async () => {
@@ -115,35 +126,16 @@ const sendMessage = async () => {
 @import "bootstrap/scss/bootstrap";
 
 .chat-main {
-  overflow-y: auto;
-  // margin-top: 1rem;
-  padding: 1rem;
-  // padding-top: calc(2 * #{$spacer} + #{$kontext-header-height});
-  max-height: calc(100vh - 2 * #{$kontext-header-height} - #{$spacer} - #{$kontext-chat-input-height} - 4 * #{$spacer});
-  height: calc(100vh - 2 * #{$kontext-header-height} - #{$spacer} - #{$kontext-chat-input-height} - 4 * #{$spacer});
-
-  .card {
-    width: 75% !important;
-  }
-
-  @include media-breakpoint-down(md) {
-    max-height: calc(100vh - 2 * #{$kontext-header-height} - #{$kontext-chat-input-height} - 1rem);
-
-    .card {
-      width: 100% !important;
-    }
-  }
+  margin-bottom: calc($kontext-chat-input-height + 4*$spacer);
 }
 
 .chat-input {
   position: fixed;
   bottom: 0;
-  left: 0;
-  margin-inline-start: #{$kontext-sidebar-width};
   padding-top: calc(2* $spacer);
   padding-bottom: calc(2* $spacer);
-  padding-left: $spacer;
-  padding-right: $spacer;
+  // padding-left: $spacer;
+  // padding-right: $spacer;
   width: calc(100vw - #{$kontext-sidebar-width});
 
   @include media-breakpoint-down(md) {
@@ -152,7 +144,6 @@ const sendMessage = async () => {
   }
 
   .input-group {
-    width: 75%;
 
     @include media-breakpoint-down(md) {
       width: 100%;

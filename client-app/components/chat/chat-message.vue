@@ -1,5 +1,5 @@
 <template>
-    <div class="card mb-3 mx-auto">
+    <div class="card">
         <div class="card-body">
             <div class="card-title d-flex align-items-center">
                 <span class="btn rounded-circle d-flex me-1 align-items-center" :class="getRoleClass(message.role)">

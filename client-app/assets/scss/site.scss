@@ -38,13 +38,8 @@
     }
 }
 
-.main-col {
-    width: 100%;
-
-    @include media-breakpoint-up(md) {
-        width: calc(100vw - #{$kontext-sidebar-width});
-    }
-
+.inset-0 {
+    inset: 0;
 }
 
 /*Rounded circle*/
