@@ -60,7 +60,11 @@ pre-commit install --hook-type commit-msg --hook-type pre-push
 pre-commit run --all-files
 ```
 
-
+### Commit
+Use the following command line to commit changes:
+```
+cz c
+```
 
 ### Build package
 
