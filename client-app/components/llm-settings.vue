@@ -1,7 +1,7 @@
 <template>
     <div class="d-flex justify-content-between align-items-center">
         <div class="col-md-8">
-            <h6>Temprature</h6>
+            <h6>Temperature</h6>
             <span class="text-muted">Higher temperatures lead to more diverse and creative outputs, while lower
                 temperatures result in more conservative and predictable responses.</span>
         </div>
