@@ -9,6 +9,7 @@ def error_handler(func: Callable) -> Callable:
     """
     A decorator to handle errors uniformly for class methods.
     """
+
     @wraps(func)
     def wrapper(*args, **kwargs):
         try:
@@ -19,7 +20,9 @@ def error_handler(func: Callable) -> Callable:
             # Raise an HTTPException with a specific status code and detail
             raise HTTPException(
                 status_code=500,
-                detail=f"An unexpected error occurred when calling LLMs: [{e.status_code}] {e.error}") from e
+                detail=f"An unexpected error occurred when calling LLMs: [{e.status_code}] {e.error}",
+            ) from e
+
     return wrapper
 
 
@@ -27,6 +30,7 @@ class LlmRequestsHandler:
     """
     This class handles the requests for LLM (Large Language Model).
     """
+
     _client: ollama.Client = None
 
     def __init__(self, endpoint: str, default_model: str, api_key: str = None):

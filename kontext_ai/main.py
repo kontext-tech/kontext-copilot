@@ -12,15 +12,16 @@ load_dotenv()
 
 app = FastAPI()
 
-is_local = os.getenv('KONTEXT_AI_ENV', 'development') == 'local'
+is_local = os.getenv("KONTEXT_AI_ENV", "development") == "local"
 
 
-client_app_dir = os.getenv('KONTEXT_AI_CLIENTAPP_DIR', './client-app')
+client_app_dir = os.getenv("KONTEXT_AI_CLIENTAPP_DIR", "./client-app")
 
 # Serve Nuxt app static files in development
 if is_local:
-    app.mount("/client", StaticFiles(directory=client_app_dir,
-                                     html=True), name="client-app")
+    app.mount(
+        "/client", StaticFiles(directory=client_app_dir, html=True), name="client-app"
+    )
 
 
 @app.get("/api/hello")
@@ -34,9 +35,9 @@ router = APIRouter()
 
 # Create an instance of the handler class
 llm_handler = LlmRequestsHandler(
-    endpoint=os.getenv(
-        'KONTEXT_AI_LLM_ENDPOINT', 'http://localhost:11434'),
-    default_model=os.getenv('KONTEXT_AI_LLM_DEFAULT_MODEL', 'phi3:latest'))
+    endpoint=os.getenv("KONTEXT_AI_LLM_ENDPOINT", "http://localhost:11434"),
+    default_model=os.getenv("KONTEXT_AI_LLM_DEFAULT_MODEL", "phi3:latest"),
+)
 
 # Add routes to the router
 router.add_api_route("/list", llm_handler.list, methods=["GET"])
@@ -46,5 +47,9 @@ app.include_router(router, prefix="/api/llms")
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host=os.getenv('KONTEXT_AI_HOST', 'localhost'),
-                port=int(os.getenv('KONTEXT_AI_PORT', '8100')))
+
+    uvicorn.run(
+        app,
+        host=os.getenv("KONTEXT_AI_HOST", "localhost"),
+        port=int(os.getenv("KONTEXT_AI_PORT", "8100")),
+    )

@@ -3,7 +3,7 @@ import yaml from "@rollup/plugin-yaml"
 const baseURL = '/client/'
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  devtools: { enabled: false },
+  devtools: { enabled: true },
   ssr: false,
   vite: {
     plugins: [
@@ -37,7 +37,7 @@ export default defineNuxtConfig({
     '~/assets/scss/site.scss'
   ],
 
-  modules: ["usebootstrap", '@nuxtjs/color-mode'],
+  modules: ["usebootstrap", '@nuxtjs/color-mode', '@nuxtjs/eslint-module'],
   usebootstrap: {
     bootstrap: {
       prefix: ``

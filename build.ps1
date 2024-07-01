@@ -13,7 +13,7 @@ npm run generate
 Write-Output "Copying client-app output to kontext_ai/client-app"
 Copy-Item -Path .output\public\* -Destination ..\kontext_ai\client-app\ -Recurse -Force
 
-Set-Location .. 
+Set-Location ..
 
 # Build kontext-ai
 Write-Output "Building kontext-ai"
