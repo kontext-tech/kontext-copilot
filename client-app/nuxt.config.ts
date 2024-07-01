@@ -37,7 +37,7 @@ export default defineNuxtConfig({
     '~/assets/scss/site.scss'
   ],
 
-  modules: ["usebootstrap", '@nuxtjs/color-mode', '@nuxtjs/eslint-module'],
+  modules: ["usebootstrap", '@nuxtjs/color-mode'],
   usebootstrap: {
     bootstrap: {
       prefix: ``
@@ -59,5 +59,5 @@ export default defineNuxtConfig({
     componentName: 'ColorScheme',
     dataValue: 'bs-theme',
     storageKey: 'kontext-color-mode'
-  }
+  },
 });

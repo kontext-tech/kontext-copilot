@@ -43,7 +43,7 @@ Install packages:
 poetry install
 ```
 
-### Install pre-commit
+### Install pre-commit & Commitizen
 
 ```
 poetry add pre-commit
@@ -52,12 +52,15 @@ poetry add pre-commit
 Install `pre-commit` hook scripts:
 ```
 pre-commit install
+pre-commit install --hook-type commit-msg --hook-type pre-push
 ```
 
 (Optional) Run against all files:
 ```
 pre-commit run --all-files
 ```
+
+
 
 ### Build package
 
