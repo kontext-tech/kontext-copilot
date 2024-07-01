@@ -22,7 +22,9 @@
                             <h6>Theme</h6>
                             <span class="text-muted">Customize color theme.</span>
                         </div>
-                        <ThemeToggle class="col-md-4" />
+                        <div class="col-md-4">
+                            <ThemeToggle />
+                        </div>
                     </div>
                     <hr />
                     <div class="d-flex justify-content-between align-items-center">

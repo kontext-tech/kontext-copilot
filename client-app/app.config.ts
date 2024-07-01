@@ -14,8 +14,9 @@ export default defineAppConfig(
             { id: "home", to: '/', icon: 'material-symbols:home-outline', text: 'Home' },
             {
                 id: "tools", icon: 'material-symbols:tools-wrench-outline', text: 'GenAI utils', children: [
-                    { id: "newChat", to: '/chat-ollama', icon: 'material-symbols:edit-square-outline', text: 'New chat (Ollama)' },
-                    // { id: "prompt", to: '/prompt-engineering', icon: 'material-symbols:engineering-outline', text: 'Prompt scratchboard' }
+                    { id: "newChat", to: '/chat-ollama', icon: 'material-symbols:edit-square-outline', text: 'New chat' },
+                    // { id: "prompt", to: '/prompt-engineering', icon: 'material-symbols:engineering-outline', text: 'Prompt scratchboard' },
+                    // { id: "embedding", to: '/embedding-converter', icon: 'material-symbols:question-exchange', text: 'Embedding converter' }
                 ]
             },
             // { id: "llmflow", to: '/dashboards', icon: 'material-symbols:linked-services-outline', text: 'Workflows' },

@@ -3,7 +3,7 @@ import yaml from "@rollup/plugin-yaml"
 const baseURL = '/client/'
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  devtools: { enabled: true },
+  devtools: { enabled: false },
   ssr: false,
   vite: {
     plugins: [

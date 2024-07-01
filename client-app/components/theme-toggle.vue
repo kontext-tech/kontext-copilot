@@ -2,7 +2,7 @@
     <ButtonGroup :id="btnId">
         <DropdownToggle button="outline-secondary" class="d-flex align-items-center">
             <Icon :name="preferenceIcon" class="me-1" />
-            {{ preferenceText }}
+            {{ preferenceText }} <Icon name="material-symbols:arrow-drop-down" class="ms-1" />
         </DropdownToggle>
         <DropdownMenu alignment="end">
             <DropdownItem key="light" @click="setPreference('light')">
