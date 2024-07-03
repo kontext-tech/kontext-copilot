@@ -1,7 +1,7 @@
 <template>
     <div class="position-fixed d-flex overflow-x-hidden overflow-y-hidden inset-0 w-100">
         <Collapse :id="sideBarId"
-            class="position-relative-md sidebar-col d-md-flex flex-column align-items-stretch offcanvas-md offcanvas-start border-end flex-shrink-0">
+            class="position-relative-md sidebar-col d-md-flex flex-column align-items-stretch offcanvas-md offcanvas-start border-end flex-shrink-0 bg-body-tertiary">
             <div class="px-4 header-primary d-flex align-items-center bg-primary flex-shrink-0">
                 <b-a toggle="collapse" class="d-flex d-md-none text-white me-3" :href="'#' + sideBarId" :id="toogleId2">
                     <Icon name="material-symbols:menu" size="24" />

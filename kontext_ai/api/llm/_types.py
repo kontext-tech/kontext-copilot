@@ -24,7 +24,6 @@ class Model(TypedDict):
     size: int
     digest: str
     details: ModelDetail
-    expires_at: str
 
 
 class ModelsResponse(TypedDict):

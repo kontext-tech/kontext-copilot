@@ -3,24 +3,15 @@
 import os
 from fastapi import APIRouter, FastAPI
 from fastapi.staticfiles import StaticFiles
-from dotenv import load_dotenv
-
 from kontext_ai.api.llm import LlmRequestsHandler
-
-# Load environment variables without override
-load_dotenv()
+from kontext_ai.utils import HOST, IS_LOCAL, CLIENT_APP_DIR, PORT
 
 app = FastAPI()
 
-is_local = os.getenv("KONTEXT_AI_ENV", "development") == "local"
-
-
-client_app_dir = os.getenv("KONTEXT_AI_CLIENTAPP_DIR", "./client-app")
-
 # Serve Nuxt app static files in development
-if is_local:
+if IS_LOCAL:
     app.mount(
-        "/client", StaticFiles(directory=client_app_dir, html=True), name="client-app"
+        "/client", StaticFiles(directory=CLIENT_APP_DIR, html=True), name="client-app"
     )
 
 
@@ -39,17 +30,19 @@ llm_handler = LlmRequestsHandler(
     default_model=os.getenv("KONTEXT_AI_LLM_DEFAULT_MODEL", "phi3:latest"),
 )
 
+
 # Add routes to the router
-router.add_api_route("/list", llm_handler.list, methods=["GET"])
+router.add_api_route("/tags", llm_handler.list, methods=["GET"])
+router.add_api_route("/chat", llm_handler.chat, methods=["POST"])
 
 # Include the router in the FastAPI app
-app.include_router(router, prefix="/api/llms")
+app.include_router(router, prefix="/llms/api")
 
 if __name__ == "__main__":
     import uvicorn
 
     uvicorn.run(
         app,
-        host=os.getenv("KONTEXT_AI_HOST", "localhost"),
-        port=int(os.getenv("KONTEXT_AI_PORT", "8100")),
+        host=HOST,
+        port=PORT,
     )

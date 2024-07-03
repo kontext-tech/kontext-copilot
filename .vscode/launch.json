@@ -1,0 +1,53 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python Debugger: FastAPI (Windows)",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "uvicorn",
+            "args": [
+                "main:app",
+                "--reload",
+                "--host",
+                "localhost",
+                "--port",
+                "8100"
+            ],
+            "console": "integratedTerminal",
+            "jinja": true,
+            "env": {
+                "KONTEXT_AI_ENV": "local",
+                "KONTEXT_AI_PORT": "8100",
+            },
+            "cwd": "${workspaceFolder}/kontext_ai",
+            "python": "${workspaceFolder}/.venv/Scripts/python.exe" // Windows path
+
+        },
+        {
+            "name": "Python Debugger: FastAPI (Linux/MacOS)",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "uvicorn",
+            "args": [
+                "main:app",
+                "--reload",
+                "--host",
+                "localhost",
+                "--port",
+                "8100"
+            ],
+            "jinja": true,
+            "env": {
+                "KONTEXT_AI_ENV": "development",
+                "KONTEXT_AI_PORT": "8100",
+            },
+            "cwd": "${workspaceFolder}/kontext_ai",
+            "python": "${workspaceFolder}/.venv/bin/python" // Linux or macOS path
+
+        }
+    ]
+}
