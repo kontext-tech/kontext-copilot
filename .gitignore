@@ -1,5 +1,6 @@
 .vs
 kontext_ai/client-app
+kontext_ai/data/kontext_ai.db
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

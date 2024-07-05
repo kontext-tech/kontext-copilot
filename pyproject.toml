@@ -4,21 +4,21 @@ version = "0.1.0"
 description = "Kontext AI is an AI empowered tool for data analytics that runs on your local computer."
 authors = ["Kontext <enquiry@kontext.tech>"]
 readme = "README.md"
-homepage = "https://github.com/kontext-tech/kontext-ai"
+homepage = "https://kontext.tech"
 repository = "https://github.com/kontext-tech/kontext-ai"
 license = "MIT"
-
 # Include the static website folder in the package
 include = ["kontext_ai/client-app/**/*"]
 
 [tool.poetry.dependencies]
 python = "^3.9"
 fastapi = "^0.111.0"
-
 python-dotenv = "^1.0.1"
 pre-commit = "^3.7.1"
-
 typing-extensions = "4.10.0"
+sqlalchemy = "^2.0.31"
+alembic = "^1.13.2"
+
 [tool.commitizen]
 name = "cz_conventional_commits"
 tag_format = "$version"
@@ -26,6 +26,7 @@ version_scheme = "semver2"
 version_provider = "poetry"
 update_changelog_on_bump = true
 major_version_zero = true
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"

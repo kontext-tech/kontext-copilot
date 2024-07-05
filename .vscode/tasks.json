@@ -113,5 +113,38 @@
             },
             "detail": "Execute the build.ps1 script to build the project."
         },
+        {
+            "label": "alembic: autogenerate revision",
+            "type": "shell",
+            "command": "alembic",
+            "args": [
+                "revision",
+                "--autogenerate",
+                "-m",
+                "${input:alembicMessage}"
+            ],
+            "problemMatcher": [],
+            "group": "build",
+            "detail": "Generate a new Alembic revision file with autodetected changes."
+        },
+        {
+            "label": "alembic: upgrade to head",
+            "type": "shell",
+            "command": "alembic",
+            "args": [
+                "upgrade",
+                "head"
+            ],
+            "problemMatcher": [],
+            "group": "build",
+            "detail": "Upgrade the database schema to the latest revision."
+        }
+    ],
+    "inputs": [
+        {
+            "id": "alembicMessage",
+            "type": "promptString",
+            "description": "Enter Alembic revision message:"
+        }
     ]
 }

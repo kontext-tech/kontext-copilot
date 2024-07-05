@@ -10,6 +10,8 @@ IS_LOCAL = ENV_NAME == "local"
 CLIENT_APP_DIR = os.getenv("KONTEXT_AI_CLIENTAPP_DIR", "./client-app")
 HOST = (os.getenv("KONTEXT_AI_HOST", "localhost"),)
 PORT = int(os.getenv("KONTEXT_AI_PORT", "8100"))
+DB_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), "data/kontext_ai.db"))
+DB_URL = os.getenv("KONTEXT_AI_DB_URL", f"sqlite:///{DB_PATH}")
 
 
 def get_logger(env: str = ENV_NAME) -> logging.Logger:
