@@ -4,11 +4,11 @@ export default defineAppConfig(
     {
         appName: 'Kontext AI',
         settingKeys: {
-            llmTemperture: 'kontext_llm_temperature',
-            llmEndpoint: 'kontext_llm_endpoint',
-            llmApiKey: 'kontext_llm_api_key',
-            llmDefaultModel: 'kontext_llm_default_model',
-            username: 'kontext_username',
+            llmTemperture: 'llm_temperature',
+            llmEndpoint: 'llm_endpoint',
+            llmApiKey: 'llm_api_key',
+            llmDefaultModel: 'llm_default_model',
+            username: 'general_username',
         },
         navItems: [
             { id: "home", to: '/', icon: 'material-symbols:home-outline', text: 'Home' },

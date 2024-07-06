@@ -1,0 +1,89 @@
+from fastapi import APIRouter, Depends, HTTPException
+from kontext_ai.services import SettingsService, get_settings_service
+from kontext_ai.data.schemas import Settings
+from kontext_ai.utils import get_logger
+
+router = APIRouter(
+    tags=["settings"],
+    prefix="/settings",
+    responses={404: {"description": "Not found"}},
+)
+
+
+logger = get_logger()
+
+
+@router.get("/", response_model=Settings)
+async def get_settings(
+    settings_service: SettingsService = Depends(get_settings_service),
+):
+    """
+    Endpoint to retrieve all settings.
+
+    Returns:
+        JSON response containing all settings.
+    """
+    logger.info("Getting all settings")
+    settings = settings_service.get_settings_obj()
+    return settings
+
+
+@router.get("/{key}")
+async def get_setting(
+    key: str, settings_service: SettingsService = Depends(get_settings_service)
+):
+    """
+    Endpoint to retrieve the value of a setting by its key.
+
+    Parameters:
+        key (str): The key of the setting to retrieve.
+
+    Returns:
+        JSON response containing the value of the setting or a 404 error if not found.
+    """
+    value = settings_service.get_setting(key)
+    logger.info("Getting setting %s", key)
+    if value is None:
+        raise HTTPException(status_code=404, detail="Setting not found")
+    return {"key": key, "value": value}
+
+
+@router.post("/{key}")
+async def set_setting(
+    key: str,
+    value: str,
+    settings_service: SettingsService = Depends(get_settings_service),
+):
+    """
+    Endpoint to set the value of a setting. Creates a new setting if it does not exist.
+
+    Parameters:
+        key (str): The key of the setting to set or create.
+        value (str): The value to assign to the setting.
+
+    Returns:
+        JSON response confirming the setting has been updated or created.
+    """
+    logger.info("Setting setting %s to %s", key, value)
+    settings_service.set_setting(key, value)
+    logger.info("Setting %s updated", key)
+    return {"message": "Setting updated successfully"}
+
+
+@router.delete("/{key}")
+async def delete_setting(
+    key: str, settings_service: SettingsService = Depends(get_settings_service)
+):
+    """
+    Endpoint to delete a setting by its key.
+
+    Parameters:
+        key (str): The key of the setting to delete.
+
+    Returns:
+        JSON response confirming the setting has been deleted.
+    """
+    logger.info("Deleting setting %s", key)
+    settings_service.delete_setting(key)
+    logger.info("Setting %s deleted", key)
+    return {"message": "Setting deleted successfully"}

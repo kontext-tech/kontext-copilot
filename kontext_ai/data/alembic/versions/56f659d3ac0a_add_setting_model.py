@@ -1,8 +1,8 @@
-"""Add settings table
+"""Add setting model
 
-Revision ID: a23b3a853ae8
+Revision ID: 56f659d3ac0a
 Revises:
-Create Date: 2024-07-05 22:58:16.878152
+Create Date: 2024-07-06 09:27:21.598523
 
 """
 
@@ -13,7 +13,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = "a23b3a853ae8"
+revision: str = "56f659d3ac0a"
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
