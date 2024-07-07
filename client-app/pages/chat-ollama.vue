@@ -28,7 +28,8 @@
 
       <div class="chat-main p-4 d-flex flex-column gap-4 align-self-center justify-content-center w-75" ref="chatMain">
         <template v-for="message in chatHistory">
-          <ChatMessage :message="ollmaMessageToChatMessage(message)" :username="settings.general_username" class="w-100" />
+          <ChatMessage :message="ollmaMessageToChatMessage(message)" :username="settings.general_username"
+            class="w-100" />
         </template>
         <ChatMessage :message="currentResponse" :username="settings.general_username" v-if="generating" class="w-100" />
       </div>
@@ -48,6 +49,7 @@
 
 
 <script setup lang="ts">
+import { set } from 'lodash';
 import { type Message } from 'ollama'
 import ChatMessage from '~/components/chat/chat-message.vue';
 import DefaultLayout from '~/layouts/default-layout.vue';
@@ -96,10 +98,10 @@ const sendMessage = async () => {
   currentResponse.value.generating = true
 
   const response = await service.ollama.chat({
-    model: modelSelector.value?.selectedModelName || 'phi3:mini',
+    model: modelSelector.value?.selectedModelName,
     messages: chatHistory.value,
     stream: true,
-    options: { temperature: service.temperature },
+    options: { temperature: service.temperature, top_p: settings.value.llm_top_p, top_k: settings.value.llm_top_k, seed: settings.value.llm_seed},
   })
   for await (const part of response) {
     currentResponse.value.message += part.message.content

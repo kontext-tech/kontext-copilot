@@ -46,13 +46,15 @@ class LlmSettings(BaseModel):
     llm_default_model: str = DEFAULT_MODEL
     llm_temperature: float = 0.5
     # llm_max_tokens: int = 100
-    # llm_top_p: float = 1.0
+    llm_top_p: float = 0.95
+    llm_top_k: float = 40
     # llm_frequency_penalty: float = 0.0
     # llm_presence_penalty: float = 0.0
     # llm_stop_sequence: str = None
     llm_api_key: Optional[str] = ""
     llm_endpoint: str = DEFAULT_ENDPOINT
     llm_ollama_endpoint: str = DEFAULT_ENDPOINT_OLLAMA
+    llm_seed: int = 100
 
 
 class Settings(GeneralSettings, LlmSettings):

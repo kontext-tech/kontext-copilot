@@ -24,11 +24,55 @@
         <hr>
         <div class="d-flex justify-content-between align-items-center">
             <div class="col-md-8">
+                <h6>Seed</h6>
+                <span class="text-muted">Used to initialize model's random number generator.</span>
+            </div>
+            <div class="col-md-4">
+                <BFormRange id="seed" v-model="settings.llm_seed" min="0" max="100" step="1" />
+                {{ settings.llm_seed }}
+            </div>
+        </div>
+        <hr>
+        <div class="d-flex justify-content-between align-items-center">
+            <div class="col-md-8">
+                <h6>Top K Sampling (top_k)</h6>
+                <span class="text-muted">Limits the generation to the top k most likely next words. The model will only
+                    consider the top k words with the highest probability of occurring next in the sequence. </span>
+            </div>
+            <div class="col-md-4">
+                <BFormRange id="top_k_range" v-model="settings.llm_top_k" min="0" max="100" step="1" />
+                {{ settings.llm_top_k }}
+            </div>
+        </div>
+        <hr>
+        <div class="d-flex justify-content-between align-items-center">
+            <div class="col-md-8">
+                <h6>Top P Sampling (top_p)</h6>
+                <span class="text-muted">Also known as "nucleus sampling," this parameter filters the cumulative distribution of next-word probabilities, so that the smallest set of words whose cumulative probability exceeds the threshold p is considered. </span>
+            </div>
+            <div class="col-md-4">
+                <BFormRange id="top_p_range" v-model="settings.llm_top_p" min="0" max="1" step="0.05" />
+                {{ settings.llm_top_p }}
+            </div>
+        </div>
+        <hr>
+        <div class="d-flex justify-content-between align-items-center">
+            <div class="col-md-8">
                 <h6>Endpoint</h6>
                 <span class="text-muted">The endpoint for Ollama or OpenAI compatible LLMs.</span>
             </div>
             <div class="col-md-4">
                 <BFormInput id="endpoint" v-model="settings.llm_endpoint" />
+            </div>
+        </div>
+        <hr>
+        <div class="d-flex justify-content-between align-items-center">
+            <div class="col-md-8">
+                <h6>Ollama Endpoint</h6>
+                <span class="text-muted">The endpoint for Ollama.</span>
+            </div>
+            <div class="col-md-4">
+                <BFormInput id="endpointOllama" v-model="settings.llm_ollama_endpoint" />
             </div>
         </div>
         <hr>

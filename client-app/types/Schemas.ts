@@ -18,4 +18,7 @@ export type Settings = {
     llm_ollama_endpoint: string;
     general_theme: string;
     general_username: string;
+    llm_top_p: number;
+    llm_top_k: number;
+    llm_seed: number;
 }
