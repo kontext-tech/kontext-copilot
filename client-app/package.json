@@ -11,7 +11,6 @@
   },
   "dependencies": {
     "@popperjs/core": "^2.11.8",
-    "@rollup/plugin-yaml": "^4.1.2",
     "@vueuse/core": "^10.11.0",
     "axios": "^1.7.2",
     "lodash": "^4.17.21",
@@ -26,7 +25,6 @@
   },
   "devDependencies": {
     "@nuxtjs/color-mode": "^3.4.1",
-    "@nuxtjs/google-fonts": "^3.2.0",
     "@types/lodash": "^4.17.6",
     "@types/markdown-it": "^14.1.1",
     "sass": "^1.77.4",

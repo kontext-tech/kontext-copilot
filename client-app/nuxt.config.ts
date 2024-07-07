@@ -1,5 +1,3 @@
-import yaml from "@rollup/plugin-yaml"
-
 const baseURL = '/client/'
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
@@ -7,7 +5,6 @@ export default defineNuxtConfig({
   ssr: false,
   vite: {
     plugins: [
-      yaml(),
     ]
   },
   typescript: {
