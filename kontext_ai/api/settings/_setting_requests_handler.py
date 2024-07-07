@@ -1,11 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException
 from kontext_ai.services import SettingsService, get_settings_service
-from kontext_ai.data.schemas import Settings
+from kontext_ai.data.schemas import Settings, Setting
 from kontext_ai.utils import get_logger
 
 router = APIRouter(
     tags=["settings"],
-    prefix="/settings",
+    prefix="/api/settings",
     responses={404: {"description": "Not found"}},
 )
 
@@ -48,26 +48,26 @@ async def get_setting(
     return {"key": key, "value": value}
 
 
-@router.post("/{key}")
+@router.post("/")
 async def set_setting(
-    key: str,
-    value: str,
+    setting: Setting,
     settings_service: SettingsService = Depends(get_settings_service),
 ):
     """
     Endpoint to set the value of a setting. Creates a new setting if it does not exist.
 
     Parameters:
-        key (str): The key of the setting to set or create.
-        value (str): The value to assign to the setting.
+        setting (Setting): The setting to update or create.
 
     Returns:
         JSON response confirming the setting has been updated or created.
     """
-    logger.info("Setting setting %s to %s", key, value)
+    key = setting.key
+    value = setting.value
+    logger.info("Setting %s to %s", key, value)
     settings_service.set_setting(key, value)
     logger.info("Setting %s updated", key)
-    return {"message": "Setting updated successfully"}
+    return {"message": f"Setting {setting.key} updated successfully"}
 
 
 @router.delete("/{key}")
@@ -86,4 +86,4 @@ async def delete_setting(
     logger.info("Deleting setting %s", key)
     settings_service.delete_setting(key)
     logger.info("Setting %s deleted", key)
-    return {"message": "Setting deleted successfully"}
+    return {"message": f"Setting {key} deleted successfully"}

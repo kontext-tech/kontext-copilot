@@ -3,6 +3,7 @@ import type { NavItemProps } from "./types/UIProps";
 export default defineAppConfig(
     {
         appName: 'Kontext AI',
+        apiBaseUrl: 'http://localhost:8100',
         settingKeys: {
             llmTemperture: 'llm_temperature',
             llmEndpoint: 'llm_endpoint',

@@ -28,9 +28,9 @@
 
       <div class="chat-main p-4 d-flex flex-column gap-4 align-self-center justify-content-center w-75" ref="chatMain">
         <template v-for="message in chatHistory">
-          <ChatMessage :message="ollmaMessageToChatMessage(message)" class="w-100" />
+          <ChatMessage :message="ollmaMessageToChatMessage(message)" :username="settings.general_username" class="w-100" />
         </template>
-        <ChatMessage :message="currentResponse" v-if="generating" class="w-100" />
+        <ChatMessage :message="currentResponse" :username="settings.general_username" v-if="generating" class="w-100" />
       </div>
 
       <div class="chat-input d-flex justify-content-center align-self-center w-75">
@@ -52,9 +52,9 @@ import { type Message } from 'ollama'
 import ChatMessage from '~/components/chat/chat-message.vue';
 import DefaultLayout from '~/layouts/default-layout.vue';
 import OllamaLlmService from '~/services/OllamaLlmService';
-import { ChatRole, type IChatMessage } from '~/types/Models';
+import { ChatRole, type IChatMessage } from '~/types/Schemas';
 
-const username = useUsername()
+const { settings, isLoading, error, } = useSettings()
 
 const userInput = ref<string>('')
 
@@ -87,11 +87,6 @@ const scrollToBottom = async () => {
   }
 }
 
-onMounted(async () => {
-  userInput.value = "Hello, I'm " + username.value + "!"
-  await sendMessage()
-})
-
 /* Send user input and getting response */
 const sendMessage = async () => {
   generating.value = true
@@ -101,7 +96,7 @@ const sendMessage = async () => {
   currentResponse.value.generating = true
 
   const response = await service.ollama.chat({
-    model: modelSelector.value?.selectedModelName || 'llama3',
+    model: modelSelector.value?.selectedModelName || 'phi3:mini',
     messages: chatHistory.value,
     stream: true,
     options: { temperature: service.temperature },

@@ -25,11 +25,9 @@
 import type { ChatMessageProps } from '~/types/UIProps';
 import markdownit from 'markdown-it';
 import useClipboard from 'vue-clipboard3'
-import { ChatRole } from '~/types/Models';
+import { ChatRole } from '~/types/Schemas';
 
 const props = defineProps<ChatMessageProps>()
-
-const username = useUsername()
 
 const md = new markdownit()
 

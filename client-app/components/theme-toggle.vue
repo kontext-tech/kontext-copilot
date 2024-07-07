@@ -32,7 +32,7 @@
 const btnId = 'btn-theme-toogle-' + useId()
 const colorMode = useColorMode()
 const preference = ref(colorMode.preference)
-
+const {settings} = useSettings()
 
 watch(preference, (value) => {
     colorMode.preference = value
@@ -62,5 +62,6 @@ const preferenceIcon = computed(() => {
 
 const setPreference = (mode: string) => {
     preference.value = mode
+    settings.value.general_theme = mode
 }
 </script>

@@ -1,14 +1,13 @@
 import type { ModelResponse } from "ollama/browser"
 import OllamaLlmService from "~/services/OllamaLlmService"
-import { useStorage } from '@vueuse/core'
 
 export default function useOllamaModels() {
     const models = ref<ModelResponse[]>([])
 
     const defaultModel = ref<ModelResponse>()
 
-    const config = useAppConfig()
-    const defaultModelConfig = useStorage(config.settingKeys.llmDefaultModel, "llama3:instruct")
+    const { settings } = useSettings()
+    const defaultModelConfig = computed(() => settings.value.llm_default_model)
 
     onMounted(async () => {
         const service = new OllamaLlmService()
@@ -24,7 +23,7 @@ export default function useOllamaModels() {
     /* persist default model selection to local storage */
     const setDefaultModel = (model: ModelResponse) => {
         defaultModel.value = model
-        defaultModelConfig.value = model.name
+        settings.value.llm_default_model = model.name
     }
 
     return { models, defaultModel, setDefaultModel }

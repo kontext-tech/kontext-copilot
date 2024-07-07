@@ -33,7 +33,7 @@
                             <span class="text-muted">Your name.</span>
                         </div>
                         <div class="col-md-4">
-                            <BFormInput id="username" v-model="username" />
+                            <BFormInput id="username" v-model="settings.general_username" />
                         </div>
                     </div>
                     <hr />
@@ -58,6 +58,6 @@ const tabContentId = 'tab-content-' + id
 
 usePageTitle()
 
-const username = useUsername()
+const { settings, isLoading, error } = useSettings()
 
 </script>

@@ -1,4 +1,4 @@
-import type { IChatMessage } from "./Models"
+import type { IChatMessage } from "./Schemas"
 
 export interface NavItemProps {
     id: string
@@ -10,5 +10,6 @@ export interface NavItemProps {
 
 
 export interface ChatMessageProps {
-    message: IChatMessage
+    message: IChatMessage,
+    username: string
 }

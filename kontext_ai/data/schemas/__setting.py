@@ -1,6 +1,13 @@
-from typing import Union
+from typing import Optional, Union
 
 from pydantic import BaseModel
+
+from kontext_ai.utils import (
+    DEFAULT_MODEL,
+    DEFAULT_ENDPOINT,
+    DEFAULT_ENDPOINT_OLLAMA,
+    DEFAULT_USERNAME,
+)
 
 
 class SettingBase(BaseModel):
@@ -28,7 +35,7 @@ class GeneralSettings(BaseModel):
     """
 
     general_theme: str = "light"
-    general_username: str = "Kontext User"
+    general_username: str = DEFAULT_USERNAME
 
 
 class LlmSettings(BaseModel):
@@ -36,16 +43,16 @@ class LlmSettings(BaseModel):
     Model for LLM settings.
     """
 
-    llm_default_model: str = "phi3:latest"
+    llm_default_model: str = DEFAULT_MODEL
     llm_temperature: float = 0.5
     # llm_max_tokens: int = 100
     # llm_top_p: float = 1.0
     # llm_frequency_penalty: float = 0.0
     # llm_presence_penalty: float = 0.0
     # llm_stop_sequence: str = None
-    llm_api_key: str = None
-    llm_endpoint: str = "http://localhost:8100/llms"
-    llm_ollama_endpoint: str = "http://localhost:11434"
+    llm_api_key: Optional[str] = ""
+    llm_endpoint: str = DEFAULT_ENDPOINT
+    llm_ollama_endpoint: str = DEFAULT_ENDPOINT_OLLAMA
 
 
 class Settings(GeneralSettings, LlmSettings):

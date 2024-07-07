@@ -1,5 +1,5 @@
 import type { Message } from "ollama";
-import  { ChatRole, type IChatMessage } from "~/types/Models";
+import  { ChatRole, type IChatMessage } from "~/types/Schemas";
 
 export const ollmaMessageToChatMessage = (message: Message): IChatMessage => {
     return {
