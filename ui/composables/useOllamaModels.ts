@@ -6,18 +6,27 @@ export default function useOllamaModels() {
 
     const defaultModel = ref<ModelResponse>()
 
-    const { settings } = useSettings()
+    const { settings, loaded } = useSettings()
     const defaultModelConfig = computed(() => settings.value.llm_default_model)
+    let ollamaService: OllamaLlmService
 
-    onMounted(async () => {
-        const service = new OllamaLlmService(settings.value.llm_endpoint)
-        const response = await service.getModels()
+
+    const getModels = async () => {
+        if (!ollamaService) return
+        const response = await ollamaService.getModels()
         models.value = response.models
         const model = models.value.find(model => model.name === defaultModelConfig.value)
         if (model)
             defaultModel.value = model
         else
             defaultModel.value = models.value[0]
+    }
+
+    watch(loaded, async (value) => {
+        if (value) {
+            ollamaService = new OllamaLlmService(settings.value.llm_endpoint)
+            await getModels()
+        }
     })
 
     /* persist default model selection to local storage */

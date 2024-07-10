@@ -16,6 +16,7 @@ export function useSettings() {
         try {
             settings.value = await settingsService.getSettings();
             error.value = null;
+            loaded.value = true;
         } catch (err) {
             error.value = err;
             console.log(err);
@@ -50,5 +51,5 @@ export function useSettings() {
     // Fetch settings when the component using this composable is mounted
     onMounted(fetchSettings);
 
-    return { settings, isLoading, error, setSetting };
+    return { settings, isLoading, error, loaded };
 }

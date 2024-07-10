@@ -12,7 +12,7 @@ from kontext_ai.services import SettingsService, get_settings_service
 
 router = APIRouter(
     tags=["llm"],
-    prefix="/api",
+    prefix="/llms/api",
     responses={404: {"description": "Not found"}},
 )
 

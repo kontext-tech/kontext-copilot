@@ -5,6 +5,8 @@ class OllamaLlmService {
     ollama: Ollama
 
     constructor(endpoint: string) {
+        if (endpoint === undefined)
+            throw new Error("OllamaLlmService requires an endpoint")
         this.endpoint = endpoint
         this.ollama = new Ollama({ host: this.endpoint, })
     }

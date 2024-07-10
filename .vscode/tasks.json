@@ -44,7 +44,7 @@
             }
         },
         {
-            "label": "server-app:fastapi-dev - local",
+            "label": "server:fastapi-dev - local",
             "type": "shell",
             "detail": "Run Kontext AI local website (KONTEXT_AI_ENV=local); for local development only.",
             "command": "fastapi",
@@ -71,7 +71,7 @@
             }
         },
         {
-            "label": "server-app:fastapi-dev - development",
+            "label": "server:fastapi-dev - development",
             "type": "shell",
             "detail": "Run Kontext AI local website (KONTEXT_AI_ENV=development); for local development withough client app.",
             "command": "fastapi",

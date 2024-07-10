@@ -34,7 +34,7 @@
         <ChatMessage :message="currentResponse" :username="settings.general_username" v-if="generating" class="w-100" />
       </div>
 
-      <div class="chat-input d-flex justify-content-center align-self-center w-75">
+      <div class="chat-input d-flex justify-content-center align-self-center w-75" v-if="loaded">
         <div class="input-group w-75">
           <textarea ref="chatInput" class="form-control chat-textarea" type="text" v-model="userInput"
             placeholder="Type a message..." @keydown.enter.prevent="sendMessage" :disabled="generating"></textarea>
@@ -55,7 +55,7 @@ import DefaultLayout from '~/layouts/default-layout.vue';
 import OllamaLlmService from '~/services/OllamaLlmService';
 import { ChatRole, type IChatMessage } from '~/types/Schemas';
 
-const { settings, isLoading, error, } = useSettings()
+const { settings, loaded } = useSettings()
 
 const userInput = ref<string>('')
 
@@ -71,9 +71,9 @@ const chatMain = ref<HTMLElement | null>(null)
 
 const chatInput = ref<HTMLTextAreaElement | null>(null)
 
-const service = new OllamaLlmService(settings.value.llm_endpoint)
-
 const modelSelector = ref()
+
+let ollamaService: OllamaLlmService
 
 usePageTitle()
 
@@ -88,6 +88,12 @@ const scrollToBottom = async () => {
   }
 }
 
+watchEffect(() => {
+  if (loaded.value) {
+    ollamaService = new OllamaLlmService(settings.value.llm_endpoint)
+  }
+})
+
 /* Send user input and getting response */
 const sendMessage = async () => {
   generating.value = true
@@ -96,11 +102,11 @@ const sendMessage = async () => {
   await scrollToBottom()
   currentResponse.value.generating = true
 
-  const response = await service.ollama.chat({
+  const response = await ollamaService.ollama.chat({
     model: modelSelector.value?.selectedModelName,
     messages: chatHistory.value,
     stream: true,
-    options: { temperature: settings.value.llm_temperature, top_p: settings.value.llm_top_p, top_k: settings.value.llm_top_k, seed: settings.value.llm_seed},
+    options: { temperature: settings.value.llm_temperature, top_p: settings.value.llm_top_p, top_k: settings.value.llm_top_k, seed: settings.value.llm_seed },
   })
   for await (const part of response) {
     currentResponse.value.message += part.message.content

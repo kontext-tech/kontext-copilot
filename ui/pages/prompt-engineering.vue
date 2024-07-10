@@ -3,7 +3,8 @@
         <DefaultLayout>
             <template #["header-secondary"]>
                 <OllamaModelSelector ref="modelSelector" />
-                <BButton button="outline-primary" toggle="modal" target="#llmsSettingsModal" class="d-flex align-items-center">
+                <BButton button="outline-primary" toggle="modal" target="#llmsSettingsModal"
+                    class="d-flex align-items-center">
                     <Icon name="material-symbols:neurology-outline" size="20" /> LLMs settings
                 </BButton>
                 <Modal id="llmsSettingsModal">
@@ -39,7 +40,7 @@
                     get started.
                 </p>
 
-                <div class="row d-flex gap-4">
+                <div class="row d-flex gap-4" v-if="loaded">
                     <div class="col-md d-flex flex-column gap-4 justify-content-center mb-3">
                         <div class="col-md">
                             <BFormSelect v-model="selectedTemplateId" aria-label="Select prompt template"
@@ -69,11 +70,13 @@
                                 placeholder="User input"></textarea>
                         </div>
 
-                        <BButton button="primary" @click="generateResponse"
-                            :disabled="disableGenerate">Generate</BButton>
+                        <BButton button="primary" @click="generateResponse" :disabled="disableGenerate">Generate
+                        </BButton>
                     </div>
                     <div class="col-md">
-                        <label for="userInput" class="form-label">Response <Spinner sm v-if="generating" text-color="success" /></label>
+                        <label for="userInput" class="form-label">Response
+                            <Spinner sm v-if="generating" text-color="success" />
+                        </label>
                         <textarea class="form-control main-textarea" type="text" v-model="response"
                             placeholder="Generated response" :disabled="generating"></textarea>
                     </div>
@@ -87,7 +90,6 @@
 </template>
 
 <script setup lang="ts">
-import { set } from 'lodash';
 import DefaultLayout from '~/layouts/default-layout.vue'
 import { PromptsService } from '~/services/ApiServices'
 import OllamaLlmService from '~/services/OllamaLlmService'
@@ -101,7 +103,7 @@ const userInput = ref<string>()
 const response = ref<string>()
 const generating = ref<boolean>(false)
 
-const { settings, isLoading, error, } = useSettings()
+const { settings, loaded, } = useSettings()
 
 const selectedTemplateId = ref()
 const promptTemplates = ref<PromptInfo[]>([])
@@ -110,8 +112,8 @@ const promptTemplate = ref<Prompt | null>(null)
 const disableGenerate = computed(() => (promptInput.value ?? '').length === 0 || generating.value)
 const jsonOption = computed(() => jsonFormat.value ? 'json' : '')
 
-const service = new OllamaLlmService(settings.value.llm_endpoint)
 const promptService = new PromptsService()
+let ollamaService: OllamaLlmService
 
 const generateResponse = async () => {
     generating.value = true
@@ -123,7 +125,7 @@ const generateResponse = async () => {
     }
 
     if (streaming.value) {
-        const res = await service.ollama.generate({
+        const res = await ollamaService.ollama.generate({
             model: modelSelector.value?.selectedModelName,
             prompt: prompt_str,
             system: systemPromptInput.value,
@@ -145,7 +147,7 @@ const generateResponse = async () => {
         }
 
     } else {
-        const res = await service.ollama.generate({
+        const res = await ollamaService.ollama.generate({
             model: modelSelector.value?.selectedModelName,
             prompt: prompt_str,
             system: systemPromptInput.value,
@@ -161,6 +163,12 @@ const generateResponse = async () => {
 
 onMounted(async () => {
     promptTemplates.value = await promptService.getPromptTemplates()
+})
+
+watch(loaded, async (loaded) => {
+    if (loaded) {
+        ollamaService = new OllamaLlmService(settings.value.llm_endpoint)
+    }
 })
 
 watch(() => selectedTemplateId.value, async (template_id) => {

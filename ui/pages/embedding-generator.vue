@@ -24,7 +24,8 @@
                         <label for="embeddings" class="form-label">Generated embeddings
                             <Spinner sm v-if="generating" text-color="success" />
                         </label>
-                        <textarea class="form-control main-textarea" type="text" v-model="embeddings" :disabled="generating"></textarea>
+                        <textarea class="form-control main-textarea" type="text" v-model="embeddings"
+                            :disabled="generating"></textarea>
                     </div>
 
                 </div>
@@ -44,10 +45,17 @@ const promptInput = ref<string>('')
 const generating = ref<boolean>(false)
 const embeddings = ref<string>('')
 
-const { settings, isLoading, error, } = useSettings()
-const ollamaService = new OllamaLlmService(settings.value.llm_endpoint)
+let ollamaService: OllamaLlmService
 
-const disableGenerate = computed(() => (promptInput.value ?? '').length === 0 || generating.value)
+const { settings, loaded } = useSettings()
+
+const disableGenerate = computed(() => !loaded || (promptInput.value ?? '').length === 0 || generating.value)
+
+watch(loaded, async (loaded) => {
+    if (loaded) {
+        ollamaService = new OllamaLlmService(settings.value.llm_endpoint)
+    }
+})
 
 const generateResponse = async () => {
     generating.value = true
