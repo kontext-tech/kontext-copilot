@@ -1,7 +1,7 @@
 <template>
     <ButtonGroup>
         <DropdownToggle button="outline-primary" class="d-flex align-items-center">
-            {{ defaultModel?.name }} {{ defaultModel?.details.parameter_size }} <Icon name="material-symbols:arrow-drop-down" class="ms-1" />
+            {{ defaultModel?.name }} {{ defaultModel?.details.parameter_size }}
         </DropdownToggle>
         <DropdownMenu alignment="end">
             <DropdownItem v-for="(model, index) in models" @click="selectModel(model)">

@@ -8,7 +8,7 @@ homepage = "https://kontext.tech"
 repository = "https://github.com/kontext-tech/kontext-ai"
 license = "MIT"
 # Include the static website folder in the package
-include = ["kontext_ai/client-app/**/*", "kontext_ai/api/**/*.json"]
+include = ["kontext_ai/ui/**/*", "kontext_ai/api/**/*.json"]
 
 [tool.poetry.dependencies]
 python = "^3.9"

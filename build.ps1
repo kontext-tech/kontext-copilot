@@ -1,17 +1,17 @@
-# Build client-app and then copy the output to kontext_ai/client-app
+# Build ui and then copy the output to kontext_ai/ui
 # And then build the kontext-ai using poetry
 
 # Stop execution on any error
 $ErrorActionPreference = 'Stop'
 
-# Build client-app
-Set-Location .\client-app
-Write-Output "Building client-app"
+# Build ui
+Set-Location .\ui
+Write-Output "Building ui"
 npm run generate
 
-# Copy .output/public to ../kontext_ai/client-app
-Write-Output "Copying client-app output to kontext_ai/client-app"
-Copy-Item -Path .output\public\* -Destination ..\kontext_ai\client-app\ -Recurse -Force
+# Copy .output/public to ../kontext_ai/ui
+Write-Output "Copying ui output to kontext_ai/ui"
+Copy-Item -Path .output\public\* -Destination ..\kontext_ai\ui\ -Recurse -Force
 
 Set-Location ..
 

@@ -1,12 +1,14 @@
-const baseURL = '/client/'
+const baseURL = '/ui/'
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   devtools: { enabled: true },
   ssr: false,
+
   vite: {
     plugins: [
     ]
   },
+
   typescript: {
     strict: true,
     builder: 'vite',
@@ -16,6 +18,7 @@ export default defineNuxtConfig({
       }
     }
   },
+
   app:
   {
     baseURL: baseURL,
@@ -26,15 +29,18 @@ export default defineNuxtConfig({
       ]
     },
   },
+
   devServer: {
-    port: 8080,
+    port: 8101,
     host: 'localhost',
   },
+
   css: [
     '~/assets/scss/site.scss'
   ],
 
-  modules: ["usebootstrap", '@nuxtjs/color-mode'],
+  modules: ["usebootstrap", '@nuxtjs/color-mode', "@nuxt/icon"],
+
   usebootstrap: {
     bootstrap: {
       prefix: ``
@@ -43,11 +49,13 @@ export default defineNuxtConfig({
       prefix: `B`
     },
   },
+
   icon: {
     iconset: 'material-symbols',
     sizes: [16, 20, 24, 32, 48],
     defaultSize: 24
   },
+
   colorMode: {
     preference: 'system',
     fallback: 'light',
@@ -57,4 +65,6 @@ export default defineNuxtConfig({
     dataValue: 'bs-theme',
     storageKey: 'kontext-color-mode'
   },
+
+  compatibilityDate: '2024-07-10',
 });

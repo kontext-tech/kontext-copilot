@@ -3,7 +3,7 @@
         <DefaultLayout>
             <template #["header-secondary"]>
                 <OllamaModelSelector ref="modelSelector" />
-                <BButton button="outline-primary" toggle="modal" target="#llmsSettingsModal">
+                <BButton button="outline-primary" toggle="modal" target="#llmsSettingsModal" class="d-flex align-items-center">
                     <Icon name="material-symbols:neurology-outline" size="20" /> LLMs settings
                 </BButton>
                 <Modal id="llmsSettingsModal">

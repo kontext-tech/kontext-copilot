@@ -11,8 +11,8 @@ app = FastAPI()
 
 # CORS configuration
 origins = [
-    "http://localhost:8080",
-    "http://127.0.0.1:8080",
+    "http://localhost:8101",
+    "http://127.0.0.1:8101",
     f"http://localhost:{PORT}",
     f"http://127.0.0.1::{PORT}",
 ]
@@ -26,9 +26,7 @@ app.add_middleware(
 
 # Serve Nuxt app static files in development
 if IS_LOCAL:
-    app.mount(
-        "/client", StaticFiles(directory=CLIENT_APP_DIR, html=True), name="client-app"
-    )
+    app.mount("/ui", StaticFiles(directory=CLIENT_APP_DIR, html=True), name="ui")
 
 
 @app.get("/api/hello")

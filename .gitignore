@@ -1,5 +1,5 @@
 .vs
-kontext_ai/client-app
+kontext_ai/ui
 kontext_ai/data/kontext_ai.db
 
 # Byte-compiled / optimized / DLL files

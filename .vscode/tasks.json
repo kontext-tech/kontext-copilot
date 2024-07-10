@@ -19,28 +19,28 @@
             "type": "npm",
             "script": "dev",
             "problemMatcher": [],
-            "label": "client-app:dev",
+            "label": "ui:dev",
             "detail": "Run dev script: nuxt dev",
             "group": {
                 "kind": "build",
                 "isDefault": true
             },
             "options": {
-                "cwd": "${workspaceFolder}/client-app"
+                "cwd": "${workspaceFolder}/ui"
             }
         },
         {
             "type": "npm",
             "script": "generate",
             "problemMatcher": [],
-            "label": "client-app:generate",
+            "label": "ui:generate",
             "detail": "Run generate script: nuxt generate",
             "group": {
                 "kind": "build",
                 "isDefault": false
             },
             "options": {
-                "cwd": "${workspaceFolder}/client-app"
+                "cwd": "${workspaceFolder}/ui"
             }
         },
         {
@@ -66,7 +66,7 @@
                 "env": {
                     "KONTEXT_AI_ENV": "local",
                     "KONTEXT_AI_PORT": "8100",
-                    "KONTEXT_AI_CLIENTAPP_DIR": "${workspaceFolder}/client-app/.output/public"
+                    "KONTEXT_AI_CLIENTAPP_DIR": "${workspaceFolder}/ui/.output/public"
                 }
             }
         },

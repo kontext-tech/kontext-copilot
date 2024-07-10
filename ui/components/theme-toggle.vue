@@ -2,7 +2,7 @@
     <ButtonGroup :id="btnId">
         <DropdownToggle button="outline-secondary" class="d-flex align-items-center">
             <Icon :name="preferenceIcon" class="me-1" />
-            {{ preferenceText }} <Icon name="material-symbols:arrow-drop-down" class="ms-1" />
+            {{ preferenceText }}
         </DropdownToggle>
         <DropdownMenu alignment="end">
             <DropdownItem key="light" @click="setPreference('light')">
@@ -32,7 +32,7 @@
 const btnId = 'btn-theme-toogle-' + useId()
 const colorMode = useColorMode()
 const preference = ref(colorMode.preference)
-const {settings} = useSettings()
+const { settings } = useSettings()
 
 watch(preference, (value) => {
     colorMode.preference = value
