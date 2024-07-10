@@ -13,7 +13,7 @@
                 Initiate a chat with LLMs.
               </p>
               <NuxtLink to="/chat-ollama" class="btn btn-outline-primary">
-                <Icon name="material-symbols:edit-square-outline" /> <span class="ms-1">New chat (Ollama)</span>
+                <Icon name="material-symbols:edit-square-outline" /> <span class="ms-1">New chat</span>
               </NuxtLink>
             </div>
           </div>

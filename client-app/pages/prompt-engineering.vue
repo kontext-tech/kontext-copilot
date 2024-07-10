@@ -3,9 +3,9 @@
         <DefaultLayout>
             <template #["header-secondary"]>
                 <OllamaModelSelector ref="modelSelector" />
-                <b-button button="outline-primary" toggle="modal" target="#llmsSettingsModal">
+                <BButton button="outline-primary" toggle="modal" target="#llmsSettingsModal">
                     <Icon name="material-symbols:neurology-outline" size="20" /> LLMs settings
-                </b-button>
+                </BButton>
                 <Modal id="llmsSettingsModal">
                     <ModalDialog class="modal-lg">
                         <ModalContent>
@@ -17,9 +17,9 @@
                                 <LlmSettings />
                             </ModalBody>
                             <ModalFooter>
-                                <b-button button="secondary" dismiss="modal">
+                                <BButton button="secondary" dismiss="modal">
                                     Close
-                                </b-button>
+                                </BButton>
                             </ModalFooter>
                         </ModalContent>
                     </ModalDialog>
@@ -69,11 +69,11 @@
                                 placeholder="User input"></textarea>
                         </div>
 
-                        <b-button button="primary" @click="generateResponse"
-                            :disabled="disableGenerate">Generate</b-button>
+                        <BButton button="primary" @click="generateResponse"
+                            :disabled="disableGenerate">Generate</BButton>
                     </div>
                     <div class="col-md">
-                        <label for="userInput" class="form-label">Response</label>
+                        <label for="userInput" class="form-label">Response <Spinner sm v-if="generating" text-color="success" /></label>
                         <textarea class="form-control main-textarea" type="text" v-model="response"
                             placeholder="Generated response" :disabled="generating"></textarea>
                     </div>
@@ -87,10 +87,11 @@
 </template>
 
 <script setup lang="ts">
+import { set } from 'lodash';
 import DefaultLayout from '~/layouts/default-layout.vue'
-import { PromptsService } from '~/services/ApiServices';
-import OllamaLlmService from '~/services/OllamaLlmService';
-import type { PromptInfo, Prompt } from '~/types/Schemas';
+import { PromptsService } from '~/services/ApiServices'
+import OllamaLlmService from '~/services/OllamaLlmService'
+import type { PromptInfo, Prompt } from '~/types/Schemas'
 const streaming = ref(true)
 const jsonFormat = ref<boolean>(false)
 const modelSelector = ref()
@@ -109,7 +110,7 @@ const promptTemplate = ref<Prompt | null>(null)
 const disableGenerate = computed(() => (promptInput.value ?? '').length === 0 || generating.value)
 const jsonOption = computed(() => jsonFormat.value ? 'json' : '')
 
-const service = new OllamaLlmService()
+const service = new OllamaLlmService(settings.value.llm_endpoint)
 const promptService = new PromptsService()
 
 const generateResponse = async () => {
@@ -128,7 +129,7 @@ const generateResponse = async () => {
             system: systemPromptInput.value,
             format: jsonOption.value,
             stream: true,
-            options: { temperature: service.temperature, top_p: settings.value.llm_top_p, top_k: settings.value.llm_top_k, seed: settings.value.llm_seed },
+            options: { temperature: settings.value.llm_temperature, top_p: settings.value.llm_top_p, top_k: settings.value.llm_top_k, seed: settings.value.llm_seed },
 
         })
         for await (const part of res) {
@@ -150,7 +151,7 @@ const generateResponse = async () => {
             system: systemPromptInput.value,
             stream: false,
             format: jsonOption.value,
-            options: { temperature: service.temperature, top_p: settings.value.llm_top_p, top_k: settings.value.llm_top_k, seed: settings.value.llm_seed },
+            options: { temperature: settings.value.llm_temperature, top_p: settings.value.llm_top_p, top_k: settings.value.llm_top_k, seed: settings.value.llm_seed },
 
         })
         response.value = res.response

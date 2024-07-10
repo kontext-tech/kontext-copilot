@@ -17,7 +17,7 @@ export default defineAppConfig(
                 id: "tools", icon: 'material-symbols:tools-wrench-outline', text: 'GenAI utils', children: [
                     { id: "newChat", to: '/chat-ollama', icon: 'material-symbols:edit-square-outline', text: 'New chat' },
                     { id: "prompt", to: '/prompt-engineering', icon: 'material-symbols:engineering-outline', text: 'Prompt scratchboard' },
-                    // { id: "embedding", to: '/embedding-converter', icon: 'material-symbols:question-exchange', text: 'Embedding converter' }
+                    { id: "embedding", to: '/embedding-generator', icon: 'material-symbols:question-exchange', text: 'Embedding generator' }
                 ]
             },
             // { id: "llmflow", to: '/dashboards', icon: 'material-symbols:linked-services-outline', text: 'Workflows' },

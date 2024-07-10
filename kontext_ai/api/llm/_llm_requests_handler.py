@@ -12,7 +12,7 @@ from kontext_ai.services import SettingsService, get_settings_service
 
 router = APIRouter(
     tags=["llm"],
-    prefix="/llms/api",
+    prefix="/api",
     responses={404: {"description": "Not found"}},
 )
 
@@ -88,3 +88,15 @@ async def generate(
 
     if response is not None:
         return json.dumps(response)
+
+
+@router.post("/embeddings")
+async def generate_embeddings(
+    request: Request, settings_service: SettingsService = Depends(get_settings_service)
+):
+    params = await request.json()
+    logger.debug("Embeddings API invoked: %s", params)
+
+    client = _get_client(settings_service=settings_service)
+    response = client.embeddings(**params)
+    return response

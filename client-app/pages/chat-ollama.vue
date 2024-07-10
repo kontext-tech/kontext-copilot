@@ -3,9 +3,9 @@
     <DefaultLayout>
       <template #["header-secondary"]>
         <OllamaModelSelector ref="modelSelector" />
-        <b-button button="outline-primary" toggle="modal" target="#llmsSettingsModal">
+        <BButton button="outline-primary" toggle="modal" target="#llmsSettingsModal">
           <Icon name="material-symbols:neurology-outline" size="20" /> LLMs settings
-        </b-button>
+        </BButton>
         <Modal id="llmsSettingsModal">
           <ModalDialog class="modal-lg">
             <ModalContent>
@@ -17,9 +17,9 @@
                 <LlmSettings />
               </ModalBody>
               <ModalFooter>
-                <b-button button="secondary" dismiss="modal">
+                <BButton button="secondary" dismiss="modal">
                   Close
-                </b-button>
+                </BButton>
               </ModalFooter>
             </ModalContent>
           </ModalDialog>
@@ -71,7 +71,7 @@ const chatMain = ref<HTMLElement | null>(null)
 
 const chatInput = ref<HTMLTextAreaElement | null>(null)
 
-const service = new OllamaLlmService()
+const service = new OllamaLlmService(settings.value.llm_endpoint)
 
 const modelSelector = ref()
 
@@ -100,7 +100,7 @@ const sendMessage = async () => {
     model: modelSelector.value?.selectedModelName,
     messages: chatHistory.value,
     stream: true,
-    options: { temperature: service.temperature, top_p: settings.value.llm_top_p, top_k: settings.value.llm_top_k, seed: settings.value.llm_seed},
+    options: { temperature: settings.value.llm_temperature, top_p: settings.value.llm_top_p, top_k: settings.value.llm_top_k, seed: settings.value.llm_seed},
   })
   for await (const part of response) {
     currentResponse.value.message += part.message.content
