@@ -4,7 +4,7 @@ import os
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
-from kontext_ai.api import llm, settings
+from kontext_ai.api import llm, settings, prompts
 from kontext_ai.utils import HOST, IS_LOCAL, CLIENT_APP_DIR, PORT
 
 app = FastAPI()
@@ -38,8 +38,9 @@ async def hello():
 
 
 # Include the router in the FastAPI app
-app.include_router(llm.router)
-app.include_router(settings.router)
+app.include_router(llm.llm_router)
+app.include_router(settings.settings_router)
+app.include_router(prompts.prompts_router)
 
 if __name__ == "__main__":
     import uvicorn

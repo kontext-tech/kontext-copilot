@@ -49,8 +49,7 @@
 
 
 <script setup lang="ts">
-import { set } from 'lodash';
-import { type Message } from 'ollama'
+import { type Message } from 'ollama/browser'
 import ChatMessage from '~/components/chat/chat-message.vue';
 import DefaultLayout from '~/layouts/default-layout.vue';
 import OllamaLlmService from '~/services/OllamaLlmService';

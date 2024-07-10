@@ -1,16 +1,16 @@
-export enum ChatRole {
+enum ChatRole {
     USER = 'user',
     ASSISTANT = 'assistant',
     SYSTEM = 'system'
 }
 
-export interface IChatMessage {
+interface IChatMessage {
     message: string;
     role: ChatRole;
     generating?: boolean;
 }
 
-export type Settings = {
+type Settings = {
     llm_default_model: string;
     llm_temperature: number;
     llm_api_key: string | null;
@@ -22,3 +22,21 @@ export type Settings = {
     llm_top_k: number;
     llm_seed: number;
 }
+
+interface PromptInfo {
+    id: string;
+    name: string;
+}
+
+interface Prompt extends PromptInfo {
+    prompt: string;
+    system_prompt?: string;
+    user_input: string;
+}
+
+interface Prompts {
+    prompts: Prompt[];
+}
+
+
+export { ChatRole, type IChatMessage, type Settings, type PromptInfo, type Prompt, type Prompts }

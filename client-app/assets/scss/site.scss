@@ -58,3 +58,7 @@
     text-align: center;
     justify-content: center;
 }
+
+textarea.main-textarea {
+    min-height: $kontext-chat-input-height * 2;
+}

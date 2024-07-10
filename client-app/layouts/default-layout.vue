@@ -35,7 +35,7 @@
                     <ThemeToggle class="ms-auto" />
                 </div>
                 <div v-if="$slots['header-secondary']"
-                    class="header-secondary d-flex align-items-center border-bottom flex-shrink-0 px-4 d-grid gap-2 flex-wrap">
+                    class="header-secondary d-flex align-items-center border-bottom flex-shrink-0 px-4 d-grid gap-3 flex-wrap">
                     <slot name="header-secondary" />
                 </div>
                 <div class="flex-grow-1 flex-shrink-1 d-flex flex-column overflow-y-auto default-area">

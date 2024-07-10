@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { Settings } from '~/types/Schemas';
+import type { Settings, PromptInfo, Prompt } from '~/types/Schemas';
 
 const config = useAppConfig();
 const API_BASE_URL = `${config.apiBaseUrl}/api`;
@@ -23,4 +23,17 @@ export class SettingsService {
     }
     return false;
   }
+}
+
+export class PromptsService {
+  async getPromptTemplates(): Promise<PromptInfo[]> {
+    const response = await axios.get('/prompts/templates');
+    return response.data;
+  }
+
+  async getPromptTemplate(template_id: string): Promise<Prompt> {
+    const response = await axios.get(`/prompts/templates/${template_id}`);
+    return response.data;
+  }
+
 }

@@ -51,7 +51,8 @@ async def chat(
     params = await request.json()
     logger.debug("Chat API invoked: %s", params)
 
-    chat_response = _get_client(settings_service=settings_service).chat(**params)
+    client = _get_client(settings_service=settings_service)
+    chat_response = client.chat(**params)
 
     # Always return as streaming
     if isinstance(chat_response, Iterator):
@@ -61,5 +62,29 @@ async def chat(
                 yield json.dumps(response) + "\n"
 
         return StreamingResponse(generate_response(), media_type="application/x-ndjson")
-    elif chat_response is not None:
+
+    if chat_response is not None:
         return json.dumps(chat_response)
+
+
+@router.post("/generate")
+async def generate(
+    request: Request, settings_service: SettingsService = Depends(get_settings_service)
+):
+    params = await request.json()
+    logger.debug("Generate API invoked: %s", params)
+
+    client = _get_client(settings_service=settings_service)
+    response = client.generate(**params)
+
+    # Always return as streaming
+    if isinstance(response, Iterator):
+
+        def generate_response():
+            for res in iter(response):
+                yield json.dumps(res) + "\n"
+
+        return StreamingResponse(generate_response(), media_type="application/x-ndjson")
+
+    if response is not None:
+        return json.dumps(response)
