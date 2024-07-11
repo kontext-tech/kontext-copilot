@@ -9,14 +9,21 @@ export default function useOllamaModels() {
 
     const settingsWrapper = inject('settings') as Ref<SettingsWrapper>
 
-    const defaultModelConfig = computed(() => settingsWrapper.value.settings?.llm_default_model)
+    const defaultModelConfig = computed(() => settingsWrapper.value.settings.llm_default_model)
     const loaded = computed(() => settingsWrapper.value.loaded)
+
     let ollamaService: OllamaLlmService
+    const getOllamaService = () => {
+        if (!ollamaService)
+            ollamaService = new OllamaLlmService(settingsWrapper.value.settings.llm_endpoint)
+        return ollamaService
+    }
 
 
     const getModels = async () => {
-        if (!ollamaService) return
-        const response = await ollamaService.getModels()
+        const oService = getOllamaService()
+        if (!oService) return
+        const response = await oService.getModels()
         models.value = response.models
         const model = models.value.find(model => model.name === defaultModelConfig.value)
         if (model)
@@ -27,7 +34,6 @@ export default function useOllamaModels() {
 
     watch(loaded, (loaded) => {
         if (loaded) {
-            ollamaService = new OllamaLlmService(settingsWrapper.value.settings.llm_endpoint)
             getModels()
         }
     })
@@ -40,7 +46,6 @@ export default function useOllamaModels() {
 
     onMounted(() => {
         if (loaded.value) {
-            ollamaService = new OllamaLlmService(settingsWrapper.value.settings.llm_endpoint)
             getModels()
         }
     })

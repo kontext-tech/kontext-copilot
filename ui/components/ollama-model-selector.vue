@@ -1,7 +1,12 @@
 <template>
     <ButtonGroup>
         <DropdownToggle button="outline-primary" class="d-flex align-items-center">
-            {{ defaultModel?.name }} {{ defaultModel?.details.parameter_size }}
+            <template v-if="defaultModel">
+                {{ defaultModel.name }} {{ defaultModel.details.parameter_size }}
+            </template>
+            <template v-else>
+                Loading
+            </template>
         </DropdownToggle>
         <DropdownMenu alignment="end">
             <DropdownItem v-for="(model, index) in models" @click="selectModel(model)">
