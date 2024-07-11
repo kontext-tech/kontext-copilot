@@ -10,7 +10,7 @@ interface IChatMessage {
     generating?: boolean;
 }
 
-type Settings = {
+interface Settings {
     llm_default_model: string;
     llm_temperature: number;
     llm_api_key: string | null;
@@ -21,6 +21,13 @@ type Settings = {
     llm_top_p: number;
     llm_top_k: number;
     llm_seed: number;
+}
+
+interface SettingsWrapper {
+    settings: Settings;
+    isLoading: boolean;
+    loaded: boolean;
+    error: any;
 }
 
 interface PromptInfo {
@@ -39,4 +46,4 @@ interface Prompts {
 }
 
 
-export { ChatRole, type IChatMessage, type Settings, type PromptInfo, type Prompt, type Prompts }
+export { ChatRole, type IChatMessage, type Settings, type PromptInfo, type Prompt, type Prompts, type SettingsWrapper }

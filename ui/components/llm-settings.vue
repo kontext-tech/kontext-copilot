@@ -1,12 +1,12 @@
 <template>
-    <template v-if="isLoading">
+    <template v-if="settingsWrapper.isLoading">
         <div class="d-flex justify-content-center align-items-center">
             <Spinner />
         </div>
     </template>
-    <template v-else-if="error">
+    <template v-else-if="settingsWrapper.error">
         <div class="d-flex align-items-center alert alert-danger">
-            <span>{{ error }}</span>
+            <span>{{ settingsWrapper.error }}</span>
         </div>
     </template>
     <template v-if="settings">
@@ -99,15 +99,17 @@
 </template>
 
 <script setup lang="ts">
-import { useSettings } from '~/composables/useSettings'
+import type { SettingsWrapper } from '~/types/Schemas';
 
-const { settings, isLoading, error, } = useSettings()
+const settingsWrapper = inject('settings') as Ref<SettingsWrapper>
+const settings =  computed(() => settingsWrapper.value.settings)
+
 
 // Handle null values
 const llmApiKey = computed({
-    get: () => settings.value?.llm_api_key ?? '',
+    get: () => settingsWrapper.value.settings.llm_api_key ?? '',
     set: (value) => {
-        if (settings.value) {
+        if (settingsWrapper.value.loaded) {
             settings.value.llm_api_key = value
         }
     }

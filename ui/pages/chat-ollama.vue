@@ -34,7 +34,7 @@
         <ChatMessage :message="currentResponse" :username="settings.general_username" v-if="generating" class="w-100" />
       </div>
 
-      <div class="chat-input d-flex justify-content-center align-self-center w-75" v-if="loaded">
+      <div class="chat-input d-flex justify-content-center align-self-center w-75" v-if="settingsWrapper.loaded">
         <div class="input-group w-75">
           <textarea ref="chatInput" class="form-control chat-textarea" type="text" v-model="userInput"
             placeholder="Type a message..." @keydown.enter.prevent="sendMessage" :disabled="generating"></textarea>
@@ -49,13 +49,15 @@
 
 
 <script setup lang="ts">
-import { type Message } from 'ollama/browser'
+import { type Message } from 'ollama/browser';
 import ChatMessage from '~/components/chat/chat-message.vue';
 import DefaultLayout from '~/layouts/default-layout.vue';
 import OllamaLlmService from '~/services/OllamaLlmService';
-import { ChatRole, type IChatMessage } from '~/types/Schemas';
+import { ChatRole, type IChatMessage, type SettingsWrapper } from '~/types/Schemas';
 
-const { settings, loaded } = useSettings()
+const settingsWrapper = inject('settings') as Ref<SettingsWrapper>
+const settings = computed(() => settingsWrapper.value.settings)
+const loaded = computed(() => settingsWrapper.value.loaded)
 
 const userInput = ref<string>('')
 
@@ -74,6 +76,12 @@ const chatInput = ref<HTMLTextAreaElement | null>(null)
 const modelSelector = ref()
 
 let ollamaService: OllamaLlmService
+const getOllamaService = () => {
+    if (!ollamaService && loaded.value) {
+        ollamaService = new OllamaLlmService(settingsWrapper.value.settings.llm_endpoint)
+    }
+    return ollamaService
+}
 
 usePageTitle()
 
@@ -88,11 +96,6 @@ const scrollToBottom = async () => {
   }
 }
 
-watchEffect(() => {
-  if (loaded.value) {
-    ollamaService = new OllamaLlmService(settings.value.llm_endpoint)
-  }
-})
 
 /* Send user input and getting response */
 const sendMessage = async () => {
@@ -101,8 +104,8 @@ const sendMessage = async () => {
   userInput.value = ''
   await scrollToBottom()
   currentResponse.value.generating = true
-
-  const response = await ollamaService.ollama.chat({
+  const oService = getOllamaService()
+  const response = await oService.ollama.chat({
     model: modelSelector.value?.selectedModelName,
     messages: chatHistory.value,
     stream: true,

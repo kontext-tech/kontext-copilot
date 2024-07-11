@@ -33,7 +33,7 @@
                             <span class="text-muted">Your name.</span>
                         </div>
                         <div class="col-md-4">
-                            <BFormInput id="username" v-model="settings.general_username" />
+                            <BFormInput id="username" v-model="settingsWrapper.settings.general_username" />
                         </div>
                     </div>
                     <hr />
@@ -50,6 +50,7 @@
 
 <script setup lang="ts">
 import DefaultLayout from '~/layouts/default-layout.vue';
+import type { SettingsWrapper } from '~/types/Schemas';
 
 const id = useId()
 const generalTabId = 'tab-general-' + id
@@ -58,6 +59,6 @@ const tabContentId = 'tab-content-' + id
 
 usePageTitle()
 
-const { settings, isLoading, error } = useSettings()
+const settingsWrapper = inject('settings') as Ref<SettingsWrapper>
 
 </script>

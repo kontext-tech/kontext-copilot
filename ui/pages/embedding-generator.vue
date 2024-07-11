@@ -39,27 +39,31 @@
 <script setup lang="ts">
 import DefaultLayout from '~/layouts/default-layout.vue'
 import OllamaLlmService from '~/services/OllamaLlmService'
+import type { SettingsWrapper } from '~/types/Schemas'
 
 const modelSelector = ref()
 const promptInput = ref<string>('')
 const generating = ref<boolean>(false)
 const embeddings = ref<string>('')
 
-let ollamaService: OllamaLlmService
-
-const { settings, loaded } = useSettings()
+const settingsWrapper = inject('settings') as Ref<SettingsWrapper>
+const settings = computed(() => settingsWrapper.value.settings)
+const loaded = computed(() => settingsWrapper.value.loaded)
 
 const disableGenerate = computed(() => !loaded || (promptInput.value ?? '').length === 0 || generating.value)
+let ollamaService: OllamaLlmService
 
-watch(loaded, async (loaded) => {
-    if (loaded) {
-        ollamaService = new OllamaLlmService(settings.value.llm_endpoint)
+const getOllamaService = () => {
+    if (!ollamaService && loaded.value) {
+        ollamaService = new OllamaLlmService(settingsWrapper.value.settings.llm_endpoint)
     }
-})
+    return ollamaService
+}
 
 const generateResponse = async () => {
     generating.value = true
-    ollamaService.ollama.embeddings({
+    const oService = getOllamaService()
+    oService.ollama.embeddings({
         model: modelSelector.value?.selectedModelName,
         prompt: promptInput.value,
         options: { temperature: settings.value.llm_temperature, top_p: settings.value.llm_top_p, top_k: settings.value.llm_top_k, seed: settings.value.llm_seed },

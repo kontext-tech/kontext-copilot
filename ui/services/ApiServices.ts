@@ -1,13 +1,18 @@
 import axios from 'axios';
 import type { Settings, PromptInfo, Prompt } from '~/types/Schemas';
 
-const config = useAppConfig();
-const API_BASE_URL = `${config.apiBaseUrl}/api`;
+const getBaseUrl = (apiBaseUrl: string) => {
+  return `${apiBaseUrl}/api`;
+};
 
-axios.defaults.baseURL = API_BASE_URL;
 axios.defaults.headers.post['Content-Type'] = 'application/json';
 
 export class SettingsService {
+
+  constructor(apiBaseUrl: string) {
+    axios.defaults.baseURL = getBaseUrl(apiBaseUrl);
+  }
+
   async getSettings(): Promise<Settings> {
     const response = await axios.get('/settings/');
     return response.data;
@@ -26,6 +31,10 @@ export class SettingsService {
 }
 
 export class PromptsService {
+  constructor(apiBaseUrl: string) {
+    axios.defaults.baseURL = getBaseUrl(apiBaseUrl);
+  }
+
   async getPromptTemplates(): Promise<PromptInfo[]> {
     const response = await axios.get('/prompts/templates');
     return response.data;

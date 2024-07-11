@@ -29,10 +29,12 @@
 </template>
 
 <script setup lang="ts">
+import type { SettingsWrapper } from '~/types/Schemas';
+
 const btnId = 'btn-theme-toogle-' + useId()
 const colorMode = useColorMode()
 const preference = ref(colorMode.preference)
-const { settings } = useSettings()
+const settingsWrapper = inject('settings') as Ref<SettingsWrapper>
 
 watch(preference, (value) => {
     colorMode.preference = value
@@ -62,6 +64,8 @@ const preferenceIcon = computed(() => {
 
 const setPreference = (mode: string) => {
     preference.value = mode
-    settings.value.general_theme = mode
+    if(settingsWrapper.value) {
+        settingsWrapper.value.settings.general_theme = mode
+    }
 }
 </script>
