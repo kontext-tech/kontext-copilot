@@ -1,22 +1,13 @@
 <template>
     <NuxtLayout>
         <DefaultLayout>
-            <NavList nav="tabs" tablist margin="b-3" class="px-4 mt-3 w-100">
-                <NavItem>
-                    <NavLink :id="'navtab-' + generalTabId" active toggle="tab" :tab="'#' + generalTabId"
-                        class="d-flex align-items-center cursor-pointer">
-                        <Icon name="material-symbols:settings" size="20" /><span class="ms-1">General</span>
-                    </NavLink>
-                </NavItem>
-                <NavItem>
-                    <NavLink :id="'navtab-' + llmsTabId" toggle="tab" :tab="'#' + llmsTabId"
-                        class="d-flex align-items-center cursor-pointer">
-                        <Icon name="material-symbols:neurology-outline" size="20" /><span class="ms-1">LLMs</span>
-                    </NavLink>
-                </NavItem>
-            </NavList>
-            <TabContent :id="tabContentId" class="px-4 w-100">
-                <TabPane :id="generalTabId" active>
+            <BTabs navClass="px-4 mt-3 w-100 mb-3" contentClass="px-4 w-100">
+                <BTab :id="generalTabId" active>
+                    <template #title>
+                        <span class="d-flex align-items-center">
+                            <Icon name="material-symbols:settings" /><span class="ms-1">General</span>
+                        </span>
+                    </template>
                     <div class="d-flex justify-content-between align-items-center">
                         <div class="col-md-8">
                             <h6>Theme</h6>
@@ -37,13 +28,16 @@
                         </div>
                     </div>
                     <hr />
-
-                </TabPane>
-
-                <TabPane :id="llmsTabId">
+                </BTab>
+                <BTab :id="llmsTabId">
+                    <template #title>
+                        <span class="d-flex align-items-center">
+                            <Icon name="material-symbols:neurology-outline" /><span class="ms-1">LLMs</span>
+                        </span>
+                    </template>
                     <LlmSettings />
-                </TabPane>
-            </TabContent>
+                </BTab>
+            </BTabs>
         </DefaultLayout>
     </NuxtLayout>
 </template>

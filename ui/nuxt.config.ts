@@ -4,11 +4,6 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   ssr: false,
 
-  vite: {
-    plugins: [
-    ]
-  },
-
   typescript: {
     strict: true,
     builder: 'vite',
@@ -35,36 +30,19 @@ export default defineNuxtConfig({
     host: 'localhost',
   },
 
+  modules: ["@nuxt/icon", "@bootstrap-vue-next/nuxt"],
+
   css: [
-    '~/assets/scss/site.scss'
+    '~/assets/scss/site.scss',
   ],
 
-  modules: ["usebootstrap", '@nuxtjs/color-mode', "@nuxt/icon"],
-
-  usebootstrap: {
-    bootstrap: {
-      prefix: ``
-    },
-    html: {
-      prefix: `B`
+  runtimeConfig: {
+    bootstrapVueNext: {
+      composables: { useColorMode: false, all: false },
+      directives: { all: false },
+      css: true,
     },
   },
 
-  icon: {
-    iconset: 'material-symbols',
-    sizes: [16, 20, 24, 32, 48],
-    defaultSize: 24
-  },
-
-  colorMode: {
-    preference: 'system',
-    fallback: 'light',
-    hid: 'nuxt-color-mode-script',
-    globalName: '__NUXT_COLOR_MODE__',
-    componentName: 'ColorScheme',
-    dataValue: 'bs-theme',
-    storageKey: 'kontext-color-mode'
-  },
-
-  compatibilityDate: '2024-07-10',
+  compatibilityDate: '2024-07-13',
 });

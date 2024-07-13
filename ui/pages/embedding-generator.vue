@@ -2,7 +2,7 @@
     <NuxtLayout>
         <DefaultLayout>
             <template #["header-secondary"]>
-                <OllamaModelSelector ref="modelSelector" />
+                <LlmModelSelector ref="modelSelector" />
             </template>
 
             <div class="px-4">
@@ -17,12 +17,12 @@
                             <textarea class="form-control main-textarea" type="text" v-model="promptInput"
                                 placeholder="Prompt template"></textarea>
                         </div>
-                        <BButton button="primary" @click="generateResponse" :disabled="disableGenerate">Generate
+                        <BButton variant="primary" @click="generateResponse" :disabled="disableGenerate">Generate
+                            <BSpinner small v-if="generating" />
                         </BButton>
                     </div>
                     <div class="col-md">
                         <label for="embeddings" class="form-label">Generated embeddings
-                            <Spinner sm v-if="generating" text-color="success" />
                         </label>
                         <textarea class="form-control main-textarea" type="text" v-model="embeddings"
                             :disabled="generating"></textarea>

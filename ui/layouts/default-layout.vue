@@ -1,11 +1,11 @@
 <template>
     <div class="position-fixed d-flex overflow-x-hidden overflow-y-hidden inset-0 w-100">
-        <Collapse :id="sideBarId"
+        <BCollapse id="mainSidebar"
             class="position-relative-md sidebar-col d-md-flex flex-column align-items-stretch offcanvas-md offcanvas-start border-end flex-shrink-0 bg-body-tertiary">
             <div class="px-4 header-primary d-flex align-items-center bg-primary flex-shrink-0">
-                <b-a toggle="collapse" class="d-flex d-md-none text-white me-3" :href="'#' + sideBarId" :id="toogleId2">
+                <BLink v-b-toggle.mainSidebar class="d-flex d-md-none text-white me-3" href="#">
                     <Icon name="material-symbols:menu" size="24" />
-                </b-a>
+                </BLink>
                 <a href="/" class="navbar-brand">
                     <img :src="logoWhite" alt="Kontext Logo" class="img-fluid" />
                 </a>
@@ -23,14 +23,13 @@
                     </div>
                 </div>
             </div>
-        </Collapse>
+        </BCollapse>
         <div class="d-flex flex-grow-1 flex-shrink-1 w-100">
             <div class="flex-column align-items-stretch position-relative w-100 flex-grow-1 flex-shrink-1 d-flex">
                 <div class="header-primary d-flex align-items-center border-bottom px-4 flex-shrink-0">
-                    <b-a toggle="collapse" class="d-flex d-md-none text-muted me-3" :href="'#' + sideBarId"
-                        :id="toogleId1">
+                    <BLink v-b-toggle.mainSidebar class="d-flex d-md-none text-muted me-3" href="#">
                         <Icon name="material-symbols:menu" size="24" />
-                    </b-a>
+                    </BLink>
                     <h1 class="fs-6 mb-0 pb-0 fw-bold">{{ route.meta['title'] ?? route.name }}</h1>
                     <ThemeToggle class="ms-auto" />
                 </div>
@@ -61,10 +60,6 @@ watchEffect(() => {
         }
     )
 });
-
-const sideBarId = 'sidebar-' + useId()
-const toogleId1 = 'toogle1-' + useId()
-const toogleId2 = 'toogle2-' + useId()
 
 </script>
 

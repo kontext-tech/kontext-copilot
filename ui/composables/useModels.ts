@@ -2,7 +2,7 @@ import type { ModelResponse } from "ollama/browser"
 import OllamaLlmService from "~/services/OllamaLlmService"
 import type { SettingsWrapper } from "~/types/Schemas"
 
-export default function useOllamaModels() {
+export default function useModels() {
     const models = ref<ModelResponse[]>([])
 
     const defaultModel = ref<ModelResponse>()

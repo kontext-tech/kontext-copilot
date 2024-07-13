@@ -16,7 +16,7 @@ interface Settings {
     llm_api_key: string | null;
     llm_endpoint: string;
     llm_ollama_endpoint: string;
-    general_theme: string;
+    general_theme: "dark" | "light" | "auto";
     general_username: string;
     llm_top_p: number;
     llm_top_k: number;

@@ -2,28 +2,13 @@
   <NuxtLayout>
     <DefaultLayout>
       <template #["header-secondary"]>
-        <OllamaModelSelector ref="modelSelector" />
-        <BButton button="outline-primary" toggle="modal" target="#llmsSettingsModal" class="d-flex align-items-center">
+        <LlmModelSelector ref="modelSelector" />
+        <BButton variant="outline-primary" v-b-modal.llmsSettingsModal class="d-flex align-items-center">
           <Icon name="material-symbols:neurology-outline" size="20" /> LLMs settings
         </BButton>
-        <Modal id="llmsSettingsModal">
-          <ModalDialog class="modal-lg">
-            <ModalContent>
-              <ModalHeader>
-                <ModalTitle>LLMs settings</ModalTitle>
-                <CloseButton dismiss="modal" />
-              </ModalHeader>
-              <ModalBody>
-                <LlmSettings />
-              </ModalBody>
-              <ModalFooter>
-                <BButton button="secondary" dismiss="modal">
-                  Close
-                </BButton>
-              </ModalFooter>
-            </ModalContent>
-          </ModalDialog>
-        </Modal>
+        <BModal id="llmsSettingsModal" title="LLMs settings" okOnly size="lg">
+          <LlmSettings />
+        </BModal>
       </template>
 
       <div class="chat-main p-4 d-flex flex-column gap-4 align-self-center justify-content-center w-75" ref="chatMain">
@@ -77,10 +62,10 @@ const modelSelector = ref()
 
 let ollamaService: OllamaLlmService
 const getOllamaService = () => {
-    if (!ollamaService && loaded.value) {
-        ollamaService = new OllamaLlmService(settingsWrapper.value.settings.llm_endpoint)
-    }
-    return ollamaService
+  if (!ollamaService && loaded.value) {
+    ollamaService = new OllamaLlmService(settingsWrapper.value.settings.llm_endpoint)
+  }
+  return ollamaService
 }
 
 usePageTitle()

@@ -7,13 +7,13 @@
                 <span class="ms-1">{{ text }}</span>
                 <Icon :name="collapseIconName" size="20" class="ms-auto" />
             </NuxtLink>
-            <Collapse :key="id" :id="collapseId" ref="collapseEl" :class="collapseClasses">
+            <BCollapse :key="id" :id="collapseId" ref="collapseEl" :class="collapseClasses">
                 <ul class="nav flex-column ms-3">
                     <template v-for="child in props.children">
                         <SidebarNavItem v-bind="child" />
                     </template>
                 </ul>
-            </Collapse>
+            </BCollapse>
         </template>
         <template v-else>
             <NuxtLink :to="to" class="nav-link d-flex align-items-center mx-2 mb-1" :class="{ active: isActive }">

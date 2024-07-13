@@ -2,37 +2,17 @@
     <NuxtLayout>
         <DefaultLayout>
             <template #["header-secondary"]>
-                <OllamaModelSelector ref="modelSelector" />
-                <BButton button="outline-primary" toggle="modal" target="#llmsSettingsModal"
-                    class="d-flex align-items-center">
+                <LlmModelSelector ref="modelSelector" />
+                <BButton variant="outline-primary" v-b-modal.llmsSettingsModal class="d-flex align-items-center">
                     <Icon name="material-symbols:neurology-outline" size="20" /> LLMs settings
                 </BButton>
-                <Modal id="llmsSettingsModal">
-                    <ModalDialog class="modal-lg">
-                        <ModalContent>
-                            <ModalHeader>
-                                <ModalTitle>LLMs settings</ModalTitle>
-                                <CloseButton dismiss="modal" />
-                            </ModalHeader>
-                            <ModalBody>
-                                <LlmSettings />
-                            </ModalBody>
-                            <ModalFooter>
-                                <BButton button="secondary" dismiss="modal">
-                                    Close
-                                </BButton>
-                            </ModalFooter>
-                        </ModalContent>
-                    </ModalDialog>
-                </Modal>
-                <BFormCheck switch class="d-flex align-items-center gap-1">
-                    <BFormCheckInput v-model="streaming" />
-                    <BFormCheckLabel>Streaming</BFormCheckLabel>
-                </BFormCheck>
-                <BFormCheck switch class="d-flex align-items-center gap-1">
-                    <BFormCheckInput v-model="jsonFormat" />
-                    <BFormCheckLabel>JSON format</BFormCheckLabel>
-                </BFormCheck>
+                <BModal id="llmsSettingsModal" title="LLMs settings" okOnly size="lg">
+                    <LlmSettings />
+                </BModal>
+                <BFormCheckbox switch v-model="streaming" class="d-flex align-items-center gap-1">Streaming
+                </BFormCheckbox>
+                <BFormCheckbox switch v-model="jsonFormat" class="d-flex align-items-center gap-1">JSON format
+                </BFormCheckbox>
             </template>
 
             <div class="px-4">
@@ -45,12 +25,13 @@
                         <div class="col-md">
                             <BFormSelect v-model="selectedTemplateId" aria-label="Select prompt template"
                                 class="col-md">
-                                <b-option selected>
+                                <BFormSelectOption selected value="null">
                                     Select prompt template
-                                </b-option>
-                                <b-option v-for="template in promptTemplates" :key="template.id" :value="template.id">
+                                </BFormSelectOption>
+                                <BFormSelectOption v-for="template in promptTemplates" :key="template.id"
+                                    :value="template.id">
                                     {{ template.name }}
-                                </b-option>
+                                </BFormSelectOption>
                             </BFormSelect>
                         </div>
                         <div class="col-md">
@@ -70,12 +51,12 @@
                                 placeholder="User input"></textarea>
                         </div>
 
-                        <BButton button="primary" @click="generateResponse" :disabled="disableGenerate">Generate
+                        <BButton variant="primary" @click="generateResponse" :disabled="disableGenerate">Generate
+                            <BSpinner small v-if="generating" />
                         </BButton>
                     </div>
                     <div class="col-md">
                         <label for="userInput" class="form-label">Response
-                            <Spinner sm v-if="generating" text-color="success" />
                         </label>
                         <textarea class="form-control main-textarea" type="text" v-model="response"
                             placeholder="Generated response" :disabled="generating"></textarea>
@@ -107,7 +88,7 @@ const settingsWrapper = inject('settings') as Ref<SettingsWrapper>
 const settings = computed(() => settingsWrapper.value.settings)
 const loaded = computed(() => settingsWrapper.value.loaded)
 
-const selectedTemplateId = ref()
+const selectedTemplateId = ref(null)
 const promptTemplates = ref<PromptInfo[]>([])
 const promptTemplate = ref<Prompt | null>(null)
 

@@ -2,6 +2,11 @@ import type { NavItemProps } from "./types/UIProps";
 
 export default defineAppConfig(
     {
+        icon: {
+            size: '18px', // default <Icon> size applied
+            class: 'icon', // default <Icon> class applied
+            mode: 'svg', // default <Icon> mode applied
+        },
         appName: 'Kontext AI',
         apiBaseUrl: 'http://localhost:8100',
         settingKeys: {

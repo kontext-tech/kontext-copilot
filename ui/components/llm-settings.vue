@@ -1,7 +1,7 @@
 <template>
     <template v-if="settingsWrapper.isLoading">
         <div class="d-flex justify-content-center align-items-center">
-            <Spinner />
+            <BSpinner variant="success" />
         </div>
     </template>
     <template v-else-if="settingsWrapper.error">
@@ -17,7 +17,7 @@
                     temperatures result in more conservative and predictable responses.</span>
             </div>
             <div class="col-md-4">
-                <BFormRange id="temperatureRange" v-model="settings.llm_temperature" min="0" max="1" step="0.1" />
+                <BFormInput type="range" id="temperatureRange" v-model="settings.llm_temperature" min="0" max="1" step="0.1" />
                 {{ settings.llm_temperature }}
             </div>
         </div>
@@ -28,7 +28,7 @@
                 <span class="text-muted">Used to initialize model's random number generator.</span>
             </div>
             <div class="col-md-4">
-                <BFormRange id="seed" v-model="settings.llm_seed" min="0" max="100" step="1" />
+                <BFormInput type="range" id="seed" v-model="settings.llm_seed" min="0" max="100" step="1" />
                 {{ settings.llm_seed }}
             </div>
         </div>
@@ -40,7 +40,7 @@
                     consider the top k words with the highest probability of occurring next in the sequence. </span>
             </div>
             <div class="col-md-4">
-                <BFormRange id="top_k_range" v-model="settings.llm_top_k" min="0" max="100" step="1" />
+                <BFormInput type="range" id="top_k_range" v-model="settings.llm_top_k" min="0" max="100" step="1" />
                 {{ settings.llm_top_k }}
             </div>
         </div>
@@ -51,7 +51,7 @@
                 <span class="text-muted">Also known as "nucleus sampling," this parameter filters the cumulative distribution of next-word probabilities, so that the smallest set of words whose cumulative probability exceeds the threshold p is considered. </span>
             </div>
             <div class="col-md-4">
-                <BFormRange id="top_p_range" v-model="settings.llm_top_p" min="0" max="1" step="0.05" />
+                <BFormInput type="range" id="top_p_range" v-model="settings.llm_top_p" min="0" max="1" step="0.05" />
                 {{ settings.llm_top_p }}
             </div>
         </div>
@@ -92,7 +92,7 @@
                 <span class="text-muted">The default model name.</span>
             </div>
             <div class="col-md-4">
-                <OllamaModelSelector />
+                <LlmModelSelector />
             </div>
         </div>
     </template>
