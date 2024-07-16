@@ -25,6 +25,7 @@
   },
   "devDependencies": {
     "@bootstrap-vue-next/nuxt": "^0.23.3",
+    "@iconify-json/material-symbols": "^1.1.84",
     "@types/lodash": "^4.17.6",
     "@types/markdown-it": "^14.1.1",
     "bootstrap": "^5.3.3",

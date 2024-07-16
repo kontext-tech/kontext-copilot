@@ -34,7 +34,6 @@
     max-width: var(--#{$variable-prefix}sidebar-width, $kontext-sidebar-width) !important;
 
     @include media-breakpoint-down(md) {
-        width: 100%;
     }
 }
 

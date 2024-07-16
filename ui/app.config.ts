@@ -28,7 +28,7 @@ export default defineAppConfig(
             // { id: "llmflow", to: '/dashboards', icon: 'material-symbols:linked-services-outline', text: 'Workflows' },
             // { id: "knowledgebase", to: '/dashboards', icon: 'material-symbols:menu-book-outline', text: 'Knowledge base' },
             // { id: "dataSources", to: '/data-sources', icon: 'material-symbols:database-outline', text: 'Data sources' },
-            // { id: "dataLakes", to: '/data-lakes', icon: 'material-symbols:files-outline', text: 'Datalake' },
+            { id: "dataLakes", to: '/data-lakes', icon: 'material-symbols:files-outline', text: 'Datalake' },
             // { id: "databoards", to: '/dashboards', icon: 'material-symbols:dashboard-customize-outline', text: 'Dashboards' },
             { id: "settings", to: '/settings', icon: 'material-symbols:settings-outline', text: 'Settings' },
         ] as NavItemProps[]
