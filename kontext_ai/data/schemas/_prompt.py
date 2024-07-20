@@ -3,16 +3,16 @@ from typing import List, Optional
 from pydantic import BaseModel
 
 
-class PromptInfo(BaseModel):
+class PromptInfoModel(BaseModel):
     id: str
     name: str
 
 
-class Prompt(PromptInfo):
+class PromptModel(PromptInfoModel):
     prompt: str
     system_prompt: Optional[str]
     user_input: str
 
 
-class Prompts(BaseModel):
-    prompts: List[Prompt]
+class PromptsModel(BaseModel):
+    prompts: List[PromptModel]

@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 from kontext_ai.services import SettingsService, get_settings_service
-from kontext_ai.data.schemas import Settings, Setting
+from kontext_ai.data.schemas import SettingsModel, SettingModel
 from kontext_ai.utils import get_logger
 
 router = APIRouter(
@@ -13,7 +13,7 @@ router = APIRouter(
 logger = get_logger()
 
 
-@router.get("/", response_model=Settings)
+@router.get("/", response_model=SettingsModel)
 async def get_settings(
     settings_service: SettingsService = Depends(get_settings_service),
 ):
@@ -50,7 +50,7 @@ async def get_setting(
 
 @router.post("/")
 async def set_setting(
-    setting: Setting,
+    setting: SettingModel,
     settings_service: SettingsService = Depends(get_settings_service),
 ):
     """

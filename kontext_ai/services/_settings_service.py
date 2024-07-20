@@ -2,7 +2,7 @@ from fastapi import Depends
 from sqlalchemy import Engine
 from sqlalchemy.orm import sessionmaker
 from kontext_ai.data.models import Setting
-from kontext_ai.data.schemas import Settings
+from kontext_ai.data.schemas import SettingsModel
 from kontext_ai.services._db_service import get_db_engine
 
 
@@ -40,14 +40,14 @@ class SettingsService:
         finally:
             session.close()
 
-    def get_settings_obj(self) -> Settings:
+    def get_settings_obj(self) -> SettingsModel:
         """
         Retrieves all settings as a Settings object.
         """
         settings = self.get_settings()
 
         # Convert dictionary to class object
-        return Settings(**settings)
+        return SettingsModel(**settings)
 
     def get_setting(self, key):
         """

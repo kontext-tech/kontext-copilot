@@ -3,7 +3,7 @@ import os
 from typing import List
 from fastapi import APIRouter
 
-from kontext_ai.data.schemas import Prompts, PromptInfo, Prompt
+from kontext_ai.data.schemas import PromptsModel, PromptInfoModel, PromptModel
 from kontext_ai.utils import get_logger
 
 
@@ -25,7 +25,7 @@ abs_path = os.path.abspath(
 # Function to load and parse prompts.json into a Prompts object
 
 
-def load_prompts_from_json() -> Prompts:
+def load_prompts_from_json() -> PromptsModel:
     """
     Load prompts from a JSON file and return a Prompts object.
 
@@ -34,11 +34,11 @@ def load_prompts_from_json() -> Prompts:
     """
     with open(abs_path, "r", encoding="utf-8") as f:
         data = json.load(f)
-    return Prompts(**data)
+    return PromptsModel(**data)
 
 
 @router.get("/templates")
-def get_prompt_templates() -> List[PromptInfo]:
+def get_prompt_templates() -> List[PromptInfoModel]:
     """
     Get a list of available models.
     """
@@ -47,11 +47,13 @@ def get_prompt_templates() -> List[PromptInfo]:
     prompts = load_prompts_from_json()
 
     # convert Prompts object to list of PromptInfo objects
-    return [PromptInfo(id=prompt.id, name=prompt.name) for prompt in prompts.prompts]
+    return [
+        PromptInfoModel(id=prompt.id, name=prompt.name) for prompt in prompts.prompts
+    ]
 
 
 @router.get("/templates/{template_id}")
-def get_prompt_template(template_id: str) -> Prompt:
+def get_prompt_template(template_id: str) -> PromptModel:
     """
     Get a prompt template by id.
     """

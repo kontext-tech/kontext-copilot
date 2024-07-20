@@ -10,26 +10,26 @@ from kontext_ai.utils import (
 )
 
 
-class SettingBase(BaseModel):
+class SettingBaseModel(BaseModel):
     key: str
     value: Union[str, None] = None
 
 
-class SettingCreate(SettingBase):
+class SettingCreateModel(SettingBaseModel):
     pass
 
 
-class SettingUpdate(SettingBase):
+class SettingUpdateModel(SettingBaseModel):
     pass
 
 
-class Setting(SettingBase):
+class SettingModel(SettingBaseModel):
 
     class Config:
         from_attributes = True
 
 
-class GeneralSettings(BaseModel):
+class GeneralSettingsModel(BaseModel):
     """
     Model for general settings.
     """
@@ -38,7 +38,7 @@ class GeneralSettings(BaseModel):
     general_username: str = DEFAULT_USERNAME
 
 
-class LlmSettings(BaseModel):
+class LlmSettingsModel(BaseModel):
     """
     Model for LLM settings.
     """
@@ -57,5 +57,5 @@ class LlmSettings(BaseModel):
     llm_seed: int = 100
 
 
-class Settings(GeneralSettings, LlmSettings):
+class SettingsModel(GeneralSettingsModel, LlmSettingsModel):
     pass

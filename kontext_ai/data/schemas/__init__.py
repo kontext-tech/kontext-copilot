@@ -1,25 +1,36 @@
 from kontext_ai.data.schemas._setting import (
-    Setting,
-    SettingCreate,
-    SettingUpdate,
-    GeneralSettings,
-    LlmSettings,
-    Settings,
+    SettingModel,
+    SettingCreateModel,
+    SettingUpdateModel,
+    GeneralSettingsModel,
+    LlmSettingsModel,
+    SettingsModel,
 )
 from kontext_ai.data.schemas._prompt import (
-    PromptInfo,
-    Prompt,
-    Prompts,
+    PromptInfoModel,
+    PromptModel,
+    PromptsModel,
+)
+
+from kontext_ai.data.schemas._data_source import (
+    DataSourceModel,
+    DataSourceCreateModel,
+    DataSourceUpdateModel,
+    DataSourceType,
 )
 
 __all__ = [
-    "Setting",
-    "SettingCreate",
-    "SettingUpdate",
-    "GeneralSettings",
-    "LlmSettings",
-    "Settings",
-    "PromptInfo",
-    "Prompt",
-    "Prompts",
+    "SettingModel",
+    "SettingCreateModel",
+    "SettingUpdateModel",
+    "GeneralSettingsModel",
+    "LlmSettingsModel",
+    "SettingsModel",
+    "PromptInfoModel",
+    "PromptModel",
+    "PromptsModel",
+    "DataSourceModel",
+    "DataSourceCreateModel",
+    "DataSourceUpdateModel",
+    "DataSourceType",
 ]

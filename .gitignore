@@ -1,6 +1,7 @@
 .vs
 kontext_ai/ui
 kontext_ai/data/kontext_ai.db
+*.gguf
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
