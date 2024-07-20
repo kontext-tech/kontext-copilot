@@ -8,7 +8,7 @@ homepage = "https://kontext.tech"
 repository = "https://github.com/kontext-tech/kontext-ai"
 license = "MIT"
 # Include the static website folder in the package
-include = ["kontext_ai/ui/**/*", "kontext_ai/api/**/*.json"]
+include = ["kontext_ai/ui/**/*", "kontext_ai/api/**/*.json", "kontext_ai/llms/**/*.*"]
 
 [tool.poetry.dependencies]
 python = "^3.9"
@@ -20,6 +20,10 @@ sqlalchemy = "^2.0.31"
 alembic = "^1.13.2"
 
 pydantic = "^2.8.2"
+transformers = "^4.42.4"
+gguf = "^0.9.1"
+accelerate = "^0.32.1"
+bitsandbytes = "^0.43.1"
 [tool.commitizen]
 name = "cz_conventional_commits"
 tag_format = "$version"

@@ -24,7 +24,7 @@ app.add_middleware(
     allow_methods=["GET", "POST", "PUT", "DELETE"],
 )
 
-# Serve Nuxt app static files in development
+# Serve Nuxt app static files
 if IS_LOCAL:
     app.mount("/ui", StaticFiles(directory=CLIENT_APP_DIR, html=True), name="ui")
 
@@ -33,6 +33,24 @@ if IS_LOCAL:
 async def hello():
     """Example FastAPI endpoint"""
     return {"message": f"Hello from {os.getenv('KONTEXT_AI_APP_NAME')}!"}
+
+
+@app.get("/api/test_llm")
+async def test_llm(prompt: str, max_length: int = 50):
+    from kontext_ai.llms import LLMFactory
+
+    llm = LLMFactory.get_llm()
+    tokenizer = LLMFactory.get_tokenizer()
+
+    # Encode the prompt to get input IDs
+    input_ids = tokenizer.encode(prompt, return_tensors="pt")
+
+    # Generate a response
+    output_ids = llm.generate(input_ids, max_length=max_length, num_return_sequences=1)
+
+    # Decode the output IDs to get the generated text
+    response = tokenizer.decode(output_ids[0], skip_special_tokens=True)
+    return {"response": response}
 
 
 # Include the router in the FastAPI app
