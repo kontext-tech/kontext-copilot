@@ -27,7 +27,7 @@ class DataSourceModel(BaseModel):
         )
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 # Create model excludes auto-generated fields like 'id'
