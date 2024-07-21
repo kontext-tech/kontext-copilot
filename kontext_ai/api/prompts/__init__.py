@@ -1,3 +1,3 @@
-from kontext_ai.api.prompts._prompts_handler import router as prompts_router
+from kontext_ai.api.prompts._requests_handler import router as prompts_router
 
 __all__ = ["prompts_router"]
