@@ -1,6 +1,6 @@
 <template>
     <BButtonGroup>
-        <BDropdown variant="outline-primary">
+        <BDropdown variant="outline-secondary">
             <template #button-content>
                 <template v-if="defaultModel">
                     {{ defaultModel.name }} {{ defaultModel.details.parameter_size }}

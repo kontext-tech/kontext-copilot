@@ -11,11 +11,11 @@ export const ollmaMessageToChatMessage = (message: Message): IChatMessage => {
 export const getRoleClass = (role: ChatRole) => {
     switch (role) {
         case ChatRole.USER:
-            return 'bg-primary text-light'
+            return 'text-primary'
         case ChatRole.ASSISTANT:
-            return 'bg-success'
+            return 'text-success'
         default:
-            return 'bg-secondary'
+            return 'text-secondary'
     }
 }
 

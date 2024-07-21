@@ -1,23 +1,18 @@
 <template>
-    <div class="card shadow-sm">
-        <div class="card-body">
-            <div class="card-title d-flex align-items-center">
-                <span class="btn rounded-circle d-flex me-1 align-items-center" :class="getRoleClass(message.role)">
-                    <Icon :name="getRoleIcon(
-                        message.role)" size="24" />
-                </span>
-                <strong v-if="message.role === ChatRole.USER">{{ username }}</strong>
-                <strong v-else>{{ getRoleName(message.role) }}</strong>
-            </div>
-            <div v-html="htmlMessage">
-            </div>
-            <div v-if="!message.generating">
-                <span class="text-muted cursor-pointer" @click="copyMessage">
-                    <Icon name="material-symbols:content-copy-outline" size="18"  />
-                </span>
-            </div>
+    <div class="list-group-item py-3">
+        <div class="d-flex align-items-center">
+            <Icon :name="getRoleIcon(
+                message.role)" size="24" :class="getRoleClass(message.role)" />
+            <strong v-if="message.role === ChatRole.USER">{{ username }}</strong>
+            <strong v-else>{{ getRoleName(message.role) }}</strong>
         </div>
-
+        <div v-html="htmlMessage" class="py-3">
+        </div>
+        <div v-if="!message.generating">
+            <span class="text-muted cursor-pointer" @click="copyMessage">
+                <Icon name="material-symbols:content-copy-outline" size="18" />
+            </span>
+        </div>
     </div>
 </template>
 

@@ -3,12 +3,7 @@
         <DefaultLayout>
             <template #["header-secondary"]>
                 <LlmModelSelector ref="modelSelector" />
-                <BButton variant="outline-primary" v-b-modal.llmsSettingsModal class="d-flex align-items-center">
-                    <Icon name="material-symbols:neurology-outline" size="20" /> LLMs settings
-                </BButton>
-                <BModal id="llmsSettingsModal" title="LLMs settings" okOnly size="lg">
-                    <LlmSettings />
-                </BModal>
+                <LlmSettingsButton />
                 <BFormCheckbox switch v-model="streaming" class="d-flex align-items-center gap-1">Streaming
                 </BFormCheckbox>
                 <BFormCheckbox switch v-model="jsonFormat" class="d-flex align-items-center gap-1">JSON format

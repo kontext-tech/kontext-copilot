@@ -3,24 +3,18 @@
     <DefaultLayout>
       <template #["header-secondary"]>
         <LlmModelSelector ref="modelSelector" />
-        <BButton variant="outline-primary" v-b-modal.llmsSettingsModal class="d-flex align-items-center">
-          <Icon name="material-symbols:neurology-outline" size="20" /> LLMs settings
-        </BButton>
-        <BModal id="llmsSettingsModal" title="LLMs settings" okOnly size="lg">
-          <LlmSettings />
-        </BModal>
+        <LlmSettingsButton />
       </template>
 
-      <div class="chat-main p-4 d-flex flex-column gap-4 align-self-center justify-content-center w-75" ref="chatMain">
+      <div class="chat-main p-4 list-group" ref="chatMain">
         <template v-for="message in chatHistory">
-          <ChatMessage :message="ollmaMessageToChatMessage(message)" :username="settings.general_username"
-            class="w-100" />
+          <ChatMessage :message="ollmaMessageToChatMessage(message)" :username="settings.general_username" />
         </template>
-        <ChatMessage :message="currentResponse" :username="settings.general_username" v-if="generating" class="w-100" />
+        <ChatMessage :message="currentResponse" :username="settings.general_username" v-if="generating" />
       </div>
 
-      <div class="chat-input d-flex justify-content-center align-self-center w-75" v-if="settingsWrapper.loaded">
-        <div class="input-group w-75">
+      <div class="chat-input p-4 d-flex justify-content-center align-self-center" v-if="settingsWrapper.loaded">
+        <div class="input-group">
           <textarea ref="chatInput" class="form-control chat-textarea" type="text" v-model="userInput"
             placeholder="Type a message..." @keydown.enter.prevent="sendMessage" :disabled="generating"></textarea>
           <button class="btn btn-outline-primary" type="button" :disabled="sendButtonDisabled" @click="sendMessage">
