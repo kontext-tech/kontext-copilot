@@ -45,5 +45,40 @@ interface Prompts {
     prompts: Prompt[];
 }
 
+enum DataSourceType {
+    SQLite = "SQLite",
+    // DuckDB = "DuckDB",
+    // PostgreSQL = "PostgreSQL",
+    // MySQL = "MySQL",
+    // SQLServer = "SQLServer",
+    // Oracle = "Oracle",
+    // MongoDB = "MongoDB",
+    // Redis = "Redis",
+}
 
-export { ChatRole, type IChatMessage, type Settings, type PromptInfo, type Prompt, type Prompts, type SettingsWrapper }
+interface DataSourceModel {
+    id?: number; // Optional in TypeScript
+    name: string;
+    description?: string; // Optional in TypeScript
+    type: DataSourceType;
+    conn_str: string;
+}
+
+// Create model excludes auto-generated fields like 'id'
+interface DataSourceCreateModel {
+    name?: string;
+    description?: string; // Made optional by adding '?'
+    type?: DataSourceType | null;
+    conn_str?: string;
+}
+
+// Update model makes all fields optional
+interface DataSourceUpdateModel {
+    name?: string;
+    description?: string;
+    type?: DataSourceType;
+    conn_str?: string;
+}
+
+
+export { ChatRole, type IChatMessage, type Settings, type PromptInfo, type Prompt, type Prompts, type SettingsWrapper, DataSourceType, type DataSourceModel, type DataSourceCreateModel, type DataSourceUpdateModel };

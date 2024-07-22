@@ -36,7 +36,6 @@ class DataSourceCreateModel(BaseModel):
     description: Optional[str] = None
     type: DataSourceType
     conn_str: str
-    conn_str_encrypted: bool
 
 
 # Update model makes all fields optional
@@ -45,4 +44,3 @@ class DataSourceUpdateModel(BaseModel):
     description: Optional[str] = None
     type: Optional[DataSourceType] = None
     conn_str: Optional[str] = None
-    conn_str_encrypted: Optional[bool] = None

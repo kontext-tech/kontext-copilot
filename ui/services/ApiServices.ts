@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { Settings, PromptInfo, Prompt } from '~/types/Schemas';
+import type { Settings, PromptInfo, Prompt, DataSourceModel, DataSourceCreateModel, DataSourceUpdateModel } from '~/types/Schemas';
 
 const getBaseUrl = (apiBaseUrl: string) => {
   return `${apiBaseUrl}/api`;
@@ -45,4 +45,35 @@ export class PromptsService {
     return response.data;
   }
 
+}
+
+export class DataSourcesService {
+  constructor(apiBaseUrl: string) {
+    axios.defaults.baseURL = getBaseUrl(apiBaseUrl);
+  }
+
+  async getDataSources(): Promise<DataSourceModel[]> {
+    const response = await axios.get('/data-sources/');
+    return response.data;
+  }
+
+  async getDataSource(id: string): Promise<DataSourceModel> {
+    const response = await axios.get(`/data-sources/${id}`);
+    return response.data;
+  }
+
+  async createDataSource(data: DataSourceCreateModel): Promise<DataSourceModel> {
+    const response = await axios.post('/data-sources/', data);
+    return response.data;
+  }
+
+  async updateDataSource(id: string, data: DataSourceUpdateModel): Promise<DataSourceModel> {
+    const response = await axios.put(`/data-sources/${id}`, data);
+    return response.data;
+  }
+
+  async deleteDataSource(id: string): Promise<DataSourceModel> {
+    const response = await axios.delete(`/data-sources/${id}`);
+    return response.data;
+  }
 }

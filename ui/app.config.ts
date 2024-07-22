@@ -19,7 +19,7 @@ export default defineAppConfig(
         navItems: [
             { id: "home", to: '/', icon: 'material-symbols:home-outline', text: 'Home' },
             {
-                id: "data", icon: 'material-symbols:database-outline', text: 'Data', children: [
+                id: "data", icon: 'material-symbols:analytics-outline', text: 'Data analytics', children: [
                     { id: "dataSources", to: '/data-sources', icon: 'material-symbols:database-outline', text: 'Data sources' },
                 ]
             },
