@@ -7,7 +7,7 @@
 </template>
 
 <script setup lang="ts">
-import SidebarNavItem from './sidebar-nav-item.vue';
+import SidebarNavItem from './nav-item.vue';
 const config = useAppConfig()
 const navItems = config.navItems
 

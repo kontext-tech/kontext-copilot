@@ -24,7 +24,7 @@
 import DefaultLayout from '~/layouts/default-layout.vue'
 import type { DataSourceModel } from '~/types/Schemas'
 import { DataSourcesService } from '~/services/ApiServices'
-import DataSourcesCreateForm from '~/components/data-sources/data-sources-create-form.vue'
+import DataSourcesCreateForm from '~/components/data-sources/create-form.vue'
 
 const appConfig = useAppConfig();
 const dataSources = ref<DataSourceModel[]>()

@@ -12,7 +12,7 @@
             </div>
             <div class="d-flex flex-column w-100 flex-grow-1 flex-shrink-1 position-relative overflow-y-hidden">
                 <div class="flex-grow-1 d-flex flex-column">
-                    <Sidebar class="flex-grow-1 flex-shrink-1" />
+                    <SidebarPanel class="flex-grow-1 flex-shrink-1" />
                     <div class="flex-grow-1 flex-shrink-1">
                         <slot name="aside" />
                     </div>
@@ -48,7 +48,7 @@
 <script setup lang="ts">
 import logo from '~/assets/images/logo.svg'
 import logoWhite from '~/assets/images/logo-white.svg'
-import Sidebar from '~/components/sidebar.vue'
+import Sidebar from '~/components/sidebar/panel.vue'
 
 const route = useRoute()
 const appConfig = useAppConfig()
