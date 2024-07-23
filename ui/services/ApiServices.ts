@@ -72,7 +72,7 @@ export class DataSourcesService {
     return response.data;
   }
 
-  async deleteDataSource(id: string): Promise<DataSourceModel> {
+  async deleteDataSource(id: number): Promise<DataSourceModel> {
     const response = await axios.delete(`/data-sources/${id}`);
     return response.data;
   }

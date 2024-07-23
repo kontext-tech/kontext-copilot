@@ -14,7 +14,7 @@
                 </BModal>
             </template>
             <div class="px-4 mt-3 w-100">
-                <DataSourcesList :dataSources="dataSources" />
+                <DataSourcesList :dataSources="dataSources" @delete="handleDeleteDataSource" />
             </div>
         </DefaultLayout>
     </NuxtLayout>
@@ -63,6 +63,12 @@ const createDataSource = async () => {
         }
     }
 
+}
+
+const handleDeleteDataSource = (id: number) => {
+    if (dataSources.value) {
+        dataSources.value = dataSources.value.filter((ds) => ds.id !== id)
+    }
 }
 
 usePageTitle()

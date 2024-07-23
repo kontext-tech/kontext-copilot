@@ -21,9 +21,14 @@
                             </td>
                             <td>{{ dataSource.description }}</td>
                             <td>
-                                <BButton variant="link" title="Edit" :key="`${dataSource.id}-btn`"
+                                <BButton variant="link" title="Edit" :key="`${dataSource.id}-btn-edit`"
                                     @click="showEditModal(dataSource)">
                                     <Icon name="material-symbols:edit-outline" />
+                                </BButton>
+
+                                <BButton variant="link" title="Delete" :key="`${dataSource.id}-btn-delete`"
+                                    @click="showDeleteConfirmModal(dataSource)">
+                                    <Icon name="material-symbols:delete-outline" />
                                 </BButton>
                             </td>
                         </tr>
@@ -31,10 +36,18 @@
                 </table>
                 <BModal title="Edit data source" size="lg" key="modalEdit" id="modalEdit" ok-title="Save"
                     @ok.prevent="updateDataSource" ref="editModal">
-                    <BAlert v-if="updateError" :model-value="updateError != null" variant="danger">
-                        {{ updateError }}
+                    <BAlert v-if="error" :model-value="error != null" variant="danger">
+                        {{ error }}
                     </BAlert>
                     <EditForm id="editForm" :updateModel="currentModel" key="editForm" ref="editForm" />
+                </BModal>
+                <BModal title="Delete data source" size="md" key="modalDelete" id="modalDelete" ok-title="Delete"
+                    ok-variant="danger" @ok.prevent="deleteDataSource" ref="deleteConfirmModal">
+                    <BAlert v-if="error" :model-value="error != null" variant="danger">
+                        {{ error }}
+                    </BAlert>
+                    <p>Are you sure you want to delete this data source?</p>
+                    <p><strong>Name:</strong> {{ currentModel?.name }}</p>
                 </BModal>
             </div>
         </div>
@@ -62,13 +75,35 @@ const dataSourceService = new DataSourcesService(appConfig.apiBaseUrl)
 const currentModel = ref<DataSourceUpdateModel | null>(null)
 const currentSourceId = ref<number | null>(null)
 const editModal = ref<InstanceType<typeof BModal> | null>(null)
+const deleteConfirmModal = ref<InstanceType<typeof BModal> | null>(null)
 const editForm = ref<InstanceType<typeof EditForm> | null>(null)
-const updateError = ref<string | null>(null)
+const error = ref<string | null>(null)
+
+const showDeleteConfirmModal = (model: DataSourceModel) => {
+    currentModel.value = model
+    currentSourceId.value = model.id
+    deleteConfirmModal.value?.show()
+}
 
 const showEditModal = (model: DataSourceModel) => {
     currentModel.value = model
     currentSourceId.value = model.id
     editModal.value?.show()
+}
+
+const deleteDataSource = async () => {
+    if (currentSourceId.value) {
+        try {
+            await dataSourceService.deleteDataSource(currentSourceId.value)
+            // Remove from data sources list
+            emit('delete', currentSourceId.value)
+            deleteConfirmModal.value?.hide()
+            currentSourceId.value = null
+        } catch (err) {
+            error.value = err instanceof Error ? err.message : 'An unexpected error occurred';
+            console.error(error.value)
+        }
+    }
 }
 
 const updateDataSource = async () => {
@@ -79,11 +114,11 @@ const updateDataSource = async () => {
             try {
                 await dataSourceService.updateDataSource(currentSourceId.value, currentModel.value)
                 form.setFormEntered(false)
-                updateError.value = null
+                error.value = null
                 editModal.value?.hide()
             } catch (err) {
-                updateError.value = err instanceof Error ? err.message : 'An unexpected error occurred';
-                console.error(updateError.value)
+                error.value = err instanceof Error ? err.message : 'An unexpected error occurred';
+                console.error(error.value)
             }
         }
     }
@@ -91,6 +126,10 @@ const updateDataSource = async () => {
 
 defineProps<{
     dataSources: DataSourceModel[] | undefined
+}>()
+
+const emit = defineEmits<{
+    'delete': [id: number]
 }>()
 
 </script>
