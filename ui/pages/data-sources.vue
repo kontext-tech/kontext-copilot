@@ -10,11 +10,11 @@
                     <BAlert v-if="createError" :model-value="createError != null" variant="danger">
                         {{ createError }}
                     </BAlert>
-                    <DataSourcesCreateForm ref="createForm" id="createForm" />
+                    <DataSourceCreateForm ref="createForm" id="createForm" />
                 </BModal>
             </template>
             <div class="px-4 mt-3 w-100">
-                <DataSourcesList :dataSources="dataSources" @delete="handleDeleteDataSource" />
+                <DataSourceList :dataSources="dataSources" @delete="handleDeleteDataSource" />
             </div>
         </DefaultLayout>
     </NuxtLayout>
@@ -24,12 +24,12 @@
 import DefaultLayout from '~/layouts/default-layout.vue'
 import type { DataSourceModel } from '~/types/Schemas'
 import { DataSourcesService } from '~/services/ApiServices'
-import DataSourcesCreateForm from '~/components/data-sources/create-form.vue'
+import DataSourceCreateForm from '~/components/data-source/create-form.vue'
 
 const appConfig = useAppConfig();
 const dataSources = ref<DataSourceModel[]>()
 const dataSourceService = new DataSourcesService(appConfig.apiBaseUrl)
-const createForm = ref<InstanceType<typeof DataSourcesCreateForm> | null>(null)
+const createForm = ref<InstanceType<typeof DataSourceCreateForm> | null>(null)
 const createFormModal = ref(false)
 const createError = ref<string | null>(null)
 
