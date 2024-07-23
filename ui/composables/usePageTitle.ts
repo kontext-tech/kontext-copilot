@@ -20,12 +20,10 @@ export default function usePageTitle() {
     // Flattened navItems array
     const flatNavItems = flattenNavItems(config.navItems);
 
-    onMounted(() => {
-        watchEffect(() => {
-            const nav = flatNavItems.find(r => r.to === route.path)
-            pageTitle.value = nav ? nav.text : config.appName
-            route.meta['title'] = pageTitle.value
-        })
+    watchEffect(() => {
+        const nav = flatNavItems.find(r => r.to === route.path)
+        pageTitle.value = nav ? nav.text : config.appName
+        route.meta['title'] = pageTitle.value
     })
 
     return pageTitle

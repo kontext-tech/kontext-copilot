@@ -48,7 +48,6 @@
 <script setup lang="ts">
 import logo from '~/assets/images/logo.svg'
 import logoWhite from '~/assets/images/logo-white.svg'
-import Sidebar from '~/components/sidebar/panel.vue'
 
 const route = useRoute()
 const appConfig = useAppConfig()
