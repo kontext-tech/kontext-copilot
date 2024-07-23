@@ -57,7 +57,7 @@ export class DataSourcesService {
     return response.data;
   }
 
-  async getDataSource(id: string): Promise<DataSourceModel> {
+  async getDataSource(id: number): Promise<DataSourceModel> {
     const response = await axios.get(`/data-sources/${id}`);
     return response.data;
   }
@@ -67,7 +67,7 @@ export class DataSourcesService {
     return response.data;
   }
 
-  async updateDataSource(id: string, data: DataSourceUpdateModel): Promise<DataSourceModel> {
+  async updateDataSource(id: number, data: DataSourceUpdateModel): Promise<DataSourceModel> {
     const response = await axios.put(`/data-sources/${id}`, data);
     return response.data;
   }

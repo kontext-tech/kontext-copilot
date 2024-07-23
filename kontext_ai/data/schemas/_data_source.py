@@ -6,7 +6,7 @@ from kontext_ai.data.models import DataSourceType, DataSource
 
 # Define the Pydantic schema for DataSource
 class DataSourceModel(BaseModel):
-    id: Optional[int] = None
+    id: int
     name: str
     description: Optional[str] = None
     type: DataSourceType

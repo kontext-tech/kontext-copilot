@@ -55,6 +55,7 @@ const createDataSource = async () => {
                 dataSources.value = await dataSourceService.getDataSources()
                 form.setFormEntered(false)
                 createError.value = null
+                form.dataSourceCreateModel = { type: null }
             } catch (err) {
                 createError.value = err instanceof Error ? err.message : 'An unexpected error occurred';
                 console.error(createError.value)

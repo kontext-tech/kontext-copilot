@@ -57,7 +57,7 @@ enum DataSourceType {
 }
 
 interface DataSourceModel {
-    id?: number; // Optional in TypeScript
+    id: number; // Optional in TypeScript
     name: string;
     description?: string; // Optional in TypeScript
     type: DataSourceType;
