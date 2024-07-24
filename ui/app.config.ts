@@ -21,6 +21,7 @@ export default defineAppConfig(
             {
                 id: "data", icon: 'material-symbols:analytics-outline', text: 'Data analytics', children: [
                     { id: "dataSources", to: '/data-sources', icon: 'material-symbols:database-outline', text: 'Data sources' },
+                    { id: "chatToData", to: '/chat-to-data', icon: 'material-symbols:chat-add-on-outline', text: 'Chat to data' },
                 ]
             },
             {
