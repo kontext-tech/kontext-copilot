@@ -6,7 +6,7 @@
         <LlmSettingsButton />
       </template>
 
-      <div class="chat-main p-4 list-group" ref="chatMain">
+      <div class="chat-main p-4" ref="chatMain">
         <template v-for="message in chatHistory">
           <ChatMessage :message="ollmaMessageToChatMessage(message)" :username="settings.general_username" />
         </template>
