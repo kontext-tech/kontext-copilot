@@ -138,6 +138,16 @@
             "problemMatcher": [],
             "group": "build",
             "detail": "Upgrade the database schema to the latest revision."
+        },
+        {
+            "label": "start:all",
+            "detail": "Start all services (fastapi:dev:development, ui:dev)",
+            "dependsOn": [
+                "fastapi:dev:development",
+                "ui:dev"
+            ],
+            "problemMatcher": [],
+            "dependsOrder": "parallel"
         }
     ],
     "inputs": [

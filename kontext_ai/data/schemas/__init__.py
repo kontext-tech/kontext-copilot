@@ -12,11 +12,15 @@ from kontext_ai.data.schemas._prompt import (
     PromptsModel,
 )
 
-from kontext_ai.data.schemas._data_source import (
+from kontext_ai.data.schemas._data import (
     DataSourceModel,
     DataSourceCreateModel,
     DataSourceUpdateModel,
     DataSourceType,
+    DataProviderInfoModel,
+    SchemaTablesModel,
+    ColumnInfoModel,
+    SqlStatementModel,
 )
 
 __all__ = [
@@ -33,4 +37,8 @@ __all__ = [
     "DataSourceCreateModel",
     "DataSourceUpdateModel",
     "DataSourceType",
+    "DataProviderInfoModel",
+    "SchemaTablesModel",
+    "ColumnInfoModel",
+    "SqlStatementModel",
 ]

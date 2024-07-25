@@ -20,7 +20,7 @@
             "console": "integratedTerminal",
             "jinja": true,
             "env": {
-                "KONTEXT_AI_ENV": "local",
+                "KONTEXT_AI_ENV": "development",
                 "KONTEXT_AI_PORT": "8100",
             },
             "cwd": "${workspaceFolder}/kontext_ai",
