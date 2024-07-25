@@ -1,7 +1,8 @@
 from abc import ABC
-from typing import List
+from typing import List, Optional
 from sqlalchemy import Engine, Inspector, MetaData, Table, create_engine
-from sqlalchemy.engine.reflection import ReflectedColumn, Inspector
+from sqlalchemy.engine.reflection import Inspector
+from sqlalchemy.engine.interfaces import ReflectedColumn
 from sqlalchemy.schema import CreateTable
 from kontext_ai.data.models import DataSourceType
 from kontext_ai.data.schemas import DataSourceModel
@@ -44,7 +45,7 @@ class BaseProvider(ABC):
             DataSourceType.SQLite,
         ]
 
-    def get_schemas(self) -> list[str] | None:
+    def get_schemas(self) -> Optional[List[str]]:
         """
         Get a list of schemas from the data source.
         """
@@ -52,7 +53,7 @@ class BaseProvider(ABC):
             return self.inspector.get_schema_names()
         return None
 
-    def get_schemas_tables(self) -> dict[str, list[str]] | None:
+    def get_schemas_tables(self) -> Optional[dict[str, List[str]]]:
         """
         Get a dictionary of schemas and their tables from the data source.
         """
@@ -64,7 +65,7 @@ class BaseProvider(ABC):
             return schema_tables
         return None
 
-    def get_tables(self, schema: str = None) -> list[str]:
+    def get_tables(self, schema: str = None) -> List[str]:
         """
         Get a list of tables from the data source.
         """
@@ -80,7 +81,7 @@ class BaseProvider(ABC):
 
     def get_columns_info(
         self, table: str, schema: str = None
-    ) -> List[ReflectedColumn] | None:
+    ) -> Optional[List[ReflectedColumn]]:
         """
         Get columns info from the data source.
         """
@@ -99,7 +100,7 @@ class BaseProvider(ABC):
         return create_table_sql
 
     def get_table_data(
-        self, table: str, schema: str = None, record_count: int | None = None
+        self, table: str, schema: str = None, record_count: Optional[int] = None
     ) -> list:
         """
         Get data from the data source.
@@ -109,7 +110,7 @@ class BaseProvider(ABC):
             sql = f"SELECT * FROM {schema}.{table}"
         return self.get_data(sql, record_count)
 
-    def get_data(self, sql: str, record_count: int | None = None) -> list:
+    def get_data(self, sql: str, record_count: Optional[int] = None) -> list:
         """
         Get data from the data source.
         """

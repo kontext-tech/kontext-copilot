@@ -5,6 +5,7 @@ from kontext_ai.services._data_source_service import (
     DataSourceService,
     get_data_sources_service,
 )
+from kontext_ai.services._data_provider_service import DataProviderService
 
 __all__ = [
     "SettingsService",
@@ -13,4 +14,5 @@ __all__ = [
     "get_settings_service",
     "DataSourceService",
     "get_data_sources_service",
+    "DataProviderService",
 ]
