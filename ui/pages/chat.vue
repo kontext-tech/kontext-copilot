@@ -6,20 +6,24 @@
         <LlmSettingsButton />
       </template>
 
-      <div class="chat-main p-4" ref="chatMain">
-        <template v-for="message in chatHistory">
-          <ChatMessage :message="ollmaMessageToChatMessage(message)" :username="settings.general_username" />
-        </template>
-        <ChatMessage :message="currentResponse" :username="settings.general_username" v-if="generating" />
-      </div>
-
-      <div class="chat-input p-4 d-flex justify-content-center align-self-center" v-if="settingsWrapper.loaded">
-        <div class="input-group">
-          <textarea ref="chatInput" class="form-control chat-textarea" type="text" v-model="userInput"
-            placeholder="Type a message..." @keydown.enter.prevent="sendMessage" :disabled="generating"></textarea>
-          <button class="btn btn-outline-primary" type="button" :disabled="sendButtonDisabled" @click="sendMessage">
-            <Icon name="material-symbols:send" size="24" />
-          </button>
+      <div class="mt-3 d-flex flex-column min-h-0 h-100 overflow-y-hidden">
+        <div class="flex-grow-1 d-flex flex-column overflow-y-hidden">
+          <div class="flex-grow-1 flex-shrink-1 overflow-y-auto px-4" ref="chatMain">
+            <template v-for="message in chatHistory">
+              <ChatMessage :message="ollmaMessageToChatMessage(message)" :username="settings.general_username" />
+            </template>
+            <ChatMessage :message="currentResponse" :username="settings.general_username" v-if="generating" />
+          </div>
+          <div class="flex-shrink-0 p-4 d-flex">
+            <span class="chat-icon">&nbsp;</span>
+            <div v-if="settingsWrapper.loaded" class="input-group">
+              <input ref="chatInput" class="form-control" type="text" v-model="userInput"
+                placeholder="Type a message..." @keydown.enter.prevent="sendMessage" :disabled="generating"></input>
+              <button class="btn btn-primary" type="button" :disabled="sendButtonDisabled" @click="sendMessage">
+                <Icon name="material-symbols:send" size="20" />
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </DefaultLayout>
@@ -67,8 +71,8 @@ usePageTitle()
 const scrollToBottom = async () => {
   // Scroll to the bottom of the chat-main element
   await nextTick()
-  if (chatMain.value && chatMain.value.parentElement) {
-    chatMain.value.parentElement.scrollTop = chatMain.value.scrollHeight
+  if (chatMain.value) {
+    chatMain.value.scrollTop = chatMain.value.scrollHeight
   }
   if (chatInput.value) {
     chatInput.value.focus()
@@ -107,41 +111,4 @@ const sendMessage = async () => {
 </script>
 
 
-<style scoped lang="scss">
-@import "../assets/scss/_kontext.scss";
-@import "bootstrap/scss/bootstrap";
-
-.chat-main {
-  margin-bottom: calc($kontext-chat-input-height + 4*$spacer);
-}
-
-.chat-input {
-  position: fixed;
-  bottom: 0;
-  padding-top: calc(2* $spacer);
-  padding-bottom: calc(2* $spacer);
-  // padding-left: $spacer;
-  // padding-right: $spacer;
-  width: calc(100vw - #{$kontext-sidebar-width});
-
-  @include media-breakpoint-down(md) {
-    margin-inline-start: 0;
-    width: 100%;
-  }
-
-  .input-group {
-
-    @include media-breakpoint-down(md) {
-      width: 100%;
-      padding-left: $spacer;
-      padding-right: $spacer;
-    }
-  }
-
-  .chat-textarea {
-    max-height: $kontext-chat-input-height;
-    height: $kontext-chat-input-height;
-    overflow-y: auto;
-  }
-}
-</style>
+<style scoped lang="scss"></style>

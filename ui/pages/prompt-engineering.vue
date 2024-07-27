@@ -10,7 +10,7 @@
                 </BFormCheckbox>
             </template>
 
-            <div class="px-4">
+            <div class="px-4 mt-3">
                 <p class="text-muted">Test your prompts with this utility or select examples from the dropdown list to
                     get started.
                 </p>

@@ -11,10 +11,12 @@
                 </a>
             </div>
             <div class="d-flex flex-column w-100 flex-grow-1 flex-shrink-1 position-relative overflow-y-hidden">
-                <div class="flex-grow-1 d-flex flex-column">
-                    <SidebarPanel class="flex-grow-1 flex-shrink-1" />
-                    <div class="flex-grow-1 flex-shrink-1">
-                        <slot name="aside" />
+                <div class="flex-grow-1 d-flex flex-column min-h-0">
+                    <div class="overflow-y-auto flex-grow-1 flex-shrink-1">
+                        <SidebarPanel class="flex-grow-1 flex-shrink-1" />
+                        <div class="flex-grow-1 flex-shrink-1">
+                            <slot name="aside" />
+                        </div>
                     </div>
                     <div class="px-1 text-center d-flex flex-shrink-0 justify-content-center border-top py-1">
                         <small class="mt-1 mb-0 text-muted">
@@ -38,7 +40,17 @@
                     <slot name="header-secondary" />
                 </div>
                 <div class="flex-grow-1 flex-shrink-1 d-flex flex-column overflow-y-auto default-area">
-                    <slot name="default" />
+                    <div v-if="$slots['secondary-sidebar']" class="d-flex w-100 inset-0 h-100">
+                        <div class="flex-grow-1 flex-shrink-1 d-flex flex-column overflow-y-auto">
+                            <slot name="default" />
+                        </div>
+                        <div class="flex-shrink-0 d-none d-md-flex flex-column overflow-y-auto secondary-sidebar border-start sidebar-col p-4 bg-body-tertiary h-100">
+                            <slot name="secondary-sidebar" />
+                        </div>
+                    </div>
+                    <div v-else class="flex-grow-1 flex-shrink-1 d-flex flex-column overflow-y-auto">
+                        <slot name="default" />
+                    </div>
                 </div>
             </div>
         </div>

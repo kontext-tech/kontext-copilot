@@ -19,6 +19,9 @@ export default defineNuxtConfig({
     baseURL: baseURL,
     head: {
       title: 'Kontext AI',
+      htmlAttrs: {
+        lang: 'en'
+      },
       link: [
         { rel: 'icon', type: 'image/svg+xml', href: `${baseURL}favicon.svg` },
       ]

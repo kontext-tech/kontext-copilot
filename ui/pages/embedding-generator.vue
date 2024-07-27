@@ -5,7 +5,7 @@
                 <LlmModelSelector ref="modelSelector" />
             </template>
 
-            <div class="px-4">
+            <div class="px-4 mt-3">
                 <p class="text-muted">Generate embeddings from a model.
                 </p>
 

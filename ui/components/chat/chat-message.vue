@@ -1,6 +1,6 @@
 <template>
     <div class="py-3 d-flex align-items-top">
-        <div class="px-2">
+        <div class="chat-icon">
             <Icon :name="getRoleIcon(
                 message.role)" size="24" :class="getRoleClass(message.role)" />
         </div>
