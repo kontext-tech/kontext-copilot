@@ -44,7 +44,7 @@
                         <div class="flex-grow-1 flex-shrink-1 d-flex flex-column overflow-y-auto">
                             <slot name="default" />
                         </div>
-                        <div class="flex-shrink-0 d-none d-md-flex flex-column overflow-y-auto secondary-sidebar border-start sidebar-col p-4 bg-body-tertiary h-100">
+                        <div class="flex-shrink-0 d-none d-md-flex flex-column overflow-y-auto secondary-sidebar border-start sidebar-col p-4 h-100">
                             <slot name="secondary-sidebar" />
                         </div>
                     </div>

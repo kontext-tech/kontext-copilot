@@ -39,7 +39,10 @@ const loaded = ref(false)
 
 const selectSource = (ds: DataSourceModel) => {
     selectedDataSource.value = ds
+    emit('dataSourceSelected', ds.id);
 }
+
+const emit = defineEmits(['dataSourceSelected']);
 
 onMounted(() => {
     isLoading.value = true

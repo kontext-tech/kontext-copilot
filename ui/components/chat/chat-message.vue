@@ -48,5 +48,4 @@ const copyMessage = async () => {
 </script>
 
 <style scoped lang="scss">
-@import '../../assets/scss/_kontext.scss';
 </style>

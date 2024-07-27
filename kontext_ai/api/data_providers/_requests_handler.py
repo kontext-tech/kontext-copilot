@@ -41,7 +41,7 @@ def get_data_provider(
         raise e
 
 
-@router.get("/{data_source_id}/info", response_model=DataProviderInfoModel)
+@router.get("/{data_source_id}", response_model=DataProviderInfoModel)
 def get_data_provider_info(
     data_source_id: int,
     source_service: DataSourceService = Depends(get_data_sources_service),

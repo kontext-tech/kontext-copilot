@@ -80,5 +80,31 @@ interface DataSourceUpdateModel {
     conn_str?: string;
 }
 
+interface SchemaTablesModel {
+    schema?: string;
+    tables: string[];
+}
 
-export { ChatRole, type IChatMessage, type Settings, type PromptInfo, type Prompt, type Prompts, type SettingsWrapper, DataSourceType, type DataSourceModel, type DataSourceCreateModel, type DataSourceUpdateModel };
+interface ColumnInfoModel {
+    name: string;
+    primary_key: boolean;
+    index?: boolean;
+    unique?: boolean;
+    data_type: string;
+    nullable: boolean;
+    default?: string;
+    autoincrement?: boolean;
+    comment?: string;
+}
+
+interface DataProviderInfoModel extends DataSourceModel {
+    supports_schema: boolean;
+    metadata: SchemaTablesModel[];
+}
+
+interface SqlStatementModel {
+    sql: string;
+}
+
+
+export { ChatRole, type IChatMessage, type Settings, type PromptInfo, type Prompt, type Prompts, type SettingsWrapper, DataSourceType, type DataSourceModel, type DataSourceCreateModel, type DataSourceUpdateModel, type SchemaTablesModel, type ColumnInfoModel, type DataProviderInfoModel, type SqlStatementModel };

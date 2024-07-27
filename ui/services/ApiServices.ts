@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { Settings, PromptInfo, Prompt, DataSourceModel, DataSourceCreateModel, DataSourceUpdateModel } from '~/types/Schemas';
+import type { Settings, PromptInfo, Prompt, DataSourceModel, DataSourceCreateModel, DataSourceUpdateModel, ColumnInfoModel, DataProviderInfoModel, SqlStatementModel } from '~/types/Schemas';
 
 const getBaseUrl = (apiBaseUrl: string) => {
   return `${apiBaseUrl}/api`;
@@ -74,6 +74,35 @@ export class DataSourcesService {
 
   async deleteDataSource(id: number): Promise<DataSourceModel> {
     const response = await axios.delete(`/data-sources/${id}`);
+    return response.data;
+  }
+}
+
+export class DataProviderService {
+  constructor(apiBaseUrl: string) {
+    axios.defaults.baseURL = getBaseUrl(apiBaseUrl);
+  }
+
+  async getDataProviderInfo(dataSourceId: number): Promise<DataProviderInfoModel> {
+    const response = await axios.get<DataProviderInfoModel>(`/data-providers/${dataSourceId}`);
+    return response.data;
+  }
+
+  async getColumns(dataSourceId: number, table: string, schema?: string): Promise<ColumnInfoModel[]> {
+    const params = { table, schema };
+    const response = await axios.get<ColumnInfoModel[]>(`/data-providers/${dataSourceId}/columns`, { params });
+    return response.data;
+  }
+
+  async getTableSamples(dataSourceId: number, table: string, schema?: string, recordCount: number = 10): Promise<object[]> {
+    const params = { table, schema, record_count: recordCount };
+    const response = await axios.get<object[]>(`/data-providers/${dataSourceId}/table-samples`, { params });
+    return response.data;
+  }
+
+  async getTableCreationSQL(dataSourceId: number, table: string, schema?: string): Promise<SqlStatementModel> {
+    const params = { table, schema };
+    const response = await axios.get<SqlStatementModel>(`/data-providers/${dataSourceId}/table-creation-sql`, { params });
     return response.data;
   }
 }
