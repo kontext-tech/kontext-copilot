@@ -6,14 +6,20 @@
                     <Icon name="material-symbols:schema-outline"></Icon> {{ schemaName }}
                 </h6>
             </template>
-            <div v-for="(t, index) in schema.tables" :key="index" class="list-group-item d-flex gap-1">
+            <div v-for="(t, index) in schema.tables" :key="index"
+                class="list-group-item d-flex align-items-center gap-1">
                 <span class="flex-grow-1">{{ t }}</span>
-                <BLink title="Sample data" @click="showSampleDataModal(t)">
-                    <Icon name="material-symbols:data-exploration-outline"></Icon>
-                </BLink>
-                <BLink title="SQL: creation script" @click="showSqlModal(t)">
-                    <Icon name="material-symbols:code"></Icon>
-                </BLink>
+                <BDropdown variant="link" toggle-class="text-decoration-none" noCaret>
+                    <template #button-content>
+                        <Icon name="material-symbols:more-vert"></Icon>
+                    </template>
+                    <BDropdownItem @click="showSampleDataModal(t)">
+                        <Icon name="material-symbols:data-exploration-outline"></Icon> Sample data
+                    </BDropdownItem>
+                    <BDropdownItem @click="showSqlModal(t)">
+                        <Icon name="material-symbols:code"></Icon> SQL: CREATE TABLE
+                    </BDropdownItem>
+                </BDropdown>
             </div>
 
             <!--Modal for showing sample data-->

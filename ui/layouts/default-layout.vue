@@ -41,10 +41,10 @@
                 </div>
                 <div class="flex-grow-1 flex-shrink-1 d-flex flex-column overflow-y-auto default-area">
                     <div v-if="$slots['secondary-sidebar']" class="d-flex w-100 inset-0 h-100">
-                        <div class="flex-grow-1 flex-shrink-1 d-flex flex-column overflow-y-auto">
+                        <div class="flex-grow-1 flex-shrink-1 d-flex flex-column overflow-y-auto col-md-8 col-lg-9">
                             <slot name="default" />
                         </div>
-                        <div class="flex-shrink-0 d-none d-md-flex flex-column overflow-y-auto secondary-sidebar border-start sidebar-col p-4 h-100">
+                        <div class="flex-shrink-0 d-none d-md-flex flex-column overflow-y-auto secondary-sidebar border-start col-md-4 col-lg-3 p-4 h-100">
                             <slot name="secondary-sidebar" />
                         </div>
                     </div>
