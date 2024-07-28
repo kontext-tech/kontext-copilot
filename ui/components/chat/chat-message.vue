@@ -24,10 +24,10 @@
 </template>
 
 <script setup lang="ts">
-import type { ChatMessageProps } from '~/types/UIProps';
-import markdownit from 'markdown-it';
-import useClipboard from 'vue-clipboard3'
-import { ChatRole } from '~/types/Schemas';
+import type { ChatMessageProps } from '~/types/UIProps'
+import markdownit from 'markdown-it'
+import { useClipboard } from '@vueuse/core'
+import { ChatRole } from '~/types/Schemas'
 
 const props = defineProps<ChatMessageProps>()
 
@@ -39,13 +39,12 @@ const htmlMessage = computed(() => {
     return md.render(props.message.message)
 })
 
-const { toClipboard } = useClipboard()
+const { copy } = useClipboard()
 
 const copyMessage = async () => {
-    await toClipboard(props.message.message);
+    copy(props.message.message);
 }
 
 </script>
 
-<style scoped lang="scss">
-</style>
+<style scoped lang="scss"></style>

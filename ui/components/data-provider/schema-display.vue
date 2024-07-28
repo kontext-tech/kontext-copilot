@@ -43,7 +43,7 @@
             <BModal :id="sqlModal.id" :size="sqlModal.size" v-model="sqlModal.open" :title="sqlModal.title"
                 @hide="resetSqlModal">
                 <template #footer>
-                    <BButton variant="primary" @click="copyToClipboard()" v-b-tooltip.click.top title="Copied!">
+                    <BButton variant="primary" @click="copyToClipboard" v-b-tooltip.click.top title="Copied!">
                         <Icon name="material-symbols:content-copy-outline"></Icon> Copy
                     </BButton>
                     <BButton variant="secondary" @click="sqlModal.open = false">Close
@@ -66,7 +66,7 @@
 import type { Size } from 'bootstrap-vue-next'
 import { DataProviderService } from '~/services/ApiServices'
 import type { DataProviderInfoModel, SchemaTablesModel, SqlType } from '~/types/Schemas'
-import useClipboard from 'vue-clipboard3'
+import { useClipboard } from '@vueuse/core'
 
 const schemaName = computed(() => props.schema?.schema ?? "(empty)")
 
@@ -154,11 +154,13 @@ const showSqlModal = (table: string, sqlType: SqlType) => {
     }
 }
 
-const { toClipboard } = useClipboard()
+const { copy } = useClipboard()
 
 const copyToClipboard = async () => {
-    if(sqlModal.sql)
-        await toClipboard(sqlModal.sql)
+    if (sqlModal.sql) {
+        console.log(sqlModal.sql)
+        await copy(sqlModal.sql)
+    }
 }
 
 const props = defineProps<{

@@ -20,7 +20,6 @@
     "nuxt-storage": "^1.2.2",
     "ollama": "^0.5.1",
     "vue": "^3.4.27",
-    "vue-clipboard3": "^2.0.0",
     "vue-router": "^4.3.2"
   },
   "devDependencies": {
