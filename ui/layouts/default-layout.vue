@@ -33,7 +33,7 @@
                         <Icon name="material-symbols:menu" size="24" />
                     </BLink>
                     <h1 class="fs-6 mb-0 pb-0 fw-bold">{{ route.meta['title'] ?? route.name }}</h1>
-                    <ThemeToggle class="ms-auto" />
+                    <ThemeToggle class="ms-auto" simple />
                 </div>
                 <div v-if="$slots['header-secondary']"
                     class="header-secondary d-flex align-items-center border-bottom flex-shrink-0 px-4 d-grid gap-3 flex-wrap">

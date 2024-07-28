@@ -1,33 +1,24 @@
 <template>
-    <BDropdown variant="outline-secondary" :id="btnId" :disabled="disabled">
+    <BDropdown :variant="simple ? 'link' : 'outline-secondary'" :id="btnId" :disabled="disabled">
         <template #button-content>
-            <Icon :name="preferenceIcon" />
-            {{ preferenceText }}
+            <Icon :name="selectedTheme?.iconName" class="me-1" />
+            <template v-if="!simple">
+                {{ selectedTheme?.name }}
+            </template>
             <Icon name="material-symbols:arrow-drop-down" />
         </template>
-        <BDropdownItem key="light" @click="setPreference('light')" :disabled="preference === 'light'">
+        <BDropdownItem v-for="theme in themes" :key="theme.key" @click="setPreference(theme.key)"
+            :disabled="theme.key === preference">
             <span class="d-flex align-items-center cursor-pointer">
-                <Icon name="material-symbols:light-mode-outline-rounded" class="me-1" /> <span>Light</span>
-                <Icon v-if="preference === 'light'" name="material-symbols:check" class="ms-auto text-primary" />
-            </span>
-        </BDropdownItem>
-        <BDropdownItem key="dark" @click="setPreference('dark')" :disabled="preference === 'dark'">
-            <span class="d-flex align-items-center cursor-pointer">
-                <Icon name="material-symbols:dark-mode-outline-rounded" class="me-1" /> <span>Dark</span>
-                <Icon v-if="preference === 'dark'" name="material-symbols:check" class="ms-auto text-primary" />
-            </span>
-        </BDropdownItem>
-        <BDropdownItem key="auto" @click="setPreference('auto')" :disabled="preference === 'auto'">
-            <span class="d-flex align-items-center cursor-pointer">
-                <Icon name="material-symbols:computer-outline-rounded" class="me-1" /> <span>System</span>
-                <Icon v-if="preference === 'auto'" name="material-symbols:check" class="ms-auto text-primary" />
+                <Icon :name="theme.iconName" class="me-1" /> <span>{{ theme.name }}</span>
+                <Icon v-if="theme.key === preference" name="material-symbols:check" class="ms-auto text-primary" />
             </span>
         </BDropdownItem>
     </BDropdown>
 </template>
 
 <script setup lang="ts">
-import type { SettingsWrapper } from '~/types/Schemas';
+import { type ThemeConfigItem, type SettingsWrapper, type ThemeName } from '~/types/Schemas';
 
 const btnId = 'btn-theme-toogle-' + useId()
 const colorMode = useColorMode({ selector: 'html', storageKey: 'theme' })
@@ -43,31 +34,23 @@ watch(preference, (value) => {
     colorMode.value = value
 })
 
-const preferenceText = computed(() => {
-    switch (preference.value) {
-        case 'light':
-            return 'Light'
-        case 'dark':
-            return 'Dark'
-        default:
-            return 'System'
-    }
+const themes = ref<ThemeConfigItem[]>([
+    { key: 'light', name: 'Light', iconName: 'material-symbols:light-mode-outline-rounded' },
+    { key: 'dark', name: 'Dark', iconName: 'material-symbols:dark-mode-outline-rounded' },
+    { key: 'auto', name: 'System', iconName: 'material-symbols:computer-outline-rounded' }
+])
+
+const selectedTheme = computed(() => {
+    return themes.value.find((theme) => theme.key === preference.value) ?? themes.value[0]
 })
 
-const preferenceIcon = computed(() => {
-    switch (preference.value) {
-        case 'light':
-            return 'material-symbols:light-mode-outline-rounded'
-        case 'dark':
-            return 'material-symbols:dark-mode-outline-rounded'
-        default:
-            return 'material-symbols:computer-outline-rounded'
-    }
-})
-
-const setPreference = (mode: "dark" | "light" | "auto") => {
+const setPreference = (mode: ThemeName) => {
     if (settingsWrapper.value) {
         settingsWrapper.value.settings.general_theme = mode
     }
 }
+
+const { simple } = defineProps<{
+    simple?: boolean
+}>()
 </script>

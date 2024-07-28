@@ -4,6 +4,20 @@ enum ChatRole {
     SYSTEM = 'system'
 }
 
+interface ThemeNames{
+    dark: unknown;
+    light: unknown;
+    auto: unknown;
+}
+
+type ThemeName = keyof ThemeNames;
+
+interface ThemeConfigItem {
+    key: ThemeName;
+    iconName: string;
+    name: string;
+}
+
 interface IChatMessage {
     message: string;
     role: ChatRole;
@@ -119,4 +133,4 @@ interface SqlRunResultModel {
 
 type SqlType = keyof SqlStatementType;
 
-export { ChatRole, type IChatMessage, type Settings, type PromptInfo, type Prompt, type Prompts, type SettingsWrapper, DataSourceType, type DataSourceModel, type DataSourceCreateModel, type DataSourceUpdateModel, type SchemaTablesModel, type ColumnInfoModel, type DataProviderInfoModel, type SqlStatementModel, type SqlType, type SqlRunResultModel };
+export { ChatRole, type IChatMessage, type Settings, type PromptInfo, type Prompt, type Prompts, type SettingsWrapper, DataSourceType, type DataSourceModel, type DataSourceCreateModel, type DataSourceUpdateModel, type SchemaTablesModel, type ColumnInfoModel, type DataProviderInfoModel, type SqlStatementModel, type SqlType, type SqlRunResultModel, type ThemeConfigItem, type ThemeName };
