@@ -101,15 +101,13 @@ const showSampleDataModal = (table: string) => {
     /*Load sample data */
     if (dataProviderInfo?.id) {
         sampleDataModal.isLoading = true
+        sampleDataModal.title = currentTable.value ? `Sample data for ${schema?.schema ? schema.schema + '.' : ''}${currentTable.value}` : "Sample data"
+        sampleDataModal.open = true
         dataProviderService.getTableSamples(dataProviderInfo.id, table, schema?.schema ?? undefined).then((data) => {
             sampleDataModal.data = data
-            sampleDataModal.title = currentTable.value ? `Sample data for ${schema?.schema ? schema.schema + '.' : ''}${currentTable.value}` : "Sample data"
-            sampleDataModal.open = true
             sampleDataModal.isLoading = false
         }).catch((err) => {
             sampleDataModal.error = err instanceof Error ? err.message : 'An unexpected error occurred';
-            console.error(sampleDataModal.error)
-            sampleDataModal.open = true
             sampleDataModal.isLoading = false
         })
     }
@@ -142,18 +140,16 @@ const resetSqlModal = () => {
 const showSqlModal = (table: string, sqlType: SqlType) => {
     if (dataProviderInfo?.id) {
         sqlModal.isLoading = true
+        let table_full_name = schema?.schema ? `${schema.schema}.${table}` : table
+        sqlModal.title = sqlType == 'CREATE' ? `CREATE TABLE script for: ${table_full_name}` :
+            `SELECT script for: ${table_full_name}`
+        sqlModal.open = true
         const func = sqlType == 'CREATE' ? dataProviderService.getTableCreationSQL : dataProviderService.getTableSelectSQL
         func(dataProviderInfo.id, table, schema?.schema ?? undefined).then((data) => {
-            let table_full_name = schema?.schema ? `${schema.schema}.${table}` : table
-            sqlModal.title = sqlType == 'CREATE' ? `CREATE TABLE script for: ${table_full_name}` :
-                `SELECT script for: ${table_full_name}`
             sqlModal.sql = data.sql
-            sqlModal.open = true
             sqlModal.isLoading = false
         }).catch((err) => {
-            sqlModal.title = 'Error'
             sqlModal.sql = err instanceof Error ? err.message : 'An unexpected error occurred';
-            sqlModal.open = true
             sqlModal.isLoading = false
         })
     }
