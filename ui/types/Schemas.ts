@@ -125,7 +125,7 @@ interface SqlStatementType {
     "SELECT": unknown;
 }
 
-interface SqlRunResultModel {
+interface RunSqlResultModel {
     success: boolean;
     message?: string;
     data: any;
@@ -133,4 +133,4 @@ interface SqlRunResultModel {
 
 type SqlType = keyof SqlStatementType;
 
-export { ChatRole, type IChatMessage, type Settings, type PromptInfo, type Prompt, type Prompts, type SettingsWrapper, DataSourceType, type DataSourceModel, type DataSourceCreateModel, type DataSourceUpdateModel, type SchemaTablesModel, type ColumnInfoModel, type DataProviderInfoModel, type SqlStatementModel, type SqlType, type SqlRunResultModel, type ThemeConfigItem, type ThemeName };
+export { ChatRole, type IChatMessage, type Settings, type PromptInfo, type Prompt, type Prompts, type SettingsWrapper, DataSourceType, type DataSourceModel, type DataSourceCreateModel, type DataSourceUpdateModel, type SchemaTablesModel, type ColumnInfoModel, type DataProviderInfoModel, type SqlStatementModel, type SqlType, type RunSqlResultModel as SqlRunResultModel, type ThemeConfigItem, type ThemeName };

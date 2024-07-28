@@ -102,13 +102,13 @@ class SqlStatementModel(TypedDict):
     sql: str
 
 
-class SqlRunResultModel(TypedDict):
+class RunSqlResultModel(TypedDict):
     success: bool
     message: Optional[str]
     data: Any
 
 
-class GetDataPostBodyModel(TypedDict):
+class RunSqlPostBodyModel(TypedDict):
     sql: str
     schema: NotRequired[str]
     record_count: NotRequired[int]

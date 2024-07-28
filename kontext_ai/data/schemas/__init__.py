@@ -21,8 +21,8 @@ from kontext_ai.data.schemas._data import (
     SchemaTablesModel,
     ColumnInfoModel,
     SqlStatementModel,
-    SqlRunResultModel,
-    GetDataPostBodyModel,
+    RunSqlResultModel,
+    RunSqlPostBodyModel,
 )
 
 __all__ = [
@@ -43,6 +43,6 @@ __all__ = [
     "SchemaTablesModel",
     "ColumnInfoModel",
     "SqlStatementModel",
-    "SqlRunResultModel",
-    "GetDataPostBodyModel",
+    "RunSqlResultModel",
+    "RunSqlPostBodyModel",
 ]

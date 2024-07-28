@@ -1,3 +1,4 @@
+import traceback
 from typing import List, Optional
 from fastapi import APIRouter, Body, Depends, HTTPException
 
@@ -5,8 +6,8 @@ from kontext_ai.data.schemas import (
     DataProviderInfoModel,
     ColumnInfoModel,
     SqlStatementModel,
-    SqlRunResultModel,
-    GetDataPostBodyModel,
+    RunSqlResultModel,
+    RunSqlPostBodyModel,
 )
 from kontext_ai.services import (
     DataProviderService,
@@ -144,25 +145,29 @@ def get_table_samples(
         raise HTTPException(status_code=500, detail="Error retrieving table samples")
 
 
-@router.post("/{data_source_id}/data", response_model=SqlRunResultModel)
-def get_data(
+@router.post("/{data_source_id}/run-sql", response_model=RunSqlResultModel)
+def run_sql(
     data_source_id: int,
-    payload: GetDataPostBodyModel = Body(None),
+    payload: RunSqlPostBodyModel = Body(None),
     source_service: DataSourceService = Depends(get_data_sources_service),
 ) -> list[dict]:
     """
-    Get data from the data source via SQL.
+    Run SQL the data source.
     """
     try:
         sql = payload.get("sql")
         schema = payload.get("schema")
         record_count = payload.get("record_count")
-        logger.info(f"Retrieving data for SQL: {sql}")
+        logger.info(f"Run SQL: {sql}")
         provider = get_data_provider(data_source_id, source_service)
-        data = provider.get_data(sql=sql, record_count=record_count, schema=schema)
-        return SqlRunResultModel(data=data, success=True, message="Data retrieved")
+        data = provider.run_sql(sql=sql, record_count=record_count, schema=schema)
+        return RunSqlResultModel(
+            data=data, success=True, message="SQL executed successfully"
+        )
     except Exception as e:
-        logger.error(f"Error retrieving data for SQL: {sql}: {e}")
-        return SqlRunResultModel(
-            data=[], success=False, message=f"Error retrieving data: {e.message}"
+        logger.error(f"Error running SQL: {sql}; {e}")
+        logger.error(traceback.format_exc())
+
+        return RunSqlResultModel(
+            data=[], success=False, message=f"Error running SQL: {sql}; {e}"
         )

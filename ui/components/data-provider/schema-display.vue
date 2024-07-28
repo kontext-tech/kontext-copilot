@@ -38,6 +38,11 @@
                     class="table-responsive">
                     <BTable striped hover small :items="sampleDataModal.data" :fields="sampleDataFields" />
                 </div>
+                <BAlert variant="warning" class="d-flex align-items-center"
+                    :model-value="!sampleDataModal.isLoading && sampleDataModal.data && sampleDataModal.data.length == 0">
+                    <Icon name="material-symbols:warning-outline" class="me-1"></Icon>
+                    <span>No records.</span>
+                </BAlert>
             </BModal>
 
             <BModal :id="sqlModal.id" :size="sqlModal.size" v-model="sqlModal.open" :title="sqlModal.title"
@@ -158,7 +163,6 @@ const { copy } = useClipboard()
 
 const copyToClipboard = async () => {
     if (sqlModal.sql) {
-        console.log(sqlModal.sql)
         await copy(sqlModal.sql)
     }
 }

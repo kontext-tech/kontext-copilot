@@ -148,9 +148,9 @@ class BaseProvider(ABC):
         sql = f"SELECT * FROM {table}"
         if schema is not None:
             sql = f"SELECT * FROM {schema}.{table}"
-        return self.get_data(sql=sql, record_count=record_count)
+        return self.run_sql(sql=sql, record_count=record_count)
 
-    def get_data(
+    def run_sql(
         self, sql: str, schema: Optional[str] = None, record_count: Optional[int] = None
     ) -> dict:
         """
@@ -159,7 +159,16 @@ class BaseProvider(ABC):
         with self.engine.connect() as conn:
             if schema is not None:
                 conn.execute(f"USE {schema}")
-            result = conn.execute(text(sql))
+            statement = text(sql)
+            result = conn.execute(statement=statement)
+
+            if statement.is_dml or not statement.is_select:
+                return [
+                    {
+                        "success": True,
+                        "message": f"SQL statement executed successfully: {result.rowcount} rows affected",
+                    }
+                ]
             if record_count is None:
                 rows = result.fetchall()
             else:

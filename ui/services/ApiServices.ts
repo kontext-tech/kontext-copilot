@@ -112,9 +112,9 @@ export class DataProviderService {
     return response.data;
   }
 
-  async getData(dataSourceId: number, sql: string, schema?: string, recordCount?: number): Promise<SqlRunResultModel> {
+  async runSql(dataSourceId: number, sql: string, schema?: string, recordCount?: number): Promise<SqlRunResultModel> {
     const params = { sql, schema, record_count: recordCount };
-    const response = await axios.post<SqlRunResultModel>(`/data-providers/${dataSourceId}/data`, params);
+    const response = await axios.post<SqlRunResultModel>(`/data-providers/${dataSourceId}/run-sql`, params);
     return response.data;
   }
 }

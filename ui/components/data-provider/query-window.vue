@@ -16,6 +16,11 @@
             <BSpinner v-if="model.isLoading" variant="primary"></BSpinner>
             <BTable v-if="!model.isLoading" striped hover small :items="model.result?.data" :fields="tableFields">
             </BTable>
+            <BAlert variant="warning" class="d-flex align-items-center"
+                :model-value="!model.isLoading && model.result?.data && model.result?.data.length == 0">
+                <Icon name="material-symbols:warning-outline" class="me-1"></Icon>
+                <span>No records.</span>
+            </BAlert>
         </div>
     </div>
 </template>
@@ -37,7 +42,7 @@ const runDisabled = computed(() => isEmptyOrNull(model.query))
 const runQuery = async () => {
     if (dataProviderInfo && model.query) {
         model.isLoading = true
-        dataProviderService.getData(dataProviderInfo.id, model.query, selectedSchema).then((result) => {
+        dataProviderService.runSql(dataProviderInfo.id, model.query, selectedSchema).then((result) => {
             model.result = result
             model.isLoading = false
         })
