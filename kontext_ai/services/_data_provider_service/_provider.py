@@ -118,6 +118,24 @@ class BaseProvider(ABC):
         create_table_sql = str(CreateTable(table).compile(self.engine))
         return create_table_sql
 
+    def get_table_select_sql(
+        self,
+        table: str,
+        schema: Optional[str] = None,
+        record_count: Optional[int] = None,
+    ) -> str:
+        """
+        Get table select SQL from the data source.
+        """
+        columns = self.get_columns_info(table, schema)
+        columns_str = ", ".join([c["name"] for c in columns])
+        sql = f"SELECT {columns_str} FROM {table}"
+        if schema is not None:
+            sql = f"SELECT {columns_str} FROM {schema}.{table}"
+        if record_count is not None:
+            sql += f" LIMIT {record_count}"
+        return sql
+
     def get_table_data(
         self,
         table: str,

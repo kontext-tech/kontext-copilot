@@ -105,4 +105,16 @@ export class DataProviderService {
     const response = await axios.get<SqlStatementModel>(`/data-providers/${dataSourceId}/table-creation-sql`, { params });
     return response.data;
   }
+
+  async getTableSelectSQL(dataSourceId: number, table: string, schema?: string): Promise<SqlStatementModel> {
+    const params = { table, schema };
+    const response = await axios.get<SqlStatementModel>(`/data-providers/${dataSourceId}/table-select-sql`, { params });
+    return response.data;
+  }
+
+  async getData(dataSourceId: number, sql: string, schema?: string, recordCount?: number): Promise<object[]> {
+    const params = { sql, schema, record_count: recordCount };
+    const response = await axios.get<object[]>(`/data-providers/${dataSourceId}/data`, { params });
+    return response.data;
+  }
 }

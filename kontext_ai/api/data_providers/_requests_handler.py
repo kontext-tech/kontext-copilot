@@ -92,14 +92,34 @@ def get_table_creation_sql(
     Get table creation SQL from the data source.
     """
     try:
-        logger.info(f"Retrieving table creation SQL for table: {table}")
+        logger.info(f"Retrieving CREATE TABLE SQL for table: {table}")
         provider = get_data_provider(data_source_id, source_service)
         return SqlStatementModel(sql=provider.get_table_creation_sql(table, schema))
     except Exception as e:
-        logger.error(f"Error retrieving table creation SQL for table: {table}: {e}")
-        raise HTTPException(
-            status_code=500, detail="Error retrieving table creation SQL"
+        logger.error(f"Error retrieving CREATE TABLE SQL for table: {table}: {e}")
+        raise HTTPException(status_code=500, detail="Error retrieving CREATE TABLE SQL")
+
+
+@router.get("/{data_source_id}/table-select-sql", response_model=SqlStatementModel)
+def get_table_creation_sql(
+    data_source_id: int,
+    table: str,
+    schema: Optional[str] = None,
+    record_count: Optional[int] = 10,
+    source_service: DataSourceService = Depends(get_data_sources_service),
+) -> SqlStatementModel:
+    """
+    Get table select SQL from the data source.
+    """
+    try:
+        logger.info(f"Retrieving SELECT SQL for table: {table}")
+        provider = get_data_provider(data_source_id, source_service)
+        return SqlStatementModel(
+            sql=provider.get_table_select_sql(table, schema, record_count)
         )
+    except Exception as e:
+        logger.error(f"Error retrieving SELECT SQL for table: {table}: {e}")
+        raise HTTPException(status_code=500, detail="Error retrieving table SELECT SQL")
 
 
 @router.get("/{data_source_id}/table-samples", response_model=List[dict])
@@ -120,3 +140,23 @@ def get_table_samples(
     except Exception as e:
         logger.error(f"Error retrieving table samples for table: {table}: {e}")
         raise HTTPException(status_code=500, detail="Error retrieving table samples")
+
+
+@router.get("/{data_source_id}/data", response_model=List[dict])
+def get_data(
+    data_source_id: int,
+    sql: str,
+    schema: Optional[str] = None,
+    record_count: Optional[int] = None,
+    source_service: DataSourceService = Depends(get_data_sources_service),
+) -> list[dict]:
+    """
+    Get data from the data source via SQL.
+    """
+    try:
+        logger.info(f"Retrieving data for SQL: {sql}")
+        provider = get_data_provider(data_source_id, source_service)
+        return provider.get_data(sql, schema, record_count)
+    except Exception as e:
+        logger.error(f"Error retrieving data for SQL: {sql}: {e}")
+        raise HTTPException(status_code=500, detail="Error retrieving data via SQL")

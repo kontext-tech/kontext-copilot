@@ -16,8 +16,11 @@
                     <BDropdownItem @click="showSampleDataModal(t)">
                         <Icon name="material-symbols:data-exploration-outline"></Icon> Sample data
                     </BDropdownItem>
-                    <BDropdownItem @click="showSqlModal(t)">
+                    <BDropdownItem @click="showSqlModal(t, 'CREATE')">
                         <Icon name="material-symbols:code"></Icon> SQL: CREATE TABLE
+                    </BDropdownItem>
+                    <BDropdownItem @click="showSqlModal(t, 'SELECT')">
+                        <Icon name="material-symbols:code"></Icon> SQL: SELECT
                     </BDropdownItem>
                 </BDropdown>
             </div>
@@ -38,7 +41,14 @@
             </BModal>
 
             <BModal :id="sqlModal.id" :size="sqlModal.size" v-model="sqlModal.open" :title="sqlModal.title"
-                :ok-only="true" @hide="resetSqlModal">
+                @hide="resetSqlModal">
+                <template #footer>
+                    <BButton variant="primary" @click="copyToClipboard()" v-b-tooltip.click.top title="Copied!">
+                        <Icon name="material-symbols:content-copy-outline"></Icon> Copy
+                    </BButton>
+                    <BButton variant="secondary" @click="sqlModal.open = false">Close
+                    </BButton>
+                </template>
                 <BAlert v-if="sqlModal.error" :model-value="sqlModal.error != null" variant="danger">
                     {{ sqlModal.error }}
                 </BAlert>
@@ -55,7 +65,8 @@
 <script setup lang="ts">
 import type { Size } from 'bootstrap-vue-next'
 import { DataProviderService } from '~/services/ApiServices'
-import type { DataProviderInfoModel, SchemaTablesModel } from '~/types/Schemas'
+import type { DataProviderInfoModel, SchemaTablesModel, SqlType } from '~/types/Schemas'
+import useClipboard from 'vue-clipboard3'
 
 const schemaName = computed(() => props.schema?.schema ?? "(empty)")
 
@@ -123,11 +134,14 @@ const resetSqlModal = () => {
     sqlModal.error = null
 }
 
-const showSqlModal = (table: string) => {
+const showSqlModal = (table: string, sqlType: SqlType) => {
     if (props.dataProviderInfo?.id) {
         sqlModal.isLoading = true
-        dataProviderService.getTableCreationSQL(props.dataProviderInfo.id, table, props.schema?.schema).then((data) => {
-            sqlModal.title = `CREATE TABLE script for: ${props.schema?.schema ? props.schema.schema + '.' : ''}${table}`
+        const func = sqlType == 'CREATE' ? dataProviderService.getTableCreationSQL : dataProviderService.getTableSelectSQL
+        func(props.dataProviderInfo.id, table, props.schema?.schema).then((data) => {
+            let table_full_name = props.schema?.schema ? `${props.schema.schema}.${table}` : table
+            sqlModal.title = sqlType == 'CREATE' ? `CREATE TABLE script for: ${table_full_name}` :
+                `SELECT script for: ${table_full_name}`
             sqlModal.sql = data.sql
             sqlModal.open = true
             sqlModal.isLoading = false
@@ -138,6 +152,13 @@ const showSqlModal = (table: string) => {
             sqlModal.isLoading = false
         })
     }
+}
+
+const { toClipboard } = useClipboard()
+
+const copyToClipboard = async () => {
+    if(sqlModal.sql)
+        await toClipboard(sqlModal.sql)
 }
 
 const props = defineProps<{
