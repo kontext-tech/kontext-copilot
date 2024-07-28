@@ -1,13 +1,13 @@
 <template>
     <BAccordion v-if="schema" free>
-        <BAccordionItem :key="schemaName" visible bodyClass="list-group list-group-flush px-0">
+        <BAccordionItem :key="schemaName" visible body-class="list-group list-group-flush px-0 py-2">
             <template #title>
                 <h6>
                     <Icon name="material-symbols:schema-outline"></Icon> {{ schemaName }}
                 </h6>
             </template>
             <div v-for="(t, index) in schema.tables" :key="index"
-                class="list-group-item d-flex align-items-center gap-1">
+                class="list-group-item d-flex align-items-center gap-1 py-0">
                 <span class="flex-grow-1">{{ t }}</span>
                 <BDropdown variant="link" toggle-class="text-decoration-none" noCaret>
                     <template #button-content>
@@ -86,7 +86,7 @@ const dataProviderService = new DataProviderService(appConfig.apiBaseUrl)
 
 const sampleDataFields = computed(() => {
     if (sampleDataModal.data.length > 0) {
-        return Object.keys(sampleDataModal.data[0]).map((key) => ({ key, sortable: true }));
+        return Object.keys(sampleDataModal.data[0]).map((key) => ({ key, label: key, sortable: true }));
     }
     return [];
 });
