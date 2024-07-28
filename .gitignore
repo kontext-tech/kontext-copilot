@@ -1,6 +1,6 @@
 .vs
 kontext_ai/ui
-kontext_ai/data/kontext_ai.db
+kontext_ai/data/*.db
 *.gguf
 
 # Byte-compiled / optimized / DLL files

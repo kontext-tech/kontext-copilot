@@ -1,8 +1,8 @@
 <template>
     <div v-if="selectedDataSource">
-        <h6>
+        <div class="fw-bold mb-3 d-flex align-items-center gap-1">
             <Icon name="material-symbols:database-outline"></Icon> {{ selectedDataSource.name }}
-        </h6>
+        </div>
         <BBadge variant="primary">{{ selectedDataSource.type }}</BBadge>
         <div class="my-3 text-muted">{{ selectedDataSource.description }}</div>
     </div>
@@ -10,7 +10,6 @@
 
 <script setup lang="ts">
 import type { DataSourceModel } from '~/types/Schemas';
-
 
 defineProps<{
     selectedDataSource: DataSourceModel | null
