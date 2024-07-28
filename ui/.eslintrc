@@ -10,10 +10,10 @@
         "plugin:@typescript-eslint/recommended"
     ],
     "rules": {
-        "no-console": "warn",
+        "no-console": "error",
         "no-debugger": "warn",
-        "vue/no-multiple-template-root": "off",
-        "vue/no-v-model-argument": "off",
-        "vue/no-v-for-template-key": "off",
+        "vue/no-multiple-template-root": "on",
+        "vue/no-v-model-argument": "on",
+        "vue/no-v-for-template-key": "on"
     }
 }
