@@ -161,8 +161,9 @@ class BaseProvider(ABC):
                 conn.execute(f"USE {schema}")
             statement = text(sql)
             result = conn.execute(statement=statement)
-
-            if statement.is_dml or not statement.is_select:
+            if result.returns_rows == False:
+                # commit the transaction
+                conn.commit()
                 return [
                     {
                         "success": True,
@@ -175,4 +176,5 @@ class BaseProvider(ABC):
                 rows = result.fetchmany(record_count)
             columns = result.keys()
             data = [dict(zip(columns, row)) for row in rows]
+            conn.commit()
             return data
