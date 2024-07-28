@@ -1,10 +1,12 @@
 from typing import List, Optional
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Body, Depends, HTTPException
 
 from kontext_ai.data.schemas import (
     DataProviderInfoModel,
     ColumnInfoModel,
     SqlStatementModel,
+    SqlRunResultModel,
+    GetDataPostBodyModel,
 )
 from kontext_ai.services import (
     DataProviderService,
@@ -142,21 +144,25 @@ def get_table_samples(
         raise HTTPException(status_code=500, detail="Error retrieving table samples")
 
 
-@router.get("/{data_source_id}/data", response_model=List[dict])
+@router.post("/{data_source_id}/data", response_model=SqlRunResultModel)
 def get_data(
     data_source_id: int,
-    sql: str,
-    schema: Optional[str] = None,
-    record_count: Optional[int] = None,
+    payload: GetDataPostBodyModel = Body(None),
     source_service: DataSourceService = Depends(get_data_sources_service),
 ) -> list[dict]:
     """
     Get data from the data source via SQL.
     """
     try:
+        sql = payload.get("sql")
+        schema = payload.get("schema")
+        record_count = payload.get("record_count")
         logger.info(f"Retrieving data for SQL: {sql}")
         provider = get_data_provider(data_source_id, source_service)
-        return provider.get_data(sql, schema, record_count)
+        data = provider.get_data(sql=sql, record_count=record_count, schema=schema)
+        return SqlRunResultModel(data=data, success=True, message="Data retrieved")
     except Exception as e:
         logger.error(f"Error retrieving data for SQL: {sql}: {e}")
-        raise HTTPException(status_code=500, detail="Error retrieving data via SQL")
+        return SqlRunResultModel(
+            data=[], success=False, message=f"Error retrieving data: {e.message}"
+        )

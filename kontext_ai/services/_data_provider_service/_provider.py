@@ -148,13 +148,17 @@ class BaseProvider(ABC):
         sql = f"SELECT * FROM {table}"
         if schema is not None:
             sql = f"SELECT * FROM {schema}.{table}"
-        return self.get_data(sql, record_count)
+        return self.get_data(sql=sql, record_count=record_count)
 
-    def get_data(self, sql: str, record_count: Optional[int] = None) -> dict:
+    def get_data(
+        self, sql: str, schema: Optional[str] = None, record_count: Optional[int] = None
+    ) -> dict:
         """
         Get data from the data source.
         """
         with self.engine.connect() as conn:
+            if schema is not None:
+                conn.execute(f"USE {schema}")
             result = conn.execute(text(sql))
             if record_count is None:
                 rows = result.fetchall()

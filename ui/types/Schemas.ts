@@ -81,7 +81,7 @@ interface DataSourceUpdateModel {
 }
 
 interface SchemaTablesModel {
-    schema?: string;
+    schema: string | null;
     tables: string[];
 }
 
@@ -111,6 +111,12 @@ interface SqlStatementType {
     "SELECT": unknown;
 }
 
+interface SqlRunResultModel {
+    success: boolean;
+    message?: string;
+    data: any;
+}
+
 type SqlType = keyof SqlStatementType;
 
-export { ChatRole, type IChatMessage, type Settings, type PromptInfo, type Prompt, type Prompts, type SettingsWrapper, DataSourceType, type DataSourceModel, type DataSourceCreateModel, type DataSourceUpdateModel, type SchemaTablesModel, type ColumnInfoModel, type DataProviderInfoModel, type SqlStatementModel, type SqlType };
+export { ChatRole, type IChatMessage, type Settings, type PromptInfo, type Prompt, type Prompts, type SettingsWrapper, DataSourceType, type DataSourceModel, type DataSourceCreateModel, type DataSourceUpdateModel, type SchemaTablesModel, type ColumnInfoModel, type DataProviderInfoModel, type SqlStatementModel, type SqlType, type SqlRunResultModel };

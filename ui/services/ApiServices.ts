@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { Settings, PromptInfo, Prompt, DataSourceModel, DataSourceCreateModel, DataSourceUpdateModel, ColumnInfoModel, DataProviderInfoModel, SqlStatementModel } from '~/types/Schemas';
+import type { Settings, PromptInfo, Prompt, DataSourceModel, DataSourceCreateModel, DataSourceUpdateModel, ColumnInfoModel, DataProviderInfoModel, SqlStatementModel, SqlRunResultModel } from '~/types/Schemas';
 
 const getBaseUrl = (apiBaseUrl: string) => {
   return `${apiBaseUrl}/api`;
@@ -112,9 +112,9 @@ export class DataProviderService {
     return response.data;
   }
 
-  async getData(dataSourceId: number, sql: string, schema?: string, recordCount?: number): Promise<object[]> {
+  async getData(dataSourceId: number, sql: string, schema?: string, recordCount?: number): Promise<SqlRunResultModel> {
     const params = { sql, schema, record_count: recordCount };
-    const response = await axios.get<object[]>(`/data-providers/${dataSourceId}/data`, { params });
+    const response = await axios.post<SqlRunResultModel>(`/data-providers/${dataSourceId}/data`, params);
     return response.data;
   }
 }

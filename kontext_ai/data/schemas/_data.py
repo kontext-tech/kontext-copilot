@@ -100,3 +100,18 @@ class DataProviderInfoModel(DataSourceModel):
 
 class SqlStatementModel(TypedDict):
     sql: str
+
+
+class SqlRunResultModel(TypedDict):
+    success: bool
+    message: Optional[str]
+    data: Any
+
+
+class GetDataPostBodyModel(TypedDict):
+    sql: str
+    schema: NotRequired[str]
+    record_count: NotRequired[int]
+    offset: NotRequired[int]
+    order_by: NotRequired[str]
+    order_type: NotRequired[str]
