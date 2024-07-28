@@ -2,9 +2,9 @@
     <BAccordion v-if="schema" free>
         <BAccordionItem :key="schemaName" visible body-class="list-group list-group-flush px-0 py-2">
             <template #title>
-                <h6>
+                <span class="fw-bold">
                     <Icon name="material-symbols:schema-outline"></Icon> {{ schemaName }}
-                </h6>
+                </span>
             </template>
             <div v-for="(t, index) in schema.tables" :key="index"
                 class="list-group-item d-flex align-items-center gap-1 py-0">

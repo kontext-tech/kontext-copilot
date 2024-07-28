@@ -284,7 +284,11 @@ $enable-gradients: false;
 //   lg: 800px,
 //   xl: 900px,
 //   xxl: 1024px
-// );
+// );s
+
+$accordion-button-padding-x: 0.75rem;
+$accordion-button-padding-y: 0.75rem;
+$accordion-icon-width: 1rem;
 
 @import "bootstrap/scss/_variables.scss";
 @import "bootstrap/scss/mixins/_color-mode.scss";
