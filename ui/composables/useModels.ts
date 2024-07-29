@@ -2,11 +2,10 @@ import type { ModelResponse } from "ollama/browser"
 import OllamaLlmService from "~/services/OllamaLlmService"
 import type { SettingsWrapper } from "~/types/Schemas"
 
+const models = ref<ModelResponse[]>([])
+const defaultModel = ref<ModelResponse>()
+
 export default function useModels() {
-    const models = ref<ModelResponse[]>([])
-
-    const defaultModel = ref<ModelResponse>()
-
     const settingsWrapper = inject('settings') as Ref<SettingsWrapper>
 
     const defaultModelConfig = computed(() => settingsWrapper.value.settings.llm_default_model)
@@ -38,7 +37,6 @@ export default function useModels() {
         }
     })
 
-    /* persist default model selection to local storage */
     const setDefaultModel = (model: ModelResponse) => {
         defaultModel.value = model
         settingsWrapper.value.settings.llm_default_model = model.name
