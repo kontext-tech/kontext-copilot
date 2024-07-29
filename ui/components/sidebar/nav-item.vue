@@ -1,13 +1,14 @@
 <template>
     <li class="nav-item">
         <template v-if="hasChildren">
-            <NuxtLink :href="'#' + collapseId" toggle="collapse" class="nav-link d-flex align-items-center mx-2 mb-1"
-                :class="{ active: isChildActive }" @click="onClick">
+            <BLink v-b-toggle="collapseId" class="nav-link d-flex align-items-center mx-2 mb-1"
+                :class="{ active: isChildActive }">
                 <Icon :name="icon" size="20" />
                 <span class="ms-1">{{ text }}</span>
                 <Icon :name="collapseIconName" size="20" class="ms-auto" />
-            </NuxtLink>
-            <BCollapse :key="id" :id="collapseId" ref="collapseEl" :class="collapseClasses">
+            </BLink>
+            <BCollapse :key="id" :id="collapseId" ref="collapseEl" visible @shown="onCollapseShown"
+                @hidden="onCollapseHidden">
                 <ul class="nav flex-column ms-3">
                     <template v-for="child in props.children">
                         <SidebarNavItem v-bind="child" />
@@ -25,34 +26,29 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watchEffect } from 'vue'
-import { useRoute } from 'vue-router'
-import type { NavItemProps } from '~/types/UIProps';
+import type { NavItemProps } from '~/types/UIProps'
 
 const props = defineProps<NavItemProps>()
 const route = useRoute()
 const isActive = ref(false)
 const isChildActive = ref(false)
 const hasChildren = computed(() => props.children && props.children?.length > 0)
-
-const collapseEl = ref(null)
-const collapseId = 'collapse-' + props.id + useId()
+const collapseId = 'collapse-' + props.id
 
 watchEffect(() => {
     isActive.value = route.path === props.to
-})
-
-watchEffect(() => {
     isChildActive.value = props.children?.some(child => route.path === child.to) ?? false
 })
 
-const collapseClasses = ref(['collapse', "show"])
-const collapseShown = ref(true)
-const collapseIconName = computed(() => collapseShown.value ? 'material-symbols:keyboard-arrow-up' : 'material-symbols:keyboard-arrow-down')
+const isCollapsed = ref(false)
+const collapseIconName = computed(() => isCollapsed.value ? 'material-symbols:keyboard-arrow-down' : 'material-symbols:keyboard-arrow-up')
 
-const onClick = () => {
-    collapseShown.value = !collapseShown.value
-    collapseClasses.value = collapseShown.value ? ['collapse', "show"] : ['collapse']
+const onCollapseShown = () => {
+    isCollapsed.value = false
+}
+
+const onCollapseHidden = () => {
+    isCollapsed.value = true
 }
 
 </script>
