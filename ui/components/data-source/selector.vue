@@ -49,6 +49,10 @@ onMounted(() => {
         dataSources.value = data
         loaded.value = true
         isLoading.value = false
+        if (autoSelect && data.length > 0) {
+            selectedDataSource.value = data[0]
+            emit('dataSourceSelected', data[0].id);
+        }
     }).catch((err) => {
         error.value = err instanceof Error ? err.message : 'An unexpected error occurred';
         isLoading.value = false
@@ -57,7 +61,14 @@ onMounted(() => {
 })
 
 defineExpose({
-    selectedDataSource
+    selectedDataSource,
+})
+
+const { autoSelect } = defineProps({
+    autoSelect: {
+        type: Boolean,
+        default: false
+    }
 })
 
 </script>
