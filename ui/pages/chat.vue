@@ -14,8 +14,11 @@
             </template>
             <ChatMessage :message="currentResponse" :username="settings.general_username" v-if="generating" />
           </div>
-          <div class="flex-shrink-0 p-4 d-flex">
-            <span class="chat-icon">&nbsp;</span>
+          <div class="flex-shrink-0 p-4 d-flex align-items-center">
+            <span class="chat-icon">
+              <Icon :name="getRoleIcon(
+                ChatRole.USER)" size="24" :class="getRoleClass(ChatRole.USER)" />
+            </span>
             <div v-if="settingsWrapper.loaded" class="input-group">
               <input ref="chatInput" class="form-control" type="text" v-model="userInput"
                 placeholder="Type a message..." @keydown.enter.prevent="sendMessage" :disabled="generating"></input>

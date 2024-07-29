@@ -1,26 +1,28 @@
 <template>
-    <BFormTextarea v-if="dataProviderInfo" class="flex-shrink-0 d-flex flex-column" placeholder="Enter your query here"
-        v-model="model.query" rows="6">
-    </BFormTextarea>
-    <div class="flex-shrink-0">
-        <BButton variant="primary" class="mt-3" :disabled="runDisabled" @click="runQuery">
-            <Icon name="material-symbols:play-arrow-outline" class="me-1"></Icon>Run
-        </BButton>
-    </div>
-    <div class="flex-grow-1 flex-shrink-1 overflow-y-auto mt-3">
-        <BAlert variant="danger" :model-value="hasQueryError">
-            <Icon name="material-symbols:error-outline" class="me-1"></Icon>
-            <span>{{ model.result?.message }}</span>
-        </BAlert>
-        <div class="table-responsive" v-if="model.result?.success">
-            <BSpinner v-if="model.isLoading" variant="primary"></BSpinner>
-            <BTable v-if="!model.isLoading" striped hover small :items="model.result?.data" :fields="tableFields">
-            </BTable>
-            <BAlert variant="warning" class="d-flex align-items-center"
-                :model-value="!model.isLoading && model.result?.data && model.result?.data.length == 0">
-                <Icon name="material-symbols:warning-outline" class="me-1"></Icon>
-                <span>No records.</span>
+    <div class="inset-0 h-100 d-flex flex-column align-items-stretch">
+        <BFormTextarea v-if="dataProviderInfo" class="flex-shrink-0 d-flex flex-column"
+            placeholder="Enter your query here" v-model="model.query" rows="6">
+        </BFormTextarea>
+        <div class="flex-shrink-0">
+            <BButton variant="primary" class="mt-3" :disabled="runDisabled" @click="runQuery">
+                <Icon name="material-symbols:play-arrow-outline" class="me-1"></Icon>Run
+            </BButton>
+        </div>
+        <div class="flex-grow-1 flex-shrink-1 overflow-y-auto mt-3">
+            <BAlert variant="danger" :model-value="hasQueryError">
+                <Icon name="material-symbols:error-outline" class="me-1"></Icon>
+                <span>{{ model.result?.message }}</span>
             </BAlert>
+            <div class="table-responsive" v-if="model.result?.success">
+                <BSpinner v-if="model.isLoading" variant="primary"></BSpinner>
+                <BTable v-if="!model.isLoading" striped hover small :items="model.result?.data" :fields="tableFields">
+                </BTable>
+                <BAlert variant="warning" class="d-flex align-items-center"
+                    :model-value="!model.isLoading && model.result?.data && model.result?.data.length == 0">
+                    <Icon name="material-symbols:warning-outline" class="me-1"></Icon>
+                    <span>No records.</span>
+                </BAlert>
+            </div>
         </div>
     </div>
 </template>
