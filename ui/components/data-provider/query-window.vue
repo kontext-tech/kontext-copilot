@@ -42,9 +42,9 @@ const hasQueryError = computed(() => model.result != null && !model.result.succe
 const runDisabled = computed(() => isEmptyOrNull(model.query))
 
 const runQuery = async () => {
-    if (dataProviderInfo && model.query) {
+    if (props.dataProviderInfo && model.query) {
         model.isLoading = true
-        dataProviderService.runSql(dataProviderInfo.id, model.query, selectedSchema).then((result) => {
+        dataProviderService.runSql(props.dataProviderInfo.id, model.query, props.selectedSchema).then((result) => {
             model.result = result
             model.isLoading = false
         })
@@ -63,7 +63,7 @@ const tableFields = computed(() => {
 const appConfig = useAppConfig()
 const dataProviderService = new DataProviderService(appConfig.apiBaseUrl)
 
-const { dataProviderInfo, selectedSchema, selectedTables } = defineProps<{
+const props = defineProps<{
     dataProviderInfo?: DataProviderInfoModel,
     selectedSchema?: string,
     selectedTables?: string[]

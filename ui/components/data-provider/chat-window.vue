@@ -78,10 +78,10 @@ const sendMessage = async () => {
     await scrollToBottom()
     currentResponse.value.generating = true
     const oService = getOllamaService()
-    if (selectedModelName === undefined)
+    if (props.selectedModelName === undefined)
         return
     const response = await oService.ollama.chat({
-        model: selectedModelName,
+        model: props.selectedModelName,
         messages: chatHistory.value,
         stream: true,
         options: { temperature: settings.value.llm_temperature, top_p: settings.value.llm_top_p, top_k: settings.value.llm_top_k, seed: settings.value.llm_seed },
@@ -100,7 +100,7 @@ const sendMessage = async () => {
 
 }
 
-const { dataProviderInfo, selectedSchema, selectedTables, selectedModelName } = defineProps<{
+const props = defineProps<{
     dataProviderInfo?: DataProviderInfoModel,
     selectedSchema?: string,
     selectedTables?: string[],

@@ -49,7 +49,7 @@ onMounted(() => {
         dataSources.value = data
         loaded.value = true
         isLoading.value = false
-        if (autoSelect && data.length > 0) {
+        if (props.autoSelect && data.length > 0) {
             selectedDataSource.value = data[0]
             emit('dataSourceSelected', data[0].id);
         }
@@ -64,7 +64,7 @@ defineExpose({
     selectedDataSource,
 })
 
-const { autoSelect } = defineProps({
+const props = defineProps({
     autoSelect: {
         type: Boolean,
         default: false

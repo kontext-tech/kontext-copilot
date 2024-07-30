@@ -141,7 +141,7 @@ class BaseProvider(ABC):
         table: str,
         schema: Optional[str] = None,
         record_count: Optional[int] = None,
-    ) -> dict:
+    ) -> list[dict]:
         """
         Get data from the data source.
         """
@@ -152,7 +152,7 @@ class BaseProvider(ABC):
 
     def run_sql(
         self, sql: str, schema: Optional[str] = None, record_count: Optional[int] = None
-    ) -> dict:
+    ) -> list[dict]:
         """
         Get data from the data source.
         """

@@ -12,7 +12,7 @@
             <template #secondary-sidebar v-if="dataSourceSelctor?.selectedDataSource">
                 <DataSourceDisplay :selected-data-source="dataSourceSelctor.selectedDataSource" />
                 <hr>
-                <DataProviderDisplay v-if="dataProviderInfo" :data-provider-info="dataProviderInfo" @refresh-clicked="refresh" />
+                <DataProviderDisplay :data-provider-info="dataProviderInfo" @refresh-clicked="refresh" />
             </template>
 
                 <div v-if="!dataProviderInfo" class="px-4 mt-3">
@@ -83,6 +83,7 @@ const handleTablesChange = (tables: string[]) => {
 }
 
 const refresh = (dataSourceId: number) => {
+    // dataProviderInfo.value = null
     providerService.getDataProviderInfo(dataSourceId).then((data) => {
         dataProviderInfo.value = data
     }).catch((err) => {

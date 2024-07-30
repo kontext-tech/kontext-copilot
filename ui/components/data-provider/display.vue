@@ -18,13 +18,13 @@
 import type { DataProviderInfoModel } from '~/types/Schemas'
 
 const refresh = () => {
-    if (dataProviderInfo)
-        emits('refresh-clicked', dataProviderInfo.id)
+    if (props.dataProviderInfo)
+        emits('refresh-clicked', props.dataProviderInfo.id)
 }
 
 const emits = defineEmits(['refresh-clicked'])
 
-const { dataProviderInfo } = defineProps<{
+const props = defineProps<{
     dataProviderInfo: DataProviderInfoModel | null
 }>()
 

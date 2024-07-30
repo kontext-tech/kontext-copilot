@@ -55,9 +55,9 @@ const handleSelectSchema = (schema: string | null) => {
 
 const selectedTables = ref<string[]>([])
 const tables = computed(() => {
-    if (dataProviderInfo) {
-        const schema = dataProviderInfo.supports_schema ? dataProviderInfo.metadata.find((m) => m.schema === selectedSchema.value) :
-            dataProviderInfo.metadata[0]
+    if (props.dataProviderInfo) {
+        const schema = props.dataProviderInfo.supports_schema ? props.dataProviderInfo.metadata.find((m) => m.schema === selectedSchema.value) :
+            props.dataProviderInfo.metadata[0]
         return schema?.tables.map((table) =>
         ({
             key: table,
@@ -92,7 +92,7 @@ const handleSelectAllTables = () => {
     emits('tables-changed', selectedTables.value)
 }
 
-const { dataProviderInfo } = defineProps<{
+const props = defineProps<{
     dataProviderInfo: DataProviderInfoModel | null
 }>()
 

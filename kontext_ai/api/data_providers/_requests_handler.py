@@ -150,7 +150,7 @@ def run_sql(
     data_source_id: int,
     payload: RunSqlPostBodyModel = Body(None),
     source_service: DataSourceService = Depends(get_data_sources_service),
-) -> list[dict]:
+) -> RunSqlResultModel:
     """
     Run SQL the data source.
     """

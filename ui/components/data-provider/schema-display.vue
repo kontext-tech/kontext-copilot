@@ -73,7 +73,7 @@ import { DataProviderService } from '~/services/ApiServices'
 import type { DataProviderInfoModel, SchemaTablesModel, SqlType } from '~/types/Schemas'
 import { useClipboard } from '@vueuse/core'
 
-const schemaName = computed(() => schema?.schema ?? "(empty)")
+const schemaName = computed(() => props.schema?.schema ?? "(empty)")
 
 const sampleDataModal = reactive({
     open: false,
@@ -99,11 +99,11 @@ const sampleDataFields = computed(() => {
 const showSampleDataModal = (table: string) => {
     currentTable.value = table
     /*Load sample data */
-    if (dataProviderInfo?.id) {
+    if (props.dataProviderInfo?.id) {
         sampleDataModal.isLoading = true
-        sampleDataModal.title = currentTable.value ? `Sample data for ${schema?.schema ? schema.schema + '.' : ''}${currentTable.value}` : "Sample data"
+        sampleDataModal.title = currentTable.value ? `Sample data for ${props.schema?.schema ? props.schema.schema + '.' : ''}${currentTable.value}` : "Sample data"
         sampleDataModal.open = true
-        dataProviderService.getTableSamples(dataProviderInfo.id, table, schema?.schema ?? undefined).then((data) => {
+        dataProviderService.getTableSamples(props.dataProviderInfo.id, table, props.schema?.schema ?? undefined).then((data) => {
             sampleDataModal.data = data
             sampleDataModal.isLoading = false
         }).catch((err) => {
@@ -138,14 +138,14 @@ const resetSqlModal = () => {
 }
 
 const showSqlModal = (table: string, sqlType: SqlType) => {
-    if (dataProviderInfo?.id) {
+    if (props.dataProviderInfo?.id) {
         sqlModal.isLoading = true
-        let table_full_name = schema?.schema ? `${schema.schema}.${table}` : table
+        let table_full_name = props.schema?.schema ? `${props.schema.schema}.${table}` : table
         sqlModal.title = sqlType == 'CREATE' ? `CREATE TABLE script for: ${table_full_name}` :
             `SELECT script for: ${table_full_name}`
         sqlModal.open = true
         const func = sqlType == 'CREATE' ? dataProviderService.getTableCreationSQL : dataProviderService.getTableSelectSQL
-        func(dataProviderInfo.id, table, schema?.schema ?? undefined).then((data) => {
+        func(props.dataProviderInfo.id, table, props.schema?.schema ?? undefined).then((data) => {
             sqlModal.sql = data.sql
             sqlModal.isLoading = false
         }).catch((err) => {
@@ -163,7 +163,7 @@ const copyToClipboard = async () => {
     }
 }
 
-const { schema, dataProviderInfo } = defineProps<{
+const props = defineProps<{
     schema: SchemaTablesModel | null,
     dataProviderInfo: DataProviderInfoModel | null
 }>()
