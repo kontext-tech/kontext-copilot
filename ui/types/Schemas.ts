@@ -10,7 +10,7 @@ interface ThemeNames{
     auto: unknown;
 }
 
-type ThemeName = keyof ThemeNames;
+type ThemeName = keyof ThemeNames
 
 interface ThemeConfigItem {
     key: ThemeName;
@@ -131,6 +131,6 @@ interface RunSqlResultModel {
     data: any;
 }
 
-type SqlType = keyof SqlStatementType;
+type SqlType = keyof SqlStatementType
 
-export { ChatRole, type IChatMessage, type Settings, type PromptInfo, type Prompt, type Prompts, type SettingsWrapper, DataSourceType, type DataSourceModel, type DataSourceCreateModel, type DataSourceUpdateModel, type SchemaTablesModel, type ColumnInfoModel, type DataProviderInfoModel, type SqlStatementModel, type SqlType, type RunSqlResultModel as SqlRunResultModel, type ThemeConfigItem, type ThemeName };
+export { ChatRole, type IChatMessage, type Settings, type PromptInfo, type Prompt, type Prompts, type SettingsWrapper, DataSourceType, type DataSourceModel, type DataSourceCreateModel, type DataSourceUpdateModel, type SchemaTablesModel, type ColumnInfoModel, type DataProviderInfoModel, type SqlStatementModel, type SqlType, type RunSqlResultModel as SqlRunResultModel, type ThemeConfigItem, type ThemeName }

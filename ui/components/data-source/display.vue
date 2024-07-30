@@ -13,7 +13,7 @@
 </template>
 
 <script setup lang="ts">
-import type { DataSourceModel } from '~/types/Schemas';
+import type { DataSourceModel } from '~/types/Schemas'
 
 defineProps<{
     selectedDataSource: DataSourceModel | null

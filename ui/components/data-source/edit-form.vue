@@ -71,7 +71,7 @@
 </template>
 
 <script setup lang="ts">
-import { DataSourceType, type DataSourceUpdateModel } from '~/types/Schemas';
+import { DataSourceType, type DataSourceUpdateModel } from '~/types/Schemas'
 const formEntered = ref(false)
 const formValid = computed(() => typeValidation.value && nameValidation.value && connStrValidation.value)
 

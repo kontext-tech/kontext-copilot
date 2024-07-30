@@ -45,7 +45,7 @@ import type { DataSourceModel } from '~/types/Schemas'
 import { DataSourcesService } from '~/services/ApiServices'
 import DataSourceCreateForm from '~/components/data-source/create-form.vue'
 
-const appConfig = useAppConfig();
+const appConfig = useAppConfig()
 const dataSources = ref<DataSourceModel[]>()
 const dataSourceService = new DataSourcesService(appConfig.apiBaseUrl)
 const createForm = ref<InstanceType<typeof DataSourceCreateForm> | null>(null)
@@ -76,7 +76,7 @@ const createDataSource = async () => {
                 createError.value = null
                 form.dataSourceCreateModel = { type: null }
             } catch (err) {
-                createError.value = err instanceof Error ? err.message : 'An unexpected error occurred';
+                createError.value = err instanceof Error ? err.message : 'An unexpected error occurred'
                 console.error(createError.value)
             }
         }

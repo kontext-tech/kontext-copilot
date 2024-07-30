@@ -67,11 +67,11 @@
 
 
 <script setup lang="ts">
-import { type Message } from 'ollama/browser';
-import ChatMessage from '~/components/chat/chat-message.vue';
-import DefaultLayout from '~/layouts/default-layout.vue';
-import OllamaLlmService from '~/services/OllamaLlmService';
-import { ChatRole, type IChatMessage, type SettingsWrapper } from '~/types/Schemas';
+import { type Message } from 'ollama/browser'
+import ChatMessage from '~/components/chat/chat-message.vue'
+import DefaultLayout from '~/layouts/default-layout.vue'
+import OllamaLlmService from '~/services/OllamaLlmService'
+import { ChatRole, type IChatMessage, type SettingsWrapper } from '~/types/Schemas'
 
 const settingsWrapper = inject('settings') as Ref<SettingsWrapper>
 const settings = computed(() => settingsWrapper.value.settings)

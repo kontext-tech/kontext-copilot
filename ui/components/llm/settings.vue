@@ -136,7 +136,7 @@
 </template>
 
 <script setup lang="ts">
-import type { SettingsWrapper } from '~/types/Schemas';
+import type { SettingsWrapper } from '~/types/Schemas'
 
 const settingsWrapper = inject('settings') as Ref<SettingsWrapper>
 const settings =  computed(() => settingsWrapper.value.settings)

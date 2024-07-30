@@ -27,7 +27,7 @@
 </template>
 
 <script setup lang="ts">
-import DefaultLayout from '~/layouts/default-layout.vue';
+import DefaultLayout from '~/layouts/default-layout.vue'
 usePageTitle()
 
 const btnId = 'btn' + useId()

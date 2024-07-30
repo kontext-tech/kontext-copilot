@@ -106,7 +106,7 @@ watchEffect(() => {
             title: route.meta['title'] || appConfig.appName,
         }
     )
-});
+})
 
 </script>
 

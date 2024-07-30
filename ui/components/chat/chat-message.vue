@@ -54,7 +54,7 @@ const htmlMessage = computed(() => {
 const { copy } = useClipboard()
 
 const copyMessage = async () => {
-    copy(props.message.message);
+    copy(props.message.message)
 }
 
 </script>

@@ -42,8 +42,8 @@
 </template>
 
 <script setup lang="ts">
-import { DataSourcesService } from '~/services/ApiServices';
-import type { DataSourceModel } from '~/types/Schemas';
+import { DataSourcesService } from '~/services/ApiServices'
+import type { DataSourceModel } from '~/types/Schemas'
 
 const appConfig = useAppConfig()
 const dataSourcesService = new DataSourcesService(appConfig.apiBaseUrl)
@@ -56,10 +56,10 @@ const loaded = ref(false)
 
 const selectSource = (ds: DataSourceModel) => {
     selectedDataSource.value = ds
-    emit('dataSourceSelected', ds.id);
+    emit('dataSourceSelected', ds.id)
 }
 
-const emit = defineEmits(['dataSourceSelected']);
+const emit = defineEmits(['dataSourceSelected'])
 
 onMounted(() => {
     isLoading.value = true
@@ -70,10 +70,10 @@ onMounted(() => {
         isLoading.value = false
         if (props.autoSelect && data.length > 0) {
             selectedDataSource.value = data[0]
-            emit('dataSourceSelected', data[0].id);
+            emit('dataSourceSelected', data[0].id)
         }
     }).catch((err) => {
-        error.value = err instanceof Error ? err.message : 'An unexpected error occurred';
+        error.value = err instanceof Error ? err.message : 'An unexpected error occurred'
         isLoading.value = false
         loaded.value = false
     })

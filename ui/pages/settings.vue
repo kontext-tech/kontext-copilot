@@ -52,8 +52,8 @@
 </template>
 
 <script setup lang="ts">
-import DefaultLayout from '~/layouts/default-layout.vue';
-import type { SettingsWrapper } from '~/types/Schemas';
+import DefaultLayout from '~/layouts/default-layout.vue'
+import type { SettingsWrapper } from '~/types/Schemas'
 
 const id = useId()
 const generalTabId = 'tab-general-' + id

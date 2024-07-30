@@ -147,10 +147,10 @@ const dataProviderService = new DataProviderService(appConfig.apiBaseUrl)
 
 const sampleDataFields = computed(() => {
     if (sampleDataModal.data.length > 0) {
-        return Object.keys(sampleDataModal.data[0]).map((key) => ({ key, label: key, sortable: true }));
+        return Object.keys(sampleDataModal.data[0]).map((key) => ({ key, label: key, sortable: true }))
     }
-    return [];
-});
+    return []
+})
 
 const showSampleDataModal = (table: string) => {
     currentTable.value = table
@@ -163,7 +163,7 @@ const showSampleDataModal = (table: string) => {
             sampleDataModal.data = data
             sampleDataModal.isLoading = false
         }).catch((err) => {
-            sampleDataModal.error = err instanceof Error ? err.message : 'An unexpected error occurred';
+            sampleDataModal.error = err instanceof Error ? err.message : 'An unexpected error occurred'
             sampleDataModal.isLoading = false
         })
     }
@@ -205,7 +205,7 @@ const showSqlModal = (table: string, sqlType: SqlType) => {
             sqlModal.sql = data.sql
             sqlModal.isLoading = false
         }).catch((err) => {
-            sqlModal.sql = err instanceof Error ? err.message : 'An unexpected error occurred';
+            sqlModal.sql = err instanceof Error ? err.message : 'An unexpected error occurred'
             sqlModal.isLoading = false
         })
     }

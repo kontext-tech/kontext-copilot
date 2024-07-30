@@ -110,7 +110,7 @@
 import type { DataSourceModel, DataSourceUpdateModel } from '~/types/Schemas'
 import EditForm from './edit-form.vue'
 import { DataSourcesService } from '~/services/ApiServices'
-import type { BModal } from 'bootstrap-vue-next';
+import type { BModal } from 'bootstrap-vue-next'
 
 const appConfig = useAppConfig()
 const dataSourceService = new DataSourcesService(appConfig.apiBaseUrl)
@@ -143,7 +143,7 @@ const deleteDataSource = async () => {
             deleteConfirmModal.value?.hide()
             currentSourceId.value = null
         } catch (err) {
-            error.value = err instanceof Error ? err.message : 'An unexpected error occurred';
+            error.value = err instanceof Error ? err.message : 'An unexpected error occurred'
             console.error(error.value)
         }
     }
@@ -160,7 +160,7 @@ const updateDataSource = async () => {
                 error.value = null
                 editModal.value?.hide()
             } catch (err) {
-                error.value = err instanceof Error ? err.message : 'An unexpected error occurred';
+                error.value = err instanceof Error ? err.message : 'An unexpected error occurred'
                 console.error(error.value)
             }
         }

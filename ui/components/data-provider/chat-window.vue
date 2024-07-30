@@ -59,7 +59,7 @@
 <script setup lang="ts">
 import type { Message } from 'ollama/browser'
 import { DataProviderService } from '~/services/ApiServices'
-import OllamaLlmService from '~/services/OllamaLlmService';
+import OllamaLlmService from '~/services/OllamaLlmService'
 import { ChatRole, type IChatMessage, type SettingsWrapper } from '~/types/Schemas'
 import type { ChatToDataCommonProps } from '~/types/UIProps'
 
