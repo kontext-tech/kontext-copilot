@@ -1,20 +1,38 @@
 <template>
-    <BDropdown :variant="simple ? 'link' : 'outline-secondary'" :id="btnId" :disabled="disabled">
-        <template #button-content>
-            <Icon :name="selectedTheme?.iconName" class="me-1" />
-            <template v-if="!simple">
-                {{ selectedTheme?.name }}
-            </template>
-            <Icon name="material-symbols:arrow-drop-down" />
-        </template>
-        <BDropdownItem v-for="theme in themes" :key="theme.key" @click="setPreference(theme.key)"
-            :disabled="theme.key === preference">
-            <span class="d-flex align-items-center cursor-pointer">
-                <Icon :name="theme.iconName" class="me-1" /> <span>{{ theme.name }}</span>
-                <Icon v-if="theme.key === preference" name="material-symbols:check" class="ms-auto text-primary" />
-            </span>
-        </BDropdownItem>
-    </BDropdown>
+  <BDropdown
+    :id="btnId"
+    :variant="simple ? 'link' : 'outline-secondary'"
+    :disabled="disabled"
+  >
+    <template #button-content>
+      <Icon
+        :name="selectedTheme?.iconName"
+        class="me-1"
+      />
+      <template v-if="!simple">
+        {{ selectedTheme?.name }}
+      </template>
+      <Icon name="material-symbols:arrow-drop-down" />
+    </template>
+    <BDropdownItem
+      v-for="theme in themes"
+      :key="theme.key"
+      :disabled="theme.key === preference"
+      @click="setPreference(theme.key)"
+    >
+      <span class="d-flex align-items-center cursor-pointer">
+        <Icon
+          :name="theme.iconName"
+          class="me-1"
+        /> <span>{{ theme.name }}</span>
+        <Icon
+          v-if="theme.key === preference"
+          name="material-symbols:check"
+          class="ms-auto text-primary"
+        />
+      </span>
+    </BDropdownItem>
+  </BDropdown>
 </template>
 
 <script setup lang="ts">

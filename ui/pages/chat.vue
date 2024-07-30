@@ -8,22 +8,54 @@
 
       <div class="mt-3 d-flex flex-column min-h-0 h-100 overflow-y-hidden">
         <div class="flex-grow-1 d-flex flex-column overflow-y-hidden">
-          <div class="flex-grow-1 flex-shrink-1 overflow-y-auto px-4" ref="chatMain">
+          <div
+            ref="chatMain"
+            class="flex-grow-1 flex-shrink-1 overflow-y-auto px-4"
+          >
             <template v-for="message in chatHistory">
-              <ChatMessage :message="ollmaMessageToChatMessage(message)" :username="settings.general_username" />
+              <ChatMessage
+                :message="ollmaMessageToChatMessage(message)"
+                :username="settings.general_username"
+              />
             </template>
-            <ChatMessage :message="currentResponse" :username="settings.general_username" v-if="generating" />
+            <ChatMessage
+              v-if="generating"
+              :message="currentResponse"
+              :username="settings.general_username"
+            />
           </div>
           <div class="flex-shrink-0 p-4 d-flex align-items-center">
             <span class="chat-icon">
-              <Icon :name="getRoleIcon(
-                ChatRole.USER)" size="24" :class="getRoleClass(ChatRole.USER)" />
+              <Icon
+                :name="getRoleIcon(
+                  ChatRole.USER)"
+                size="24"
+                :class="getRoleClass(ChatRole.USER)"
+              />
             </span>
-            <div v-if="settingsWrapper.loaded" class="input-group">
-              <input ref="chatInput" class="form-control" type="text" v-model="userInput"
-                placeholder="Type a message..." @keydown.enter.prevent="sendMessage" :disabled="generating"></input>
-              <button class="btn btn-primary" type="button" :disabled="sendButtonDisabled" @click="sendMessage">
-                <Icon name="material-symbols:send" size="20" />
+            <div
+              v-if="settingsWrapper.loaded"
+              class="input-group"
+            >
+              <input
+                ref="chatInput"
+                v-model="userInput"
+                class="form-control"
+                type="text"
+                placeholder="Type a message..."
+                :disabled="generating"
+                @keydown.enter.prevent="sendMessage"
+              ></input>
+              <button
+                class="btn btn-primary"
+                type="button"
+                :disabled="sendButtonDisabled"
+                @click="sendMessage"
+              >
+                <Icon
+                  name="material-symbols:send"
+                  size="20"
+                />
               </button>
             </div>
           </div>

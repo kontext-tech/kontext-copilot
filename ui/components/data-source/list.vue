@@ -1,66 +1,109 @@
 <template>
-    <template v-if="dataSources">
-        <div v-if="dataSources.length > 0">
-            <div class="table-responsive">
-                <table class="table table-striped table-hover">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Name</th>
-                            <th>Type</th>
-                            <th>Description</th>
-                            <th>Options</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-for="dataSource in dataSources" :key="dataSource.id">
-                            <td>{{ dataSource.id }}</td>
-                            <td>{{ dataSource.name }}</td>
-                            <td>
-                                <BBadge variant="light">{{ dataSource.type }}</BBadge>
-                            </td>
-                            <td>{{ dataSource.description }}</td>
-                            <td>
-                                <BButton variant="link" title="Edit" :key="`${dataSource.id}-btn-edit`"
-                                    @click="showEditModal(dataSource)">
-                                    <Icon name="material-symbols:edit-outline" />
-                                </BButton>
+  <template v-if="dataSources">
+    <div v-if="dataSources.length > 0">
+      <div class="table-responsive">
+        <table class="table table-striped table-hover">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Type</th>
+              <th>Description</th>
+              <th>Options</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              v-for="dataSource in dataSources"
+              :key="dataSource.id"
+            >
+              <td>{{ dataSource.id }}</td>
+              <td>{{ dataSource.name }}</td>
+              <td>
+                <BBadge variant="light">
+                  {{ dataSource.type }}
+                </BBadge>
+              </td>
+              <td>{{ dataSource.description }}</td>
+              <td>
+                <BButton
+                  :key="`${dataSource.id}-btn-edit`"
+                  variant="link"
+                  title="Edit"
+                  @click="showEditModal(dataSource)"
+                >
+                  <Icon name="material-symbols:edit-outline" />
+                </BButton>
 
-                                <BButton variant="link" title="Delete" :key="`${dataSource.id}-btn-delete`"
-                                    @click="showDeleteConfirmModal(dataSource)">
-                                    <Icon name="material-symbols:delete-outline" />
-                                </BButton>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-                <BModal title="Edit data source" size="lg" key="modalEdit" id="modalEdit" ok-title="Save"
-                    @ok.prevent="updateDataSource" ref="editModal">
-                    <BAlert v-if="error" :model-value="error != null" variant="danger">
-                        {{ error }}
-                    </BAlert>
-                    <EditForm id="editForm" :updateModel="currentModel" key="editForm" ref="editForm" />
-                </BModal>
-                <BModal title="Delete data source" size="md" key="modalDelete" id="modalDelete" ok-title="Delete"
-                    ok-variant="danger" @ok.prevent="deleteDataSource" ref="deleteConfirmModal">
-                    <BAlert v-if="error" :model-value="error != null" variant="danger">
-                        {{ error }}
-                    </BAlert>
-                    <p>Are you sure you want to delete this data source?</p>
-                    <p><strong>Name:</strong> {{ currentModel?.name }}</p>
-                </BModal>
-            </div>
-        </div>
-        <div class="alert alert-warning" v-else>
-            No data sources found.
-        </div>
-    </template>
-    <template v-else>
-        <div class="w-100 h-100">
-            <BSpinner label="Loading data sources..." />
-        </div>
-    </template>
-
+                <BButton
+                  :key="`${dataSource.id}-btn-delete`"
+                  variant="link"
+                  title="Delete"
+                  @click="showDeleteConfirmModal(dataSource)"
+                >
+                  <Icon name="material-symbols:delete-outline" />
+                </BButton>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <BModal
+          id="modalEdit"
+          key="modalEdit"
+          ref="editModal"
+          title="Edit data source"
+          size="lg"
+          ok-title="Save"
+          @ok.prevent="updateDataSource"
+        >
+          <BAlert
+            v-if="error"
+            :model-value="error != null"
+            variant="danger"
+          >
+            {{ error }}
+          </BAlert>
+          <EditForm
+            id="editForm"
+            key="editForm"
+            ref="editForm"
+            :update-model="currentModel"
+          />
+        </BModal>
+        <BModal
+          id="modalDelete"
+          key="modalDelete"
+          ref="deleteConfirmModal"
+          title="Delete data source"
+          size="md"
+          ok-title="Delete"
+          ok-variant="danger"
+          @ok.prevent="deleteDataSource"
+        >
+          <BAlert
+            v-if="error"
+            :model-value="error != null"
+            variant="danger"
+          >
+            {{ error }}
+          </BAlert>
+          <p>Are you sure you want to delete this data source?</p>
+          <p><strong>Name:</strong> {{ currentModel?.name }}</p>
+        </BModal>
+      </div>
+    </div>
+    <div
+      v-else
+      class="alert alert-warning"
+    >
+      No data sources found.
+    </div>
+  </template>
+  <template v-else>
+    <div class="w-100 h-100">
+      <BSpinner label="Loading data sources..." />
+    </div>
+  </template>
 </template>
 
 <script setup lang="ts">

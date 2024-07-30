@@ -1,44 +1,67 @@
 <template>
-    <BDropdown key="schemaSelector" v-if="dataProviderInfo" variant="outline-secondary"
-        :disabled="!dataProviderInfo.supports_schema">
-        <template #button-content>
-            <template v-if="selectedSchema">
-                {{ selectedSchema }}
-            </template>
-            <template v-else>
-                Select schema
-            </template>
-            <Icon name="material-symbols:arrow-drop-down"></Icon>
-        </template>
-        <BDropdownItem v-if="dataProviderInfo" v-for="schema in dataProviderInfo.metadata" :key="schema.schema ?? '-'"
-            @click="handleSelectSchema(schema.schema)">
-            {{ schema.schema }}
-        </BDropdownItem>
-    </BDropdown>
+  <BDropdown
+    v-if="dataProviderInfo"
+    key="schemaSelector"
+    variant="outline-secondary"
+    :disabled="!dataProviderInfo.supports_schema"
+  >
+    <template #button-content>
+      <template v-if="selectedSchema">
+        {{ selectedSchema }}
+      </template>
+      <template v-else>
+        Select schema
+      </template>
+      <Icon name="material-symbols:arrow-drop-down" />
+    </template>
+    <BDropdownItem
+      v-for="schema in dataProviderInfo.metadata"
+      v-if="dataProviderInfo"
+      :key="schema.schema ?? '-'"
+      @click="handleSelectSchema(schema.schema)"
+    >
+      {{ schema.schema }}
+    </BDropdownItem>
+  </BDropdown>
 
-    <BDropdown key="tableSelector" v-if="dataProviderInfo" variant="outline-secondary">
-        <template #button-content>
-            <template v-if="selectedTables.length > 0">
-                {{ selectedTables.length }} tables selected
-            </template>
-            <template v-else>
-                Select tables
-            </template>
-            <Icon name="material-symbols:arrow-drop-down"></Icon>
-        </template>
-        <BDropdownItem>
-            <div class="d-flex align-items-center gap-1" @change="handleSelectAllTables">
-                <BFormCheckbox v-model="selectAll">{{ selectAllLabel }}</BFormCheckbox>
-            </div>
-        </BDropdownItem>
-        <BDropdownItem v-for="table in tables" :key="table.key" @click="handleSelectTable(table.key)">
-            <div class="d-flex align-items-center gap-1">
-                <BFormCheckbox v-model="table.selected" :key="table.key"></BFormCheckbox>
-                <Icon name="material-symbols:table"></Icon> {{ table.label }}
-            </div>
-        </BDropdownItem>
-    </BDropdown>
-
+  <BDropdown
+    v-if="dataProviderInfo"
+    key="tableSelector"
+    variant="outline-secondary"
+  >
+    <template #button-content>
+      <template v-if="selectedTables.length > 0">
+        {{ selectedTables.length }} tables selected
+      </template>
+      <template v-else>
+        Select tables
+      </template>
+      <Icon name="material-symbols:arrow-drop-down" />
+    </template>
+    <BDropdownItem>
+      <div
+        class="d-flex align-items-center gap-1"
+        @change="handleSelectAllTables"
+      >
+        <BFormCheckbox v-model="selectAll">
+          {{ selectAllLabel }}
+        </BFormCheckbox>
+      </div>
+    </BDropdownItem>
+    <BDropdownItem
+      v-for="table in tables"
+      :key="table.key"
+      @click="handleSelectTable(table.key)"
+    >
+      <div class="d-flex align-items-center gap-1">
+        <BFormCheckbox
+          :key="table.key"
+          v-model="table.selected"
+        />
+        <Icon name="material-symbols:table" /> {{ table.label }}
+      </div>
+    </BDropdownItem>
+  </BDropdown>
 </template>
 
 <script setup lang="ts">

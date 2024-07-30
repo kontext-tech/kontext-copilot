@@ -1,70 +1,126 @@
 <template>
-    <BAccordion v-if="schema" free>
-        <BAccordionItem :key="schemaName" visible body-class="list-group list-group-flush px-0 py-2">
-            <template #title>
-                <span class="fw-bold">
-                    <Icon name="material-symbols:schema-outline"></Icon> {{ schemaName }}
-                </span>
-            </template>
-            <div v-for="(t, index) in schema.tables" :key="index"
-                class="list-group-item d-flex align-items-center gap-1 py-0">
-                <span class="flex-grow-1">{{ t }}</span>
-                <BDropdown variant="link" toggle-class="text-decoration-none" noCaret>
-                    <template #button-content>
-                        <Icon name="material-symbols:more-vert"></Icon>
-                    </template>
-                    <BDropdownItem @click="showSampleDataModal(t)">
-                        <Icon name="material-symbols:data-exploration-outline"></Icon> Sample data
-                    </BDropdownItem>
-                    <BDropdownItem @click="showSqlModal(t, 'CREATE')">
-                        <Icon name="material-symbols:code"></Icon> SQL: CREATE TABLE
-                    </BDropdownItem>
-                    <BDropdownItem @click="showSqlModal(t, 'SELECT')">
-                        <Icon name="material-symbols:code"></Icon> SQL: SELECT
-                    </BDropdownItem>
-                </BDropdown>
-            </div>
+  <BAccordion
+    v-if="schema"
+    free
+  >
+    <BAccordionItem
+      :key="schemaName"
+      visible
+      body-class="list-group list-group-flush px-0 py-2"
+    >
+      <template #title>
+        <span class="fw-bold">
+          <Icon name="material-symbols:schema-outline" /> {{ schemaName }}
+        </span>
+      </template>
+      <div
+        v-for="(t, index) in schema.tables"
+        :key="index"
+        class="list-group-item d-flex align-items-center gap-1 py-0"
+      >
+        <span class="flex-grow-1">{{ t }}</span>
+        <BDropdown
+          variant="link"
+          toggle-class="text-decoration-none"
+          no-caret
+        >
+          <template #button-content>
+            <Icon name="material-symbols:more-vert" />
+          </template>
+          <BDropdownItem @click="showSampleDataModal(t)">
+            <Icon name="material-symbols:data-exploration-outline" /> Sample data
+          </BDropdownItem>
+          <BDropdownItem @click="showSqlModal(t, 'CREATE')">
+            <Icon name="material-symbols:code" /> SQL: CREATE TABLE
+          </BDropdownItem>
+          <BDropdownItem @click="showSqlModal(t, 'SELECT')">
+            <Icon name="material-symbols:code" /> SQL: SELECT
+          </BDropdownItem>
+        </BDropdown>
+      </div>
 
-            <!--Modal for showing sample data-->
-            <BModal v-model="sampleDataModal.open" :id="sampleDataModal.id" :title="sampleDataModal.title"
-                :size="sampleDataModal.size" okOnly okTitle="Close" @hide="resetSampleDataModal">
-                <BAlert v-if="sampleDataModal.error" :model-value="sampleDataModal.error != null" variant="danger">
-                    {{ sampleDataModal.error }}
-                </BAlert>
-                <div v-if="sampleDataModal.isLoading">
-                    <BSpinner variant="primary" />
-                </div>
-                <div v-if="!sampleDataModal.isLoading && sampleDataModal.data && sampleDataModal.data.length > 0"
-                    class="table-responsive">
-                    <BTable striped hover small :items="sampleDataModal.data" :fields="sampleDataFields" />
-                </div>
-                <BAlert variant="warning" class="d-flex align-items-center"
-                    :model-value="!sampleDataModal.isLoading && sampleDataModal.data && sampleDataModal.data.length == 0">
-                    <Icon name="material-symbols:warning-outline" class="me-1"></Icon>
-                    <span>No records.</span>
-                </BAlert>
-            </BModal>
+      <!--Modal for showing sample data-->
+      <BModal
+        :id="sampleDataModal.id"
+        v-model="sampleDataModal.open"
+        :title="sampleDataModal.title"
+        :size="sampleDataModal.size"
+        ok-only
+        ok-title="Close"
+        @hide="resetSampleDataModal"
+      >
+        <BAlert
+          v-if="sampleDataModal.error"
+          :model-value="sampleDataModal.error != null"
+          variant="danger"
+        >
+          {{ sampleDataModal.error }}
+        </BAlert>
+        <div v-if="sampleDataModal.isLoading">
+          <BSpinner variant="primary" />
+        </div>
+        <div
+          v-if="!sampleDataModal.isLoading && sampleDataModal.data && sampleDataModal.data.length > 0"
+          class="table-responsive"
+        >
+          <BTable
+            striped
+            hover
+            small
+            :items="sampleDataModal.data"
+            :fields="sampleDataFields"
+          />
+        </div>
+        <BAlert
+          variant="warning"
+          class="d-flex align-items-center"
+          :model-value="!sampleDataModal.isLoading && sampleDataModal.data && sampleDataModal.data.length == 0"
+        >
+          <Icon
+            name="material-symbols:warning-outline"
+            class="me-1"
+          />
+          <span>No records.</span>
+        </BAlert>
+      </BModal>
 
-            <BModal :id="sqlModal.id" :size="sqlModal.size" v-model="sqlModal.open" :title="sqlModal.title"
-                @hide="resetSqlModal">
-                <template #footer>
-                    <BButton variant="primary" @click="copyToClipboard" v-b-tooltip.click.top title="Copied!">
-                        <Icon name="material-symbols:content-copy-outline"></Icon> Copy
-                    </BButton>
-                    <BButton variant="secondary" @click="sqlModal.open = false">Close
-                    </BButton>
-                </template>
-                <BAlert v-if="sqlModal.error" :model-value="sqlModal.error != null" variant="danger">
-                    {{ sqlModal.error }}
-                </BAlert>
-                <div v-if="sqlModal.isLoading">
-                    <BSpinner variant="primary" />
-                </div>
-                <pre>{{ sqlModal.sql }}</pre>
-            </BModal>
-
-        </BAccordionItem>
-    </BAccordion>
+      <BModal
+        :id="sqlModal.id"
+        v-model="sqlModal.open"
+        :size="sqlModal.size"
+        :title="sqlModal.title"
+        @hide="resetSqlModal"
+      >
+        <template #footer>
+          <BButton
+            v-b-tooltip.click.top
+            variant="primary"
+            title="Copied!"
+            @click="copyToClipboard"
+          >
+            <Icon name="material-symbols:content-copy-outline" /> Copy
+          </BButton>
+          <BButton
+            variant="secondary"
+            @click="sqlModal.open = false"
+          >
+            Close
+          </BButton>
+        </template>
+        <BAlert
+          v-if="sqlModal.error"
+          :model-value="sqlModal.error != null"
+          variant="danger"
+        >
+          {{ sqlModal.error }}
+        </BAlert>
+        <div v-if="sqlModal.isLoading">
+          <BSpinner variant="primary" />
+        </div>
+        <pre>{{ sqlModal.sql }}</pre>
+      </BModal>
+    </BAccordionItem>
+  </BAccordion>
 </template>
 
 <script setup lang="ts">

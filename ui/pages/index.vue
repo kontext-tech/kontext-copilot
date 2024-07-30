@@ -12,7 +12,10 @@
               <p class="text-muted">
                 Initiate a chat with LLMs.
               </p>
-              <NuxtLink to="/chat" class="btn btn-outline-primary">
+              <NuxtLink
+                to="/chat"
+                class="btn btn-outline-primary"
+              >
                 <Icon name="material-symbols:edit-square-outline" /> <span>New chat</span>
               </NuxtLink>
             </div>

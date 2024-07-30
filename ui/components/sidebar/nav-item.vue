@@ -1,28 +1,51 @@
 <template>
-    <li class="nav-item">
-        <template v-if="hasChildren">
-            <BLink v-b-toggle="collapseId" class="nav-link d-flex align-items-center mx-2 mb-1"
-                :class="{ active: isChildActive }">
-                <Icon :name="icon" size="20" />
-                <span class="ms-1">{{ text }}</span>
-                <Icon :name="collapseIconName" size="20" class="ms-auto" />
-            </BLink>
-            <BCollapse :key="id" :id="collapseId" ref="collapseEl" visible @shown="onCollapseShown"
-                @hidden="onCollapseHidden">
-                <ul class="nav flex-column ms-3">
-                    <template v-for="child in props.children">
-                        <SidebarNavItem v-bind="child" />
-                    </template>
-                </ul>
-            </BCollapse>
-        </template>
-        <template v-else>
-            <NuxtLink :to="to" class="nav-link d-flex align-items-center mx-2 mb-1" :class="{ active: isActive }">
-                <Icon :name="icon" size="20" />
-                <span class="ms-1">{{ text }}</span>
-            </NuxtLink>
-        </template>
-    </li>
+  <li class="nav-item">
+    <template v-if="hasChildren">
+      <BLink
+        v-b-toggle="collapseId"
+        class="nav-link d-flex align-items-center mx-2 mb-1"
+        :class="{ active: isChildActive }"
+      >
+        <Icon
+          :name="icon"
+          size="20"
+        />
+        <span class="ms-1">{{ text }}</span>
+        <Icon
+          :name="collapseIconName"
+          size="20"
+          class="ms-auto"
+        />
+      </BLink>
+      <BCollapse
+        :id="collapseId"
+        :key="id"
+        ref="collapseEl"
+        visible
+        @shown="onCollapseShown"
+        @hidden="onCollapseHidden"
+      >
+        <ul class="nav flex-column ms-3">
+          <template v-for="child in props.children">
+            <SidebarNavItem v-bind="child" />
+          </template>
+        </ul>
+      </BCollapse>
+    </template>
+    <template v-else>
+      <NuxtLink
+        :to="to"
+        class="nav-link d-flex align-items-center mx-2 mb-1"
+        :class="{ active: isActive }"
+      >
+        <Icon
+          :name="icon"
+          size="20"
+        />
+        <span class="ms-1">{{ text }}</span>
+      </NuxtLink>
+    </template>
+  </li>
 </template>
 
 <script setup lang="ts">

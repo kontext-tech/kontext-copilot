@@ -21,7 +21,7 @@ repos:
         language: system
         types: [javascript, ts, vue]
         files: \.(vue|js|jsx|ts|tsx)$
-        args: ["--fix", "--cache"]
+        args: ["--fix", "--cache", './ui']
   - repo: https://github.com/commitizen-tools/commitizen
     rev: v3.27.0
     hooks:

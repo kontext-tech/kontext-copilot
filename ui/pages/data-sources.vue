@@ -1,23 +1,42 @@
 <template>
-    <NuxtLayout>
-        <DefaultLayout>
-            <template #["header-secondary"]>
-                <BButton variant="outline-secondary" v-b-modal.createFormModal>
-                    <Icon name="material-symbols:add" /> Add data source
-                </BButton>
-                <BModal v-model="createFormModal" id="createFormModal" title="Add data source" size="lg"
-                    okTitle="Create" @ok.prevent="createDataSource">
-                    <BAlert v-if="createError" :model-value="createError != null" variant="danger">
-                        {{ createError }}
-                    </BAlert>
-                    <DataSourceCreateForm ref="createForm" id="createForm" />
-                </BModal>
-            </template>
-            <div class="px-4 mt-3 w-100">
-                <DataSourceList :dataSources="dataSources" @delete="handleDeleteDataSource" />
-            </div>
-        </DefaultLayout>
-    </NuxtLayout>
+  <NuxtLayout>
+    <DefaultLayout>
+      <template #["header-secondary"]>
+        <BButton
+          v-b-modal.createFormModal
+          variant="outline-secondary"
+        >
+          <Icon name="material-symbols:add" /> Add data source
+        </BButton>
+        <BModal
+          id="createFormModal"
+          v-model="createFormModal"
+          title="Add data source"
+          size="lg"
+          ok-title="Create"
+          @ok.prevent="createDataSource"
+        >
+          <BAlert
+            v-if="createError"
+            :model-value="createError != null"
+            variant="danger"
+          >
+            {{ createError }}
+          </BAlert>
+          <DataSourceCreateForm
+            id="createForm"
+            ref="createForm"
+          />
+        </BModal>
+      </template>
+      <div class="px-4 mt-3 w-100">
+        <DataSourceList
+          :data-sources="dataSources"
+          @delete="handleDeleteDataSource"
+        />
+      </div>
+    </DefaultLayout>
+  </NuxtLayout>
 </template>
 
 <script setup lang="ts">

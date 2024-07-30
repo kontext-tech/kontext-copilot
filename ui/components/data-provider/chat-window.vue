@@ -1,35 +1,67 @@
 <template>
-    <div class="d-flex flex-column h-100 overflow-y-hidden">
-        <div class="flex-grow-1 d-flex flex-column overflow-y-hidden vh-100">
-            <div class="flex-grow-1 flex-shrink-1 overflow-y-auto" ref="chatMain">
-                <template v-for="message in chatHistory">
-                    <ChatMessage :message="ollmaMessageToChatMessage(message)" :username="settings.general_username" />
-                </template>
-                <ChatMessage :message="currentResponse" :username="settings.general_username" v-if="generating" />
-            </div>
-            <div class="flex-shrink-0 py-4 d-flex align-items-center">
-                <span class="chat-icon">
-                    <Icon :name="getRoleIcon(
-                        ChatRole.USER)" size="24" :class="getRoleClass(ChatRole.USER)" />
-                </span>
-                <div v-if="settingsWrapper.loaded" class="input-group">
-                    <input ref="chatInput" class="form-control" type="text" v-model="userInput"
-                        placeholder="Ask a question..." @keydown.enter.prevent="sendMessage"
-                        :disabled="generating"></input>
-                    <button class="btn btn-primary" type="button" :disabled="sendButtonDisabled" @click="sendMessage">
-                        <Icon name="material-symbols:send" size="20" />
-                    </button>
-                </div>
-            </div>
+  <div class="d-flex flex-column h-100 overflow-y-hidden">
+    <div class="flex-grow-1 d-flex flex-column overflow-y-hidden vh-100">
+      <div
+        ref="chatMain"
+        class="flex-grow-1 flex-shrink-1 overflow-y-auto"
+      >
+        <template v-for="message in chatHistory">
+          <ChatMessage
+            :message="ollmaMessageToChatMessage(message)"
+            :username="settings.general_username"
+          />
+        </template>
+        <ChatMessage
+          v-if="generating"
+          :message="currentResponse"
+          :username="settings.general_username"
+        />
+      </div>
+      <div class="flex-shrink-0 py-4 d-flex align-items-center">
+        <span class="chat-icon">
+          <Icon
+            :name="getRoleIcon(
+              ChatRole.USER)"
+            size="24"
+            :class="getRoleClass(ChatRole.USER)"
+          />
+        </span>
+        <div
+          v-if="settingsWrapper.loaded"
+          class="input-group"
+        >
+          <input
+            ref="chatInput"
+            v-model="userInput"
+            class="form-control"
+            type="text"
+            placeholder="Ask a question..."
+            :disabled="generating"
+            @keydown.enter.prevent="sendMessage"
+          ></input>
+          <button
+            class="btn btn-primary"
+            type="button"
+            :disabled="sendButtonDisabled"
+            @click="sendMessage"
+          >
+            <Icon
+              name="material-symbols:send"
+              size="20"
+            />
+          </button>
         </div>
+      </div>
     </div>
+  </div>
 </template>
 
 <script setup lang="ts">
 import type { Message } from 'ollama/browser'
 import { DataProviderService } from '~/services/ApiServices'
 import OllamaLlmService from '~/services/OllamaLlmService';
-import { ChatRole, type DataProviderInfoModel, type IChatMessage, type SettingsWrapper } from '~/types/Schemas'
+import { ChatRole, type IChatMessage, type SettingsWrapper } from '~/types/Schemas'
+import type { ChatToDataCommonProps } from '~/types/UIProps'
 
 const settingsWrapper = inject('settings') as Ref<SettingsWrapper>
 const settings = computed(() => settingsWrapper.value.settings)
@@ -100,11 +132,6 @@ const sendMessage = async () => {
 
 }
 
-const props = defineProps<{
-    dataProviderInfo?: DataProviderInfoModel,
-    selectedSchema?: string,
-    selectedTables?: string[],
-    selectedModelName?: string
-}>()
+const props = defineProps<ChatToDataCommonProps>()
 
 </script>

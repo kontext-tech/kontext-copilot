@@ -1,4 +1,4 @@
-import type { NavItemProps } from "./types/UIProps";
+import type { NavItemProps } from "./types/UIProps"
 
 export default defineAppConfig(
     {

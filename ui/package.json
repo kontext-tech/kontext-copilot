@@ -27,11 +27,15 @@
     "@iconify-json/material-symbols": "^1.1.84",
     "@types/lodash": "^4.17.6",
     "@types/markdown-it": "^14.1.1",
+    "@typescript-eslint/eslint-plugin": "^7.18.0",
     "bootstrap": "^5.3.3",
     "bootstrap-vue-next": "^0.23.3",
+    "eslint-plugin-prettier": "^5.2.1",
+    "eslint-plugin-vue": "^9.27.0",
     "sass": "^1.77.6",
     "sass-loader": "^14.2.1",
     "typescript": "^5.4.5",
-    "vite-plugin-node-polyfills": "^0.22.0"
+    "vite-plugin-node-polyfills": "^0.22.0",
+    "vue-eslint-parser": "^9.4.3"
   }
 }

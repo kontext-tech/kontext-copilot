@@ -2,6 +2,7 @@
 kontext_ai/ui
 kontext_ai/data/*.db
 *.gguf
+.eslintcache
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

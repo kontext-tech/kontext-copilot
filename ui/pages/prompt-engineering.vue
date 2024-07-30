@@ -1,68 +1,128 @@
 <template>
-    <NuxtLayout>
-        <DefaultLayout>
-            <template #["header-secondary"]>
-                <LlmModelSelector ref="modelSelector" />
-                <LlmSettingsButton />
-                <BFormCheckbox switch v-model="streaming" class="d-flex align-items-center gap-1">Streaming
-                </BFormCheckbox>
-                <BFormCheckbox switch v-model="jsonFormat" class="d-flex align-items-center gap-1">JSON format
-                </BFormCheckbox>
-            </template>
+  <NuxtLayout>
+    <DefaultLayout>
+      <template #["header-secondary"]>
+        <LlmModelSelector ref="modelSelector" />
+        <LlmSettingsButton />
+        <BFormCheckbox
+          v-model="streaming"
+          switch
+          class="d-flex align-items-center gap-1"
+        >
+          Streaming
+        </BFormCheckbox>
+        <BFormCheckbox
+          v-model="jsonFormat"
+          switch
+          class="d-flex align-items-center gap-1"
+        >
+          JSON format
+        </BFormCheckbox>
+      </template>
 
-            <div class="px-4 mt-3">
-                <p class="text-muted">Test your prompts with this utility or select examples from the dropdown list to
-                    get started.
-                </p>
+      <div class="px-4 mt-3">
+        <p class="text-muted">
+          Test your prompts with this utility or select examples from the dropdown list to
+          get started.
+        </p>
 
-                <div class="row d-flex gap-4" v-if="loaded">
-                    <div class="col-md d-flex flex-column gap-4 justify-content-center mb-3">
-                        <div class="col-md">
-                            <BFormSelect v-model="selectedTemplateId" aria-label="Select prompt template"
-                                class="col-md">
-                                <BFormSelectOption selected value="null">
-                                    Select prompt template
-                                </BFormSelectOption>
-                                <BFormSelectOption v-for="template in promptTemplates" :key="template.id"
-                                    :value="template.id">
-                                    {{ template.name }}
-                                </BFormSelectOption>
-                            </BFormSelect>
-                        </div>
-                        <div class="col-md">
-                            <label for="systemPromptInput" class="form-label">System prompt</label>
-                            <textarea class="form-control main-textarea" type="text" v-model="systemPromptInput"
-                                placeholder="System prompt"></textarea>
-                        </div>
-                        <div class="col-md">
-                            <label for="promptInput" class="form-label">Prompt</label>
-                            <textarea class="form-control main-textarea" type="text" v-model="promptInput"
-                                placeholder="Prompt template"></textarea>
-                        </div>
-                        <div class="col-md">
-                            <label for="userInput" class="form-label">User input</label>
-                            <span class="text-muted ms-1" v-pre>(Placeholder {{$input}} in your prompt.)</span>
-                            <textarea class="form-control main-textarea" type="text" v-model="userInput"
-                                placeholder="User input"></textarea>
-                        </div>
-
-                        <BButton variant="primary" @click="generateResponse" :disabled="disableGenerate">Generate
-                            <BSpinner small v-if="generating" />
-                        </BButton>
-                    </div>
-                    <div class="col-md">
-                        <label for="userInput" class="form-label">Response
-                        </label>
-                        <textarea class="form-control main-textarea" type="text" v-model="response"
-                            placeholder="Generated response" :disabled="generating"></textarea>
-                    </div>
-
-                </div>
-
+        <div
+          v-if="loaded"
+          class="row d-flex gap-4"
+        >
+          <div class="col-md d-flex flex-column gap-4 justify-content-center mb-3">
+            <div class="col-md">
+              <BFormSelect
+                v-model="selectedTemplateId"
+                aria-label="Select prompt template"
+                class="col-md"
+              >
+                <BFormSelectOption
+                  selected
+                  value="null"
+                >
+                  Select prompt template
+                </BFormSelectOption>
+                <BFormSelectOption
+                  v-for="template in promptTemplates"
+                  :key="template.id"
+                  :value="template.id"
+                >
+                  {{ template.name }}
+                </BFormSelectOption>
+              </BFormSelect>
+            </div>
+            <div class="col-md">
+              <label
+                for="systemPromptInput"
+                class="form-label"
+              >System prompt</label>
+              <textarea
+                v-model="systemPromptInput"
+                class="form-control main-textarea"
+                type="text"
+                placeholder="System prompt"
+              />
+            </div>
+            <div class="col-md">
+              <label
+                for="promptInput"
+                class="form-label"
+              >Prompt</label>
+              <textarea
+                v-model="promptInput"
+                class="form-control main-textarea"
+                type="text"
+                placeholder="Prompt template"
+              />
+            </div>
+            <div class="col-md">
+              <label
+                for="userInput"
+                class="form-label"
+              >User input</label>
+              <span
+                v-pre
+                class="text-muted ms-1"
+              >(Placeholder {{$input}} in your prompt.)</span>
+              <textarea
+                v-model="userInput"
+                class="form-control main-textarea"
+                type="text"
+                placeholder="User input"
+              />
             </div>
 
-        </DefaultLayout>
-    </NuxtLayout>
+            <BButton
+              variant="primary"
+              :disabled="disableGenerate"
+              @click="generateResponse"
+            >
+              Generate
+              <BSpinner
+                v-if="generating"
+                small
+              />
+            </BButton>
+          </div>
+          <div class="col-md">
+            <label
+              for="userInput"
+              class="form-label"
+            >Response
+            </label>
+            <textarea
+              v-model="response"
+              class="form-control main-textarea"
+              type="text"
+              placeholder="Generated response"
+              :disabled="generating"
+            />
+          </div>
+        </div>
+      </div>
+    </DefaultLayout>
+  </NuxtLayout>
 </template>
 
 <script setup lang="ts">
