@@ -17,11 +17,13 @@ repos:
     hooks:
       - id: eslint
         name: eslint
-        entry: npx eslint
+        entry: npm run lintfix
         language: system
         types: [javascript, ts, vue]
         files: \.(vue|js|jsx|ts|tsx)$
-        args: ["--fix", "--cache", './ui']
+        args: []
+
+
   - repo: https://github.com/commitizen-tools/commitizen
     rev: v3.27.0
     hooks:
