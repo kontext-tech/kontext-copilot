@@ -19,7 +19,7 @@
                      <ThemeToggle />
                   </div>
                </div>
-               <hr >
+               <hr />
                <div class="d-flex justify-content-between align-items-center">
                   <div class="col-md-8">
                      <h6>Name</h6>
@@ -32,7 +32,7 @@
                      />
                   </div>
                </div>
-               <hr >
+               <hr />
             </BTab>
             <BTab :id="llmsTabId">
                <template #title>
@@ -57,7 +57,6 @@ import type { SettingsWrapper } from "~/types/Schemas"
 const id = useId()
 const generalTabId = "tab-general-" + id
 const llmsTabId = "tab-llms-" + id
-const tabContentId = "tab-content-" + id
 
 usePageTitle()
 

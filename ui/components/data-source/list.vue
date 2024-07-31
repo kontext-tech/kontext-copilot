@@ -61,6 +61,7 @@
                   {{ error }}
                </BAlert>
                <EditForm
+                  v-if="currentModel"
                   id="editForm"
                   key="editForm"
                   ref="editForm"
@@ -146,12 +147,13 @@ const updateDataSource = async () => {
    if (editForm.value) {
       const form = editForm.value
       form.setFormEntered(true)
-      if (form.formValid && currentSourceId.value && currentModel.value) {
+      if (form.formValid && currentSourceId.value && form.model) {
          try {
             await dataSourceService.updateDataSource(
                currentSourceId.value,
-               currentModel.value
+               form.model
             )
+            currentModel.value = null
             form.setFormEntered(false)
             error.value = null
             editModal.value?.hide()

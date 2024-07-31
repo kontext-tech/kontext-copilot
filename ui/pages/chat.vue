@@ -12,7 +12,10 @@
                   ref="chatMain"
                   class="flex-grow-1 flex-shrink-1 overflow-y-auto px-4"
                >
-                  <template v-for="message in chatHistory">
+                  <template
+                     v-for="(message, i) in chatHistory"
+                     :key="`${i}-${message.role}`"
+                  >
                      <ChatMessage
                         :message="ollmaMessageToChatMessage(message)"
                         :username="settings.general_username"

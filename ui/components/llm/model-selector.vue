@@ -10,7 +10,7 @@
             <template v-else> Loading </template>
          </template>
          <BDropdownItem
-            v-for="(model, index) in models"
+            v-for="model in models"
             :key="model.name"
             @click="selectModel(model)"
          >

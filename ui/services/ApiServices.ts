@@ -28,10 +28,18 @@ export class SettingsService {
       return response.data
    }
 
-   async updateSetting(key: string, value: string | number): Promise<boolean> {
+   async updateSetting(
+      key: string,
+      value: string | number | null
+   ): Promise<boolean> {
       const response = await axios.post("/settings/", {
          key,
-         value: typeof value === "number" ? value.toString() : value
+         value:
+            value === null
+               ? null
+               : typeof value === "number"
+                 ? value.toString()
+                 : value
       })
       if (response.status === 200) {
          return true

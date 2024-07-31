@@ -1,6 +1,6 @@
 <template>
    <div class="container">
-      <BForm v-if="updateModel">
+      <BForm v-if="model">
          <BFormGroup
             label="Name"
             label-for="dataSourceName"
@@ -9,7 +9,7 @@
          >
             <BFormInput
                id="dataSourceName"
-               v-model="updateModel.name"
+               v-model="model.name"
                required
                placeholder="Enter data source name"
                :state="nameValidation"
@@ -27,7 +27,7 @@
          >
             <BFormSelect
                id="dataSourceType"
-               v-model="updateModel.type"
+               v-model="model.type"
                :options="dataSourceTypes"
                required
                :state="typeValidation"
@@ -43,10 +43,7 @@
             label-class="mb-1"
             class="mb-3"
          >
-            <BFormTextarea
-               id="dataSourceDesc"
-               v-model="updateModel.description"
-            />
+            <BFormTextarea id="dataSourceDesc" v-model="model.description" />
          </BFormGroup>
 
          <BFormGroup
@@ -57,7 +54,7 @@
          >
             <BFormInput
                id="dataSourceConnStr"
-               v-model="updateModel.conn_str"
+               v-model="model.conn_str"
                required
                placeholder="Enter connection string"
                :state="connStrValidation"
@@ -100,11 +97,14 @@ const setFormEntered = (status: boolean = true) => {
 }
 
 const props = defineProps<{
-   updateModel: DataSourceUpdateModel | null
+   updateModel: DataSourceUpdateModel
 }>()
+
+const model = ref<DataSourceUpdateModel>(props.updateModel)
 
 defineExpose({
    setFormEntered,
-   formValid
+   formValid,
+   model
 })
 </script>

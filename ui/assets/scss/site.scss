@@ -2,75 +2,82 @@
 @import "bootstrap/scss/bootstrap";
 
 .header-primary {
-    // margin-bottom: $spacer;
-    height: $kontext-header-height;
-    max-height: $kontext-header-height;
+   // margin-bottom: $spacer;
+   height: $kontext-header-height;
+   max-height: $kontext-header-height;
 }
 
 .header-secondary {
-    // margin-bottom: $spacer;
-    height: $kontext-header-height;
-    max-height: $kontext-header-height;
-    // padding-top: $spacer;
-    // margin-top: calc(-1 * $spacer);
+   // margin-bottom: $spacer;
+   height: $kontext-header-height;
+   max-height: $kontext-header-height;
+   // padding-top: $spacer;
+   // margin-top: calc(-1 * $spacer);
 }
 
 /*Full width for offcans for vw <=md*/
 .offcanvas-md {
-    @include media-breakpoint-down(md) {
-        width: 100vw !important;
-    }
+   @include media-breakpoint-down(md) {
+      width: 100vw !important;
+   }
 }
 
 .cursor-pointer {
-    cursor: pointer;
+   cursor: pointer;
 }
 
 /*Layout related*/
 
 .sidebar-col {
-    width: var(--#{$variable-prefix}sidebar-width, $kontext-sidebar-width) !important;
-    min-width: var(--#{$variable-prefix}sidebar-width, $kontext-sidebar-width) !important;
-    max-width: var(--#{$variable-prefix}sidebar-width, $kontext-sidebar-width) !important;
+   width: var(
+      --#{$variable-prefix}sidebar-width,
+      $kontext-sidebar-width
+   ) !important;
+   min-width: var(
+      --#{$variable-prefix}sidebar-width,
+      $kontext-sidebar-width
+   ) !important;
+   max-width: var(
+      --#{$variable-prefix}sidebar-width,
+      $kontext-sidebar-width
+   ) !important;
 
-    @include media-breakpoint-down(md) {}
+   @include media-breakpoint-down(md) {
+   }
 }
 
 .inset-0 {
-    inset: 0;
+   inset: 0;
 }
 
 .min-h-0 {
-    min-height: 0;
+   min-height: 0;
 }
-
-
 
 @include media-breakpoint-up(md) {
-    .position-relative-md {
-        position: relative !important;
-    }
+   .position-relative-md {
+      position: relative !important;
+   }
 }
-
 
 /*Rounded circle*/
 .rounded-circle {
-    width: $kontext-rounded-circle-size;
-    height: $kontext-rounded-circle-size;
-    line-height: $kontext-rounded-circle-size;
-    text-align: center;
-    justify-content: center;
+   width: $kontext-rounded-circle-size;
+   height: $kontext-rounded-circle-size;
+   line-height: $kontext-rounded-circle-size;
+   text-align: center;
+   justify-content: center;
 }
 
 textarea.main-textarea {
-    min-height: $kontext-chat-input-height * 2;
+   min-height: $kontext-chat-input-height * 2;
 }
 
 /*Chat related*/
 .chat-icon {
-    min-width: 40px;
-    width: 40px;
-    align-self:self-start;
-    padding-left: calc(0.5*$spacer);
-    padding-right: calc(0.5*$spacer);
+   min-width: 40px;
+   width: 40px;
+   align-self: self-start;
+   padding-left: calc(0.5 * $spacer);
+   padding-right: calc(0.5 * $spacer);
 }

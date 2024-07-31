@@ -31,7 +31,7 @@
             {{ settings.llm_temperature }}
          </div>
       </div>
-      <hr >
+      <hr />
       <div class="d-flex justify-content-between align-items-center">
          <div class="col-md-8">
             <h6>Seed</h6>
@@ -51,7 +51,7 @@
             {{ settings.llm_seed }}
          </div>
       </div>
-      <hr >
+      <hr />
       <div class="d-flex justify-content-between align-items-center">
          <div class="col-md-8">
             <h6>Top K Sampling (top_k)</h6>
@@ -73,7 +73,7 @@
             {{ settings.llm_top_k }}
          </div>
       </div>
-      <hr >
+      <hr />
       <div class="d-flex justify-content-between align-items-center">
          <div class="col-md-8">
             <h6>Top P Sampling (top_p)</h6>
@@ -96,7 +96,7 @@
             {{ settings.llm_top_p }}
          </div>
       </div>
-      <hr >
+      <hr />
       <div class="d-flex justify-content-between align-items-center">
          <div class="col-md-8">
             <h6>Endpoint</h6>
@@ -108,7 +108,7 @@
             <BFormInput id="endpoint" v-model="settings.llm_endpoint" />
          </div>
       </div>
-      <hr >
+      <hr />
       <div class="d-flex justify-content-between align-items-center">
          <div class="col-md-8">
             <h6>Ollama Endpoint</h6>
@@ -121,7 +121,7 @@
             />
          </div>
       </div>
-      <hr >
+      <hr />
       <div class="d-flex justify-content-between align-items-center">
          <div class="col-md-8">
             <h6>API key</h6>
@@ -133,7 +133,7 @@
             <BFormInput id="apikey" v-model="llmApiKey" />
          </div>
       </div>
-      <hr >
+      <hr />
       <div class="d-flex justify-content-between align-items-center">
          <div class="col-md-8">
             <h6>Default model</h6>

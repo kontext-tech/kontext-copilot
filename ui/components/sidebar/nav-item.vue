@@ -19,7 +19,7 @@
             @hidden="onCollapseHidden"
          >
             <ul class="nav flex-column ms-3">
-               <template v-for="child in props.children">
+               <template v-for="child in props.children" :key="child.id">
                   <SidebarNavItem v-bind="child" />
                </template>
             </ul>

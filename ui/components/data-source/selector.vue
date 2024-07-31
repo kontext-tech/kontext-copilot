@@ -12,7 +12,7 @@
          {{ error }}
       </BDropdownItem>
       <BDropdownItem
-         v-for="(ds, index) in dataSources"
+         v-for="ds in dataSources"
          :key="ds.id"
          @click="selectSource(ds)"
       >

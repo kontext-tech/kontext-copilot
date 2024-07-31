@@ -17,7 +17,7 @@
                <Icon name="material-symbols:menu" size="24" />
             </BLink>
             <a href="/" class="navbar-brand">
-               <img :src="logoWhite" alt="Kontext Logo" class="img-fluid" >
+               <img :src="logoWhite" alt="Kontext Logo" class="img-fluid" />
             </a>
          </div>
          <div
@@ -94,7 +94,6 @@
 </template>
 
 <script setup lang="ts">
-import logo from "~/assets/images/logo.svg"
 import logoWhite from "~/assets/images/logo-white.svg"
 
 const route = useRoute()

@@ -24,20 +24,20 @@ const fetchSettings = async () => {
       settingsWrapper.value.error = null
       settingsWrapper.value.loaded = true
    } catch (err) {
-      settingsWrapper.value.error = err
-      console.log(err)
+      settingsWrapper.value.error =
+         err instanceof Error ? err.message : String(err)
    } finally {
       settingsWrapper.value.isLoading = false
    }
 }
 
 // Function to update a setting using SettingsService
-const setSetting = async (key: string, value: any) => {
+const setSetting = async (key: string, value: string | number | null) => {
    try {
       await settingsService.updateSetting(key, value)
    } catch (err) {
-      settingsWrapper.value.error = err
-      console.log(err)
+      settingsWrapper.value.error =
+         err instanceof Error ? err.message : String(err)
    }
 }
 

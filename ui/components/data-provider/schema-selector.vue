@@ -14,7 +14,6 @@
       </template>
       <BDropdownItem
          v-for="schema in dataProviderInfo.metadata"
-         v-if="dataProviderInfo"
          :key="schema.schema ?? '-'"
          @click="handleSelectSchema(schema.schema)"
       >
@@ -85,6 +84,7 @@ const tables = computed(() => {
          })) ?? []
       )
    }
+   return []
 })
 
 const handleSelectTable = (table: string) => {

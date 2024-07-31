@@ -27,7 +27,7 @@
             <DataSourceDisplay
                :selected-data-source="dataSourceSelctor.selectedDataSource"
             />
-            <hr >
+            <hr />
             <DataProviderDisplay
                :data-provider-info="dataProviderInfo"
                @refresh-clicked="refresh"

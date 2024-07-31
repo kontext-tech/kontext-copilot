@@ -41,7 +41,7 @@ interface SettingsWrapper {
    settings: Settings
    isLoading: boolean
    loaded: boolean
-   error: any
+   error: string | null
 }
 
 interface PromptInfo {
@@ -128,7 +128,7 @@ interface SqlStatementType {
 interface RunSqlResultModel {
    success: boolean
    message?: string
-   data: any
+   data: unknown
 }
 
 type SqlType = keyof SqlStatementType
