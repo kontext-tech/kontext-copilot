@@ -1,0 +1,8 @@
+{
+    "endOfLine": "auto",
+    "tabWidth": 3,
+    "quoteProps": "consistent",
+    "plugins": [],
+    "semi": false,
+    "trailingComma": "none"
+}

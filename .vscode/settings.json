@@ -1,6 +1,43 @@
 {
-   "css.styleSheets": [
+    "css.styleSheets": [
         "node_modules/bootstrap/dist/css/bootstrap.css",
         "src/**/*.scss"
-    ]
+    ],
+    "eslint.useFlatConfig": true,
+    "eslint.options": {
+        "overrideConfigFile": "eslint.config.mjs"
+    },
+    "eslint.validate": [
+        "javascript",
+        "typescript",
+        "vue"
+    ],
+    "eslint.workingDirectories": [
+        "./ui"
+    ],
+    "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": "always"
+    },
+    "editor.formatOnSave": true,
+    "prettier.configPath": "./ui/.prettierrc",
+    "editor.formatOnPaste": false,
+    "editor.formatOnType": false,
+    "scss.lint.unknownAtRules": "ignore",
+    "eslint.format.enable": true,
+    "prettier.useEditorConfig": false,
+    "[javascript]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[typescript]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[vue]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[scss]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[css]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    }
 }

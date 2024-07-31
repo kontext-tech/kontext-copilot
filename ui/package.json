@@ -7,7 +7,11 @@
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "lint": "npm run lint:eslint && npm run lint:prettier",
+    "lint:eslint": "eslint .",
+    "lint:prettier": "prettier . --check",
+    "lintfix": "eslint . --fix && prettier --write --list-different ."
   },
   "dependencies": {
     "@nuxt/icon": "^1.0.0",
@@ -25,18 +29,19 @@
   "devDependencies": {
     "@bootstrap-vue-next/nuxt": "^0.23.3",
     "@iconify-json/material-symbols": "^1.1.84",
-    "@stylistic/eslint-plugin-js": "^2.4.0",
+    "@nuxt/eslint": "^0.4.0",
     "@types/lodash": "^4.17.6",
     "@types/markdown-it": "^14.1.1",
-    "@typescript-eslint/eslint-plugin": "^7.18.0",
     "bootstrap": "^5.3.3",
     "bootstrap-vue-next": "^0.23.3",
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.2.1",
-    "eslint-plugin-vue": "^9.27.0",
+    "globals": "^15.8.0",
+    "prettier": "^3.3.3",
     "sass": "^1.77.6",
     "sass-loader": "^14.2.1",
     "typescript": "^5.4.5",
-    "vite-plugin-node-polyfills": "^0.22.0",
-    "vue-eslint-parser": "^9.4.3"
+    "vite-plugin-node-polyfills": "^0.22.0"
   }
 }
