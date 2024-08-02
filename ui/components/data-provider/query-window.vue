@@ -1,7 +1,7 @@
 <template>
    <div class="inset-0 h-100 d-flex flex-column align-items-stretch">
       <BFormTextarea
-         v-if="dataProviderInfo"
+         v-if="dataProviderInfo.provider"
          v-model="model.query"
          class="flex-shrink-0 d-flex flex-column"
          placeholder="Enter your query here"
@@ -51,7 +51,10 @@
 
 <script setup lang="ts">
 import { DataProviderService } from "~/services/ApiServices"
-import type { DataProviderInfoModel, SqlRunResultModel } from "~/types/Schemas"
+import type {
+   DataProviderInfoWrapModel,
+   SqlRunResultModel
+} from "~/types/Schemas"
 
 const model = reactive({
    query: null as string | null,
@@ -66,10 +69,14 @@ const hasQueryError = computed(
 const runDisabled = computed(() => isEmptyOrNull(model.query))
 
 const runQuery = async () => {
-   if (props.dataProviderInfo && model.query) {
+   if (props.dataProviderInfo.provider && model.query) {
       model.isLoading = true
       dataProviderService
-         .runSql(props.dataProviderInfo.id, model.query, props.selectedSchema)
+         .runSql(
+            props.dataProviderInfo.provider.id,
+            model.query,
+            props.selectedSchema
+         )
          .then((result) => {
             model.result = result
             model.isLoading = false
@@ -78,7 +85,7 @@ const runQuery = async () => {
 }
 
 const tableFields = computed(() => {
-   if (model.result?.data.length > 0) {
+   if (model.result?.data && model.result?.data.length > 0) {
       return Object.keys(model.result?.data[0]).map((key) => {
          return { key, label: key, sortable: true }
       })
@@ -90,7 +97,7 @@ const appConfig = useAppConfig()
 const dataProviderService = new DataProviderService(appConfig.apiBaseUrl)
 
 const props = defineProps<{
-   dataProviderInfo?: DataProviderInfoModel
+   dataProviderInfo: DataProviderInfoWrapModel
    selectedSchema?: string
    selectedTables?: string[]
 }>()

@@ -89,14 +89,17 @@
 <script setup lang="ts">
 import DefaultLayout from "~/layouts/default-layout.vue"
 import DataSourceSelector from "~/components/data-source/selector.vue"
-import type { DataProviderInfoModel } from "~/types/Schemas"
+import type { DataProviderInfoWrapModel } from "~/types/Schemas"
 import { DataProviderService } from "~/services/ApiServices"
 import DataProviderSchemaSelector from "~/components/data-provider/schema-selector.vue"
 
 const dataSourceSelctor = ref<InstanceType<typeof DataSourceSelector> | null>(
    null
 )
-const dataProviderInfo = ref<DataProviderInfoModel | null>(null)
+const dataProviderInfo = reactive<DataProviderInfoWrapModel>({
+   isLoading: false,
+   provider: null
+})
 const selectedSchema = ref<string>()
 const selectedTables = ref<string[]>([])
 const modelSelector = ref()
@@ -106,13 +109,17 @@ const appConfig = useAppConfig()
 const providerService = new DataProviderService(appConfig.apiBaseUrl)
 
 const handleDataSourceSelected = async (dataSourceId: number) => {
+   dataProviderInfo.isLoading = true
    providerService
       .getDataProviderInfo(dataSourceId)
       .then((data) => {
-         dataProviderInfo.value = data
+         dataProviderInfo.provider = data
       })
       .catch((err) => {
          console.error(err)
+      })
+      .finally(() => {
+         dataProviderInfo.isLoading = false
       })
 }
 
@@ -125,14 +132,17 @@ const handleTablesChange = (tables: string[]) => {
 }
 
 const refresh = (dataSourceId: number) => {
-   // dataProviderInfo.value = null
+   dataProviderInfo.isLoading = true
    providerService
       .getDataProviderInfo(dataSourceId)
       .then((data) => {
-         dataProviderInfo.value = data
+         dataProviderInfo.provider = data
       })
       .catch((err) => {
          console.error(err)
+      })
+      .finally(() => {
+         dataProviderInfo.isLoading = false
       })
 }
 

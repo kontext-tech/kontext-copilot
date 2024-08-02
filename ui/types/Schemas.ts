@@ -116,6 +116,11 @@ interface DataProviderInfoModel extends DataSourceModel {
    metadata: SchemaTablesModel[]
 }
 
+interface DataProviderInfoWrapModel {
+   provider: DataProviderInfoModel | null
+   isLoading: boolean
+}
+
 interface SqlStatementModel {
    sql: string
 }
@@ -128,7 +133,7 @@ interface SqlStatementType {
 interface RunSqlResultModel {
    success: boolean
    message?: string
-   data: unknown
+   data: Array<object>
 }
 
 type SqlType = keyof SqlStatementType
@@ -152,5 +157,6 @@ export {
    type SqlType,
    type RunSqlResultModel as SqlRunResultModel,
    type ThemeConfigItem,
-   type ThemeName
+   type ThemeName,
+   type DataProviderInfoWrapModel
 }

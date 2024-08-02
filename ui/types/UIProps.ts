@@ -1,4 +1,4 @@
-import type { DataProviderInfoModel, IChatMessage } from "./Schemas"
+import type { DataProviderInfoWrapModel, IChatMessage } from "./Schemas"
 
 export interface NavItemProps {
    id: string
@@ -14,7 +14,7 @@ export interface ChatMessageProps {
 }
 
 export interface ChatToDataCommonProps {
-   dataProviderInfo?: DataProviderInfoModel
+   dataProviderInfo: DataProviderInfoWrapModel
    selectedSchema?: string
    selectedTables?: string[]
    selectedModelName?: string

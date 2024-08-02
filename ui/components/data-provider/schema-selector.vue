@@ -1,9 +1,9 @@
 <template>
    <BDropdown
-      v-if="dataProviderInfo"
+      v-if="dataProviderInfo.provider"
       key="schemaSelector"
       variant="outline-secondary"
-      :disabled="!dataProviderInfo.supports_schema"
+      :disabled="!dataProviderInfo.provider.supports_schema"
    >
       <template #button-content>
          <template v-if="selectedSchema">
@@ -13,7 +13,7 @@
          <Icon name="material-symbols:arrow-drop-down" />
       </template>
       <BDropdownItem
-         v-for="schema in dataProviderInfo.metadata"
+         v-for="schema in dataProviderInfo.provider.metadata"
          :key="schema.schema ?? '-'"
          @click="handleSelectSchema(schema.schema)"
       >
@@ -57,7 +57,7 @@
 </template>
 
 <script setup lang="ts">
-import type { DataProviderInfoModel } from "~/types/Schemas"
+import type { DataProviderInfoWrapModel } from "~/types/Schemas"
 
 const selectedSchema = ref<string | null>(null)
 
@@ -70,12 +70,12 @@ const handleSelectSchema = (schema: string | null) => {
 
 const selectedTables = ref<string[]>([])
 const tables = computed(() => {
-   if (props.dataProviderInfo) {
-      const schema = props.dataProviderInfo.supports_schema
-         ? props.dataProviderInfo.metadata.find(
+   if (props.dataProviderInfo.provider) {
+      const schema = props.dataProviderInfo.provider.supports_schema
+         ? props.dataProviderInfo.provider.metadata.find(
               (m) => m.schema === selectedSchema.value
            )
-         : props.dataProviderInfo.metadata[0]
+         : props.dataProviderInfo.provider.metadata[0]
       return (
          schema?.tables.map((table) => ({
             key: table,
@@ -114,7 +114,7 @@ const handleSelectAllTables = () => {
 }
 
 const props = defineProps<{
-   dataProviderInfo: DataProviderInfoModel | null
+   dataProviderInfo: DataProviderInfoWrapModel
 }>()
 
 defineExpose({

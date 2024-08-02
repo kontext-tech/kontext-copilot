@@ -127,7 +127,7 @@
 import type { Size } from "bootstrap-vue-next"
 import { DataProviderService } from "~/services/ApiServices"
 import type {
-   DataProviderInfoModel,
+   DataProviderInfoWrapModel,
    SchemaTablesModel,
    SqlType
 } from "~/types/Schemas"
@@ -163,7 +163,7 @@ const sampleDataFields = computed(() => {
 const showSampleDataModal = (table: string) => {
    currentTable.value = table
    /*Load sample data */
-   if (props.dataProviderInfo?.id) {
+   if (props.dataProviderInfo.provider?.id) {
       sampleDataModal.isLoading = true
       sampleDataModal.title = currentTable.value
          ? `Sample data for ${props.schema?.schema ? props.schema.schema + "." : ""}${currentTable.value}`
@@ -171,7 +171,7 @@ const showSampleDataModal = (table: string) => {
       sampleDataModal.open = true
       dataProviderService
          .getTableSamples(
-            props.dataProviderInfo.id,
+            props.dataProviderInfo.provider.id,
             table,
             props.schema?.schema ?? undefined
          )
@@ -214,7 +214,7 @@ const resetSqlModal = () => {
 }
 
 const showSqlModal = (table: string, sqlType: SqlType) => {
-   if (props.dataProviderInfo?.id) {
+   if (props.dataProviderInfo.provider?.id) {
       sqlModal.isLoading = true
       const table_full_name = props.schema?.schema
          ? `${props.schema.schema}.${table}`
@@ -228,7 +228,11 @@ const showSqlModal = (table: string, sqlType: SqlType) => {
          sqlType == "CREATE"
             ? dataProviderService.getTableCreationSQL
             : dataProviderService.getTableSelectSQL
-      func(props.dataProviderInfo.id, table, props.schema?.schema ?? undefined)
+      func(
+         props.dataProviderInfo.provider.id,
+         table,
+         props.schema?.schema ?? undefined
+      )
          .then((data) => {
             sqlModal.sql = data.sql
             sqlModal.isLoading = false
@@ -253,6 +257,6 @@ const copyToClipboard = async () => {
 
 const props = defineProps<{
    schema: SchemaTablesModel | null
-   dataProviderInfo: DataProviderInfoModel | null
+   dataProviderInfo: DataProviderInfoWrapModel
 }>()
 </script>
