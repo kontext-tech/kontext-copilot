@@ -30,11 +30,15 @@
 <script setup lang="ts">
 import type { ModelResponse } from "ollama/browser"
 
-const { models, defaultModel, setDefaultModel } = useModels()
+const { models, defaultModel, setDefaultModel, getModels } = useModels()
 
 const selectModel = (model: ModelResponse) => {
    setDefaultModel(model)
 }
+
+onMounted(() => {
+   getModels()
+})
 
 const selectedModelName = computed(() => defaultModel.value?.name)
 

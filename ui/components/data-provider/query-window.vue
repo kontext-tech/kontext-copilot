@@ -50,7 +50,6 @@
 </template>
 
 <script setup lang="ts">
-import { DataProviderService } from "~/services/ApiServices"
 import type {
    DataProviderInfoWrapModel,
    SqlRunResultModel
@@ -93,8 +92,7 @@ const tableFields = computed(() => {
    return []
 })
 
-const appConfig = useAppConfig()
-const dataProviderService = new DataProviderService(appConfig.apiBaseUrl)
+const dataProviderService = getDataProviderService()
 
 const props = defineProps<{
    dataProviderInfo: DataProviderInfoWrapModel

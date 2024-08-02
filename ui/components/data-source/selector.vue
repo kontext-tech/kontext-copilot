@@ -32,11 +32,10 @@
 </template>
 
 <script setup lang="ts">
-import { DataSourcesService } from "~/services/ApiServices"
 import type { DataSourceModel } from "~/types/Schemas"
 
-const appConfig = useAppConfig()
-const dataSourcesService = new DataSourcesService(appConfig.apiBaseUrl)
+const dataSourceService = getDataSourceService()
+
 const selectedDataSource = ref<DataSourceModel | null>(null)
 
 const dataSources = ref<DataSourceModel[]>()
@@ -54,7 +53,7 @@ const emit = defineEmits(["dataSourceSelected"])
 onMounted(() => {
    isLoading.value = true
    loaded.value = false
-   dataSourcesService
+   dataSourceService
       .getDataSources()
       .then((data) => {
          dataSources.value = data

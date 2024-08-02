@@ -125,7 +125,6 @@
 
 <script setup lang="ts">
 import type { Size } from "bootstrap-vue-next"
-import { DataProviderService } from "~/services/ApiServices"
 import type {
    DataProviderInfoWrapModel,
    SchemaTablesModel,
@@ -146,8 +145,7 @@ const sampleDataModal = reactive({
 })
 
 const currentTable = ref<string | null>(null)
-const appConfig = useAppConfig()
-const dataProviderService = new DataProviderService(appConfig.apiBaseUrl)
+const dataProviderService = getDataProviderService()
 
 const sampleDataFields = computed(() => {
    if (sampleDataModal.data.length > 0) {

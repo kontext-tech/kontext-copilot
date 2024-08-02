@@ -1,14 +1,4 @@
 <template>
-   <template v-if="settingsWrapper.isLoading">
-      <div class="d-flex justify-content-center align-items-center">
-         <BSpinner variant="success" />
-      </div>
-   </template>
-   <template v-else-if="settingsWrapper.error">
-      <div class="d-flex align-items-center alert alert-danger">
-         <span>{{ settingsWrapper.error }}</span>
-      </div>
-   </template>
    <template v-if="settings">
       <div class="d-flex justify-content-between align-items-center">
          <div class="col-md-8">
@@ -147,16 +137,13 @@
 </template>
 
 <script setup lang="ts">
-import type { SettingsWrapper } from "~/types/Schemas"
-
-const settingsWrapper = inject("settings") as Ref<SettingsWrapper>
-const settings = computed(() => settingsWrapper.value.settings)
+const settings = getSettings()
 
 // Handle null values
 const llmApiKey = computed({
-   get: () => settingsWrapper.value.settings.llm_api_key ?? "",
+   get: () => settings?.value.llm_api_key ?? "",
    set: (value) => {
-      if (settingsWrapper.value.loaded) {
+      if (settings.value) {
          settings.value.llm_api_key = value
       }
    }

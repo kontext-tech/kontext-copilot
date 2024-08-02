@@ -26,7 +26,7 @@
                dropdown list to get started.
             </p>
 
-            <div v-if="loaded" class="row d-flex gap-4">
+            <div v-if="llmService" class="row d-flex gap-4">
                <div
                   class="col-md d-flex flex-column gap-4 justify-content-center mb-3"
                >
@@ -110,9 +110,7 @@
 
 <script setup lang="ts">
 import DefaultLayout from "~/layouts/default-layout.vue"
-import { PromptsService } from "~/services/ApiServices"
-import OllamaLlmService from "~/services/OllamaLlmService"
-import type { PromptInfo, Prompt, SettingsWrapper } from "~/types/Schemas"
+import type { PromptInfo, Prompt } from "~/types/Schemas"
 const streaming = ref(true)
 const jsonFormat = ref<boolean>(false)
 const modelSelector = ref()
@@ -122,9 +120,7 @@ const userInput = ref<string>()
 const response = ref<string>()
 const generating = ref<boolean>(false)
 
-const settingsWrapper = inject("settings") as Ref<SettingsWrapper>
-const settings = computed(() => settingsWrapper.value.settings)
-const loaded = computed(() => settingsWrapper.value.loaded)
+const settings = getSettings()
 
 const selectedTemplateId = ref(null)
 const promptTemplates = ref<PromptInfo[]>([])
@@ -134,20 +130,12 @@ const disableGenerate = computed(
    () => (promptInput.value ?? "").length === 0 || generating.value
 )
 const jsonOption = computed(() => (jsonFormat.value ? "json" : ""))
-const appConfig = useAppConfig()
-const promptService = new PromptsService(appConfig.apiBaseUrl)
+const promptService = getPromptService()
 
-let ollamaService: OllamaLlmService
-const getOllamaService = () => {
-   if (!ollamaService && loaded.value) {
-      ollamaService = new OllamaLlmService(
-         settingsWrapper.value.settings.llm_endpoint
-      )
-   }
-   return ollamaService
-}
+const llmService = getLlmService()
 
 const generateResponse = async () => {
+   if (!llmService.value) return
    generating.value = true
    response.value = ""
    let prompt_str = promptInput.value
@@ -155,10 +143,9 @@ const generateResponse = async () => {
    if (userInput.value) {
       prompt_str = prompt_str.replace(/\{\{\$input\}\}/g, userInput.value)
    }
-   const oService = getOllamaService()
 
    if (streaming.value) {
-      const res = await oService.ollama.generate({
+      const res = await llmService.value.ollama.generate({
          model: modelSelector.value?.selectedModelName,
          prompt: prompt_str,
          system: systemPromptInput.value,
@@ -181,7 +168,7 @@ const generateResponse = async () => {
          }
       }
    } else {
-      const res = await oService.ollama.generate({
+      const res = await llmService.value.ollama.generate({
          model: modelSelector.value?.selectedModelName,
          prompt: prompt_str,
          system: systemPromptInput.value,

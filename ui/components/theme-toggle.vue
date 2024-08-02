@@ -31,24 +31,21 @@
 </template>
 
 <script setup lang="ts">
-import {
-   type ThemeConfigItem,
-   type SettingsWrapper,
-   type ThemeName
-} from "~/types/Schemas"
+import { type ThemeConfigItem, type ThemeName } from "~/types/Schemas"
 
 const btnId = "btn-theme-toogle-" + useId()
 const colorMode = useColorMode({ selector: "html", storageKey: "theme" })
-const settingsWrapper = inject("settings") as Ref<SettingsWrapper>
+const settings = getSettings()
+
 const preference = computed(() => {
-   return settingsWrapper.value.settings.general_theme
+   return settings.value.general_theme
 })
 const disabled = computed(() => {
-   return settingsWrapper.value.loaded === false
+   return !settings
 })
 
 watch(preference, (value) => {
-   colorMode.value = value
+   if (value) colorMode.value = value
 })
 
 const themes = ref<ThemeConfigItem[]>([
@@ -77,9 +74,7 @@ const selectedTheme = computed(() => {
 })
 
 const setPreference = (mode: ThemeName) => {
-   if (settingsWrapper.value) {
-      settingsWrapper.value.settings.general_theme = mode
-   }
+   settings.value.general_theme = mode
 }
 
 const { simple } = defineProps<{

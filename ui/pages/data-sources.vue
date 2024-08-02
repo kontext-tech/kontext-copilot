@@ -36,12 +36,10 @@
 <script setup lang="ts">
 import DefaultLayout from "~/layouts/default-layout.vue"
 import type { DataSourceModel } from "~/types/Schemas"
-import { DataSourcesService } from "~/services/ApiServices"
 import DataSourceCreateForm from "~/components/data-source/create-form.vue"
 
-const appConfig = useAppConfig()
 const dataSources = ref<DataSourceModel[]>()
-const dataSourceService = new DataSourcesService(appConfig.apiBaseUrl)
+const dataSourceService = getDataSourceService()
 const createForm = ref<InstanceType<typeof DataSourceCreateForm> | null>(null)
 const createFormModal = ref(false)
 const createError = ref<string | null>(null)

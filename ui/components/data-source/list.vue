@@ -102,11 +102,9 @@
 <script setup lang="ts">
 import type { DataSourceModel, DataSourceUpdateModel } from "~/types/Schemas"
 import EditForm from "./edit-form.vue"
-import { DataSourcesService } from "~/services/ApiServices"
 import type { BModal } from "bootstrap-vue-next"
 
-const appConfig = useAppConfig()
-const dataSourceService = new DataSourcesService(appConfig.apiBaseUrl)
+const dataSourceService = getDataSourceService()
 
 const currentModel = ref<DataSourceUpdateModel | null>(null)
 const currentSourceId = ref<number | null>(null)

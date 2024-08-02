@@ -9,6 +9,7 @@
          <div class="mt-3 d-flex flex-column min-h-0 h-100 overflow-y-hidden">
             <div class="flex-grow-1 d-flex flex-column overflow-y-hidden">
                <div
+                  v-if="settings"
                   ref="chatMain"
                   class="flex-grow-1 flex-shrink-1 overflow-y-auto px-4"
                >
@@ -35,7 +36,7 @@
                         :class="getRoleClass(ChatRole.USER)"
                      />
                   </span>
-                  <div v-if="settingsWrapper.loaded" class="input-group">
+                  <div class="input-group">
                      <input
                         ref="chatInput"
                         v-model="userInput"
@@ -65,16 +66,9 @@
 import { type Message } from "ollama/browser"
 import ChatMessageCard from "~/components/chat/message-card.vue"
 import DefaultLayout from "~/layouts/default-layout.vue"
-import OllamaLlmService from "~/services/OllamaLlmService"
-import {
-   ChatRole,
-   type ChatMessage,
-   type SettingsWrapper
-} from "~/types/Schemas"
+import { ChatRole, type ChatMessage } from "~/types/Schemas"
 
-const settingsWrapper = inject("settings") as Ref<SettingsWrapper>
-const settings = computed(() => settingsWrapper.value.settings)
-const loaded = computed(() => settingsWrapper.value.loaded)
+const settings = getSettings()
 
 const userInput = ref<string>("")
 
@@ -98,15 +92,7 @@ const chatInput = ref<HTMLTextAreaElement | null>(null)
 
 const modelSelector = ref()
 
-let ollamaService: OllamaLlmService
-const getOllamaService = () => {
-   if (!ollamaService && loaded.value) {
-      ollamaService = new OllamaLlmService(
-         settingsWrapper.value.settings.llm_endpoint
-      )
-   }
-   return ollamaService
-}
+const llmService = getLlmService()
 
 usePageTitle()
 
@@ -128,8 +114,8 @@ const sendMessage = async () => {
    userInput.value = ""
    await scrollToBottom()
    currentResponse.value.generating = true
-   const oService = getOllamaService()
-   const response = await oService.ollama.chat({
+   if (settings === undefined || !llmService.value) return
+   const response = await llmService.value.ollama.chat({
       model: modelSelector.value?.selectedModelName,
       messages: chatHistory.value,
       stream: true,

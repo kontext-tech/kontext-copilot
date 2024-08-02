@@ -47,39 +47,23 @@
 
 <script setup lang="ts">
 import DefaultLayout from "~/layouts/default-layout.vue"
-import OllamaLlmService from "~/services/OllamaLlmService"
-import type { SettingsWrapper } from "~/types/Schemas"
 
 const modelSelector = ref()
 const promptInput = ref<string>("")
 const generating = ref<boolean>(false)
 const embeddings = ref<string>("")
 
-const settingsWrapper = inject("settings") as Ref<SettingsWrapper>
-const settings = computed(() => settingsWrapper.value.settings)
-const loaded = computed(() => settingsWrapper.value.loaded)
+const settings = getSettings()
 
 const disableGenerate = computed(
-   () =>
-      !loaded.value ||
-      (promptInput.value ?? "").length === 0 ||
-      generating.value
+   () => (promptInput.value ?? "").length === 0 || generating.value
 )
-let ollamaService: OllamaLlmService
-
-const getOllamaService = () => {
-   if (!ollamaService && loaded.value) {
-      ollamaService = new OllamaLlmService(
-         settingsWrapper.value.settings.llm_endpoint
-      )
-   }
-   return ollamaService
-}
+const llmService = getLlmService()
 
 const generateResponse = async () => {
+   if (!settings || !llmService.value) return
    generating.value = true
-   const oService = getOllamaService()
-   oService.ollama
+   llmService.value.ollama
       .embeddings({
          model: modelSelector.value?.selectedModelName,
          prompt: promptInput.value,

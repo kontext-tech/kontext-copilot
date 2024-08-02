@@ -90,7 +90,6 @@
 import DefaultLayout from "~/layouts/default-layout.vue"
 import DataSourceSelector from "~/components/data-source/selector.vue"
 import type { DataProviderInfoWrapModel } from "~/types/Schemas"
-import { DataProviderService } from "~/services/ApiServices"
 import DataProviderSchemaSelector from "~/components/data-provider/schema-selector.vue"
 
 const dataSourceSelctor = ref<InstanceType<typeof DataSourceSelector> | null>(
@@ -105,12 +104,11 @@ const selectedTables = ref<string[]>([])
 const modelSelector = ref()
 const selectedModelName = computed(() => modelSelector.value?.selectedModelName)
 
-const appConfig = useAppConfig()
-const providerService = new DataProviderService(appConfig.apiBaseUrl)
+const dataProviderService = getDataProviderService()
 
 const handleDataSourceSelected = async (dataSourceId: number) => {
    dataProviderInfo.isLoading = true
-   providerService
+   dataProviderService
       .getDataProviderInfo(dataSourceId)
       .then((data) => {
          dataProviderInfo.provider = data
@@ -133,7 +131,7 @@ const handleTablesChange = (tables: string[]) => {
 
 const refresh = (dataSourceId: number) => {
    dataProviderInfo.isLoading = true
-   providerService
+   dataProviderService
       .getDataProviderInfo(dataSourceId)
       .then((data) => {
          dataProviderInfo.provider = data

@@ -1,31 +1,18 @@
 import type { ModelResponse } from "ollama/browser"
-import OllamaLlmService from "~/services/OllamaLlmService"
-import type { SettingsWrapper } from "~/types/Schemas"
 
 const models = ref<ModelResponse[]>([])
 const defaultModel = ref<ModelResponse>()
 
 export default function useModels() {
-   const settingsWrapper = inject("settings") as Ref<SettingsWrapper>
+   const settings = getSettings()
 
-   const defaultModelConfig = computed(
-      () => settingsWrapper.value.settings.llm_default_model
-   )
-   const loaded = computed(() => settingsWrapper.value.loaded)
+   const defaultModelConfig = computed(() => settings?.value.llm_default_model)
 
-   let ollamaService: OllamaLlmService
-   const getOllamaService = () => {
-      if (!ollamaService)
-         ollamaService = new OllamaLlmService(
-            settingsWrapper.value.settings.llm_endpoint
-         )
-      return ollamaService
-   }
+   const llmService = getLlmService()
 
    const getModels = async () => {
-      const oService = getOllamaService()
-      if (!oService) return
-      const response = await oService.getModels()
+      if (!llmService.value) return
+      const response = await llmService.value.getModels()
       models.value = response.models
       const model = models.value.find(
          (model) => model.name === defaultModelConfig.value
@@ -34,22 +21,15 @@ export default function useModels() {
       else defaultModel.value = models.value[0]
    }
 
-   watch(loaded, (loaded) => {
-      if (loaded) {
-         getModels()
-      }
-   })
-
    const setDefaultModel = (model: ModelResponse) => {
       defaultModel.value = model
-      settingsWrapper.value.settings.llm_default_model = model.name
+      if (settings) settings.value.llm_default_model = model.name
    }
 
    onMounted(() => {
-      if (loaded.value) {
-         getModels()
-      }
+      const llmService = getLlmService()
+      if (llmService) getModels()
    })
 
-   return { models, defaultModel, setDefaultModel }
+   return { models, defaultModel, setDefaultModel, getModels }
 }

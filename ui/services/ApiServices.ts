@@ -18,7 +18,7 @@ const getBaseUrl = (apiBaseUrl: string) => {
 
 axios.defaults.headers.post["Content-Type"] = "application/json"
 
-export class SettingsService {
+export class SettingService {
    constructor(apiBaseUrl: string) {
       axios.defaults.baseURL = getBaseUrl(apiBaseUrl)
    }
@@ -48,7 +48,7 @@ export class SettingsService {
    }
 }
 
-export class PromptsService {
+export class PromptService {
    constructor(apiBaseUrl: string) {
       axios.defaults.baseURL = getBaseUrl(apiBaseUrl)
    }
@@ -64,7 +64,7 @@ export class PromptsService {
    }
 }
 
-export class DataSourcesService {
+export class DataSourceService {
    constructor(apiBaseUrl: string) {
       axios.defaults.baseURL = getBaseUrl(apiBaseUrl)
    }

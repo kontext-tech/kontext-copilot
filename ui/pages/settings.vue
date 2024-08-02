@@ -28,7 +28,7 @@
                   <div class="col-md-4">
                      <BFormInput
                         id="username"
-                        v-model="settingsWrapper.settings.general_username"
+                        v-model="settings.general_username"
                      />
                   </div>
                </div>
@@ -52,13 +52,11 @@
 
 <script setup lang="ts">
 import DefaultLayout from "~/layouts/default-layout.vue"
-import type { SettingsWrapper } from "~/types/Schemas"
 
-const id = useId()
-const generalTabId = "tab-general-" + id
-const llmsTabId = "tab-llms-" + id
+const generalTabId = "tab-general"
+const llmsTabId = "tab-llms"
 
 usePageTitle()
 
-const settingsWrapper = inject("settings") as Ref<SettingsWrapper>
+const settings = getSettings()
 </script>

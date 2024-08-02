@@ -1,12 +1,12 @@
 import { Ollama, type ListResponse } from "ollama/browser"
 
-class OllamaLlmService {
+class LlmService {
    endpoint: string
    ollama: Ollama
 
    constructor(endpoint: string) {
       if (endpoint === undefined)
-         throw new Error("OllamaLlmService requires an endpoint")
+         throw new Error("LlmService requires an endpoint")
       this.endpoint = endpoint
       this.ollama = new Ollama({ host: this.endpoint })
    }
@@ -16,4 +16,4 @@ class OllamaLlmService {
    }
 }
 
-export default OllamaLlmService
+export default LlmService
