@@ -4,7 +4,7 @@ Kontext Copilot is an AI empowered tool for data analytics that runs on your loc
 
 ## Development
 
-This section shows you how to setup local environment to participate in development of kontext-ai.
+This section shows you how to setup local environment to participate in development of kontext-copilot.
 
 ### Setup Python environment
 

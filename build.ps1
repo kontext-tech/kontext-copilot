@@ -1,5 +1,5 @@
 # Build ui and then copy the output to kontext_copilot/ui
-# And then build the kontext-ai using poetry
+# And then build the kontext-copilot using poetry
 
 # Stop execution on any error
 $ErrorActionPreference = 'Stop'
@@ -15,8 +15,8 @@ Copy-Item -Path .output\public\* -Destination ..\kontext_copilot\ui\ -Recurse -F
 
 Set-Location ..
 
-# Build kontext-ai
-Write-Output "Building kontext-ai"
+# Build kontext-copilot
+Write-Output "Building kontext-copilot"
 poetry build
 
 Write-Output "Build completed"

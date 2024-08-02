@@ -5,7 +5,7 @@ description = "Kontext Copilot is an AI empowered tool for data analytics that r
 authors = ["Kontext <enquiry@kontext.tech>"]
 readme = "README.md"
 homepage = "https://kontext.tech"
-repository = "https://github.com/kontext-tech/kontext-ai"
+repository = "https://github.com/kontext-tech/kontext-copilot"
 license = "MIT"
 # Include the static website folder in the package
 include = ["kontext_copilot/ui/**/*", "kontext_copilot/api/**/*.json"]
