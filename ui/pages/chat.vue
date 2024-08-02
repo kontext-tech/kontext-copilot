@@ -16,12 +16,12 @@
                      v-for="(message, i) in chatHistory"
                      :key="`${i}-${message.role}`"
                   >
-                     <ChatMessage
+                     <ChatMessageCard
                         :message="ollmaMessageToChatMessage(message)"
                         :username="settings.general_username"
                      />
                   </template>
-                  <ChatMessage
+                  <ChatMessageCard
                      v-if="generating"
                      :message="currentResponse"
                      :username="settings.general_username"
@@ -63,12 +63,12 @@
 
 <script setup lang="ts">
 import { type Message } from "ollama/browser"
-import ChatMessage from "~/components/chat/chat-message.vue"
+import ChatMessageCard from "~/components/chat/message-card.vue"
 import DefaultLayout from "~/layouts/default-layout.vue"
 import OllamaLlmService from "~/services/OllamaLlmService"
 import {
    ChatRole,
-   type IChatMessage,
+   type ChatMessage,
    type SettingsWrapper
 } from "~/types/Schemas"
 
@@ -86,7 +86,7 @@ const generating = ref(false)
 
 const chatHistory = ref<Message[]>([])
 
-const currentResponse = ref<IChatMessage>({
+const currentResponse = ref<ChatMessage>({
    role: ChatRole.ASSISTANT,
    message: "",
    generating: false

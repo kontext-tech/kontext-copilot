@@ -1,4 +1,4 @@
-import type { DataProviderInfoWrapModel, IChatMessage } from "./Schemas"
+import type { DataProviderInfoWrapModel, ChatMessage } from "./Schemas"
 
 export interface NavItemProps {
    id: string
@@ -9,7 +9,7 @@ export interface NavItemProps {
 }
 
 export interface ChatMessageProps {
-   message: IChatMessage
+   message: ChatMessage
    username: string
 }
 

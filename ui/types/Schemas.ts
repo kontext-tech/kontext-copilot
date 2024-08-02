@@ -18,7 +18,7 @@ interface ThemeConfigItem {
    name: string
 }
 
-interface IChatMessage {
+interface ChatMessage {
    message: string
    role: ChatRole
    generating?: boolean
@@ -30,7 +30,7 @@ interface Settings {
    llm_api_key: string | null
    llm_endpoint: string
    llm_ollama_endpoint: string
-   general_theme: "dark" | "light" | "auto"
+   general_theme: ThemeName
    general_username: string
    llm_top_p: number
    llm_top_k: number
@@ -130,7 +130,7 @@ interface SqlStatementType {
    SELECT: unknown
 }
 
-interface RunSqlResultModel {
+interface SqlRunResultModel {
    success: boolean
    message?: string
    data: Array<object>
@@ -140,7 +140,7 @@ type SqlType = keyof SqlStatementType
 
 export {
    ChatRole,
-   type IChatMessage,
+   type ChatMessage,
    type Settings,
    type PromptInfo,
    type Prompt,
@@ -155,7 +155,7 @@ export {
    type DataProviderInfoModel,
    type SqlStatementModel,
    type SqlType,
-   type RunSqlResultModel as SqlRunResultModel,
+   type SqlRunResultModel,
    type ThemeConfigItem,
    type ThemeName,
    type DataProviderInfoWrapModel
