@@ -5,6 +5,13 @@ import eslintPluginPrettierRecommended from "eslint-plugin-prettier/recommended"
 
 export default withNuxt(eslintPluginPrettierRecommended).append({
    languageOptions: {
-      ecmaVersion: "latest"
+      ecmaVersion: "latest",
+      parserOptions: {
+         ecmaVersion: "latest",
+         sourceType: "module",
+         ecmaFeatures: {
+            experimentalObjectRestSpread: true
+         }
+      }
    }
 })

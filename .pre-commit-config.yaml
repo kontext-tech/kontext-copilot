@@ -17,14 +17,11 @@ repos:
   - repo: local
     hooks:
       - id: eslint
-        name: lintfix
-        entry: npx --prefix ./ui cross-env ESLINT_USE_FLAT_CONFIG=true eslint --fix --cache -c ./ui/eslint.config.mjs
+        name: eslint:lintfix
+        verbose: true
+        entry: npm --prefix ./ui run-script lintfix
         language: system
-        files: \.(vue|js|jsx|ts|tsx)$
-      - id: prettier
-        name: prettier-format
-        language: system
-        entry: npx --prefix ./ui prettier --write --list-different
+        pass_filenames: false
         files: \.(vue|js|jsx|ts|tsx)$
 
 

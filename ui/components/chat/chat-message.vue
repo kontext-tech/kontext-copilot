@@ -42,7 +42,7 @@ const md = new markdownit()
 
 const htmlMessage = computed(() => {
    if (props.message.generating && props.message.message === "")
-      return "<em>Thinking...</em>"
+      return "<em>Thinking.....</em>"
    return md.render(props.message.message)
 })
 
