@@ -64,20 +64,19 @@ const createDataSource = async () => {
       const form = createForm.value
       form.setFormEntered(true)
       if (form.formValid) {
-         const model = form.model
+         const model = form.dataSourceCreateModel
          try {
             await dataSourceService.createDataSource(model)
             createFormModal.value = false
             dataSources.value = await dataSourceService.getDataSources()
             form.setFormEntered(false)
             createError.value = null
-            form.dataSourceCreateModel = { type: null }
+            form.resetForm
          } catch (err) {
             createError.value =
                err instanceof Error
                   ? err.message
                   : "An unexpected error occurred"
-            console.error(createError.value)
          }
       }
    }
