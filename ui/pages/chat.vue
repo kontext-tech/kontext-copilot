@@ -1,65 +1,63 @@
 <template>
-   <NuxtLayout>
-      <DefaultLayout>
-         <template #header-secondary>
-            <LlmModelSelector ref="modelSelector" />
-            <LlmSettingsButton />
-         </template>
+   <DefaultLayout>
+      <template #header-secondary>
+         <LlmModelSelector ref="modelSelector" />
+         <LlmSettingsButton />
+      </template>
 
-         <div class="mt-3 d-flex flex-column min-h-0 h-100 overflow-y-hidden">
-            <div class="flex-grow-1 d-flex flex-column overflow-y-hidden">
-               <div
-                  v-if="settings"
-                  ref="chatMain"
-                  class="flex-grow-1 flex-shrink-1 overflow-y-auto px-4"
+      <div class="mt-3 d-flex flex-column min-h-0 h-100 overflow-y-hidden">
+         <div class="flex-grow-1 d-flex flex-column overflow-y-hidden">
+            <div
+               v-if="settings"
+               ref="chatMain"
+               class="flex-grow-1 flex-shrink-1 overflow-y-auto px-4"
+            >
+               <template
+                  v-for="(message, i) in chatHistory"
+                  :key="`${i}-${message.role}`"
                >
-                  <template
-                     v-for="(message, i) in chatHistory"
-                     :key="`${i}-${message.role}`"
-                  >
-                     <ChatMessageCard
-                        :message="ollmaMessageToChatMessage(message)"
-                        :username="settings.general_username"
-                     />
-                  </template>
                   <ChatMessageCard
-                     v-if="generating"
-                     :message="currentResponse"
+                     :message="ollmaMessageToChatMessage(message)"
                      :username="settings.general_username"
                   />
-               </div>
-               <div class="flex-shrink-0 p-4 d-flex align-items-center">
-                  <span class="chat-icon">
-                     <Icon
-                        :name="getRoleIcon(ChatRole.USER)"
-                        size="24"
-                        :class="getRoleClass(ChatRole.USER)"
-                     />
-                  </span>
-                  <div class="input-group">
-                     <input
-                        ref="chatInput"
-                        v-model="userInput"
-                        class="form-control"
-                        type="text"
-                        placeholder="Type a message..."
-                        :disabled="generating"
-                        @keydown.enter.prevent="sendMessage"
-                     />
-                     <button
-                        class="btn btn-primary"
-                        type="button"
-                        :disabled="sendButtonDisabled"
-                        @click="sendMessage"
-                     >
-                        <Icon name="material-symbols:send" size="20" />
-                     </button>
-                  </div>
+               </template>
+               <ChatMessageCard
+                  v-if="generating"
+                  :message="currentResponse"
+                  :username="settings.general_username"
+               />
+            </div>
+            <div class="flex-shrink-0 p-4 d-flex align-items-center">
+               <span class="chat-icon">
+                  <Icon
+                     :name="getRoleIcon(ChatRole.USER)"
+                     size="24"
+                     :class="getRoleClass(ChatRole.USER)"
+                  />
+               </span>
+               <div class="input-group">
+                  <input
+                     ref="chatInput"
+                     v-model="userInput"
+                     class="form-control"
+                     type="text"
+                     placeholder="Type a message..."
+                     :disabled="generating"
+                     @keydown.enter.prevent="sendMessage"
+                  />
+                  <button
+                     class="btn btn-primary"
+                     type="button"
+                     :disabled="sendButtonDisabled"
+                     @click="sendMessage"
+                  >
+                     <Icon name="material-symbols:send" size="20" />
+                  </button>
                </div>
             </div>
          </div>
-      </DefaultLayout>
-   </NuxtLayout>
+      </div>
+   </DefaultLayout>
 </template>
 
 <script setup lang="ts">

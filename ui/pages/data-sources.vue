@@ -1,36 +1,34 @@
 <template>
-   <NuxtLayout>
-      <DefaultLayout>
-         <template #header-secondary>
-            <BButton v-b-modal.createFormModal variant="outline-secondary">
-               <Icon name="material-symbols:add" /> Add data source
-            </BButton>
-            <BModal
-               id="createFormModal"
-               v-model="createFormModal"
-               title="Add data source"
-               size="lg"
-               ok-title="Create"
-               @ok.prevent="createDataSource"
+   <DefaultLayout>
+      <template #header-secondary>
+         <BButton v-b-modal.createFormModal variant="outline-secondary">
+            <Icon name="material-symbols:add" /> Add data source
+         </BButton>
+         <BModal
+            id="createFormModal"
+            v-model="createFormModal"
+            title="Add data source"
+            size="lg"
+            ok-title="Create"
+            @ok.prevent="createDataSource"
+         >
+            <BAlert
+               v-if="createError"
+               :model-value="createError != null"
+               variant="danger"
             >
-               <BAlert
-                  v-if="createError"
-                  :model-value="createError != null"
-                  variant="danger"
-               >
-                  {{ createError }}
-               </BAlert>
-               <DataSourceCreateForm id="createForm" ref="createForm" />
-            </BModal>
-         </template>
-         <div class="px-4 mt-3 w-100">
-            <DataSourceList
-               :data-sources="dataSources"
-               @delete="handleDeleteDataSource"
-            />
-         </div>
-      </DefaultLayout>
-   </NuxtLayout>
+               {{ createError }}
+            </BAlert>
+            <DataSourceCreateForm id="createForm" ref="createForm" />
+         </BModal>
+      </template>
+      <div class="px-4 mt-3 w-100">
+         <DataSourceList
+            :data-sources="dataSources"
+            @delete="handleDeleteDataSource"
+         />
+      </div>
+   </DefaultLayout>
 </template>
 
 <script setup lang="ts">
