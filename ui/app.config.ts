@@ -49,7 +49,7 @@ export default defineAppConfig({
             {
                id: "newChat",
                to: "/chat",
-               icon: "material-symbols:edit-square-outline",
+               icon: "material-symbols:chat-outline",
                text: "Chat"
             },
             {

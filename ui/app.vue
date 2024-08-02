@@ -73,12 +73,10 @@ watch(
 
 // Fetch settings on load
 fetchSettings()
-addService(ServiceNames.settings, settings)
-addService(ServiceNames.settingService, settingService)
-addService(ServiceNames.promptService, promptService)
-addService(ServiceNames.dataSourceService, dataSourceService)
-addService(ServiceNames.dataProviderService, dataProviderService)
-addService(ServiceNames.llmService, llmService)
+addService("SETTINGS", settings)
+addService("SETTING_SERVICE", settingService)
+addService("PROMPT_SERVICE", promptService)
+addService("DATA_SOURCE_SERVICE", dataSourceService)
+addService("DATA_PROVIDER_SERVICE", dataProviderService)
+addService("LLM_SERVICE", llmService)
 </script>
-
-<style scoped></style>

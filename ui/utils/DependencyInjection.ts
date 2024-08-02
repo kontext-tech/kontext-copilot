@@ -10,16 +10,16 @@ import {
 } from "~/types/Errors"
 import type { Settings } from "~/types/Schemas"
 
-enum ServiceNames {
-   settings = "settings",
-   settingService = "settingService",
-   promptService = "promptService",
-   dataSourceService = "dataSourceService",
-   dataProviderService = "dataProviderService",
-   llmService = "llmService"
+interface ServiceNames {
+   SETTINGS: unknown
+   SETTING_SERVICE: unknown
+   PROMPT_SERVICE: unknown
+   DATA_SOURCE_SERVICE: unknown
+   DATA_PROVIDER_SERVICE: unknown
+   LLM_SERVICE: unknown
 }
 
-type ServiceName = keyof typeof ServiceNames
+type ServiceName = keyof ServiceNames
 
 const addService = <T>(name: ServiceName, service: T) => {
    if (hasInjectionContext()) {
@@ -36,28 +36,27 @@ const getService = <T>(name: ServiceName): T => {
 }
 
 const getSettings = (): Ref<Settings> => {
-   return getService<Ref<Settings>>("settings")
+   return getService<Ref<Settings>>("SETTINGS")
 }
 
 const getLlmService = (): Ref<LlmService | null> => {
-   return getService<Ref<LlmService>>("llmService")
+   return getService<Ref<LlmService>>("LLM_SERVICE")
 }
 
 const getDataSourceService = (): DataSourceService => {
-   return getService<DataSourceService>("dataSourceService")
+   return getService<DataSourceService>("DATA_SOURCE_SERVICE")
 }
 
 const getDataProviderService = (): DataProviderService => {
-   return getService<DataProviderService>("dataProviderService")
+   return getService<DataProviderService>("DATA_PROVIDER_SERVICE")
 }
 
 const getPromptService = (): PromptService => {
-   return getService<PromptService>("promptService")
+   return getService<PromptService>("PROMPT_SERVICE")
 }
 
 export {
    type ServiceName,
-   ServiceNames,
    getService,
    addService,
    getSettings,
