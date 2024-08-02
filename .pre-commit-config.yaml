@@ -13,15 +13,19 @@ repos:
     hooks:
       - id: black
         language_version: python3
+
   - repo: local
     hooks:
       - id: eslint
-        name: eslint
-        entry: npm run lintfix
+        name: lintfix
+        entry: npx --prefix ./ui cross-env ESLINT_USE_FLAT_CONFIG=true eslint --fix --cache -c ./ui/eslint.config.mjs
         language: system
-        types: [javascript, ts, vue]
         files: \.(vue|js|jsx|ts|tsx)$
-        args: []
+      - id: prettier
+        name: prettier-format
+        language: system
+        entry: npx --prefix ./ui prettier --write --list-different
+        files: \.(vue|js|jsx|ts|tsx)$
 
 
   - repo: https://github.com/commitizen-tools/commitizen

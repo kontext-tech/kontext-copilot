@@ -11,37 +11,38 @@
       "lint": "npm run lint:eslint && npm run lint:prettier",
       "lint:eslint": "eslint .",
       "lint:prettier": "prettier . --check",
-      "lintfix": "eslint . --fix && prettier --write --list-different ."
+      "lintfix": "eslint --fix --cache . && prettier --write --list-different ."
    },
    "dependencies": {
-      "@nuxt/icon": "^1.0.0",
+      "@nuxt/icon": "^1.4.4",
       "@popperjs/core": "^2.11.8",
       "@vueuse/core": "^10.11.0",
-      "axios": "^1.7.2",
+      "axios": "^1.7.3",
       "lodash": "^4.17.21",
       "markdown-it": "^14.1.0",
-      "nuxt": "^3.11.2",
+      "nuxt": "^3.12.4",
       "nuxt-storage": "^1.2.2",
       "ollama": "^0.5.1",
-      "vue": "^3.4.27",
-      "vue-router": "^4.3.2"
+      "vue": "^3.4.35",
+      "vue-router": "^4.4.2"
    },
    "devDependencies": {
-      "@bootstrap-vue-next/nuxt": "^0.23.3",
-      "@iconify-json/material-symbols": "^1.1.84",
+      "@bootstrap-vue-next/nuxt": "^0.24.2",
+      "@iconify-json/material-symbols": "^1.1.85",
       "@nuxt/eslint": "^0.4.0",
-      "@types/lodash": "^4.17.6",
-      "@types/markdown-it": "^14.1.1",
+      "@types/lodash": "^4.17.7",
+      "@types/markdown-it": "^14.1.0",
       "bootstrap": "^5.3.3",
-      "bootstrap-vue-next": "^0.23.3",
+      "bootstrap-vue-next": "^0.24.2",
+      "cross-env": "^7.0.3",
       "eslint": "^8.57.0",
       "eslint-config-prettier": "^9.1.0",
       "eslint-plugin-prettier": "^5.2.1",
       "globals": "^15.8.0",
       "prettier": "^3.3.3",
       "sass": "^1.77.6",
-      "sass-loader": "^14.2.1",
-      "typescript": "^5.4.5",
+      "sass-loader": "^16.0.0",
+      "typescript": "^5.5.4",
       "vite-plugin-node-polyfills": "^0.22.0"
    }
 }

@@ -50,7 +50,7 @@ export default defineAppConfig({
                id: "newChat",
                to: "/chat",
                icon: "material-symbols:edit-square-outline",
-               text: "New chat"
+               text: "Chat"
             },
             {
                id: "prompt",
