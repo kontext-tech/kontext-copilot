@@ -17,7 +17,7 @@ export default defineNuxtConfig({
    app: {
       baseURL: baseURL,
       head: {
-         title: "Kontext AI",
+         title: "Kontext Copilot",
          htmlAttrs: {
             lang: "en"
          },

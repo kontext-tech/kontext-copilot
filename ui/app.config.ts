@@ -6,7 +6,7 @@ export default defineAppConfig({
       class: "icon", // default <Icon> class applied
       mode: "svg" // default <Icon> mode applied
    },
-   appName: "Kontext AI",
+   appName: "Kontext Copilot",
    apiBaseUrl: "http://localhost:8100",
    settingKeys: {
       llmTemperture: "llm_temperature",

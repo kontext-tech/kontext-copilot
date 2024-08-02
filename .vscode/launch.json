@@ -20,12 +20,11 @@
             "console": "integratedTerminal",
             "jinja": true,
             "env": {
-                "KONTEXT_AI_ENV": "development",
-                "KONTEXT_AI_PORT": "8100",
+                "KONTEXT_COPILOT_ENV": "development",
+                "KONTEXT_COPILOT_PORT": "8100",
             },
-            "cwd": "${workspaceFolder}/kontext_ai",
+            "cwd": "${workspaceFolder}/kontext_copilot",
             "python": "${workspaceFolder}/.venv/Scripts/python.exe" // Windows path
-
         },
         {
             "name": "Python Debugger: FastAPI (Linux/MacOS)",
@@ -42,12 +41,11 @@
             ],
             "jinja": true,
             "env": {
-                "KONTEXT_AI_ENV": "development",
-                "KONTEXT_AI_PORT": "8100",
+                "KONTEXT_COPILOT_ENV": "development",
+                "KONTEXT_COPILOT_PORT": "8100",
             },
-            "cwd": "${workspaceFolder}/kontext_ai",
+            "cwd": "${workspaceFolder}/kontext_copilot",
             "python": "${workspaceFolder}/.venv/bin/python" // Linux or macOS path
-
         }
     ]
 }

@@ -1,6 +1,6 @@
-# Kontext AI
+# Kontext Copilot
 
-Kontext AI is an AI empowered tool for data analytics that runs on your local computer.
+Kontext Copilot is an AI empowered tool for data analytics that runs on your local computer.
 
 ## Development
 

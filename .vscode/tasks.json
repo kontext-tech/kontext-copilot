@@ -74,7 +74,7 @@
         {
             "label": "fastapi:dev:development",
             "type": "shell",
-            "detail": "For local development (without /ui endpoint); run Kontext AI local website (KONTEXT_AI_ENV=development); ",
+            "detail": "For local development (without /ui endpoint); run Kontext Copilot local website (KONTEXT_COPILOT_ENV=development); ",
             "command": "fastapi",
             "args": [
                 "dev", // Ensure this matches your FastAPI app instance and file name
@@ -90,17 +90,17 @@
                 "isDefault": false
             },
             "options": {
-                "cwd": "${workspaceFolder}/kontext_ai",
+                "cwd": "${workspaceFolder}/kontext_copilot",
                 "env": {
-                    "KONTEXT_AI_ENV": "development",
-                    "KONTEXT_AI_PORT": "8100",
+                    "KONTEXT_COPILOT_ENV": "development",
+                    "KONTEXT_COPILOT_PORT": "8100",
                 }
             }
         },
         {
             "label": "fastapi:dev:local",
             "type": "shell",
-            "detail": "Run Kontext AI local website (KONTEXT_AI_ENV=local) with endpoint /ui pointing to generated frontend for frontend.",
+            "detail": "Run Kontext Copilot local website (KONTEXT_COPILOT_ENV=local) with endpoint /ui pointing to generated frontend for frontend.",
             "command": "fastapi",
             "args": [
                 "dev", // Ensure this matches your FastAPI app instance and file name
@@ -116,11 +116,11 @@
                 "isDefault": false
             },
             "options": {
-                "cwd": "${workspaceFolder}/kontext_ai",
+                "cwd": "${workspaceFolder}/kontext_copilot",
                 "env": {
-                    "KONTEXT_AI_ENV": "local",
-                    "KONTEXT_AI_PORT": "8100",
-                    "KONTEXT_AI_CLIENTAPP_DIR": "${workspaceFolder}/ui/.output/public"
+                    "KONTEXT_COPILOT_ENV": "local",
+                    "KONTEXT_COPILOT_PORT": "8100",
+                    "KONTEXT_COPILOT_CLIENTAPP_DIR": "${workspaceFolder}/ui/.output/public"
                 }
             }
         },

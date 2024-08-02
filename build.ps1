@@ -1,4 +1,4 @@
-# Build ui and then copy the output to kontext_ai/ui
+# Build ui and then copy the output to kontext_copilot/ui
 # And then build the kontext-ai using poetry
 
 # Stop execution on any error
@@ -9,9 +9,9 @@ Set-Location .\ui
 Write-Output "Building ui"
 npm run generate
 
-# Copy .output/public to ../kontext_ai/ui
-Write-Output "Copying ui output to kontext_ai/ui"
-Copy-Item -Path .output\public\* -Destination ..\kontext_ai\ui\ -Recurse -Force
+# Copy .output/public to ../kontext_copilot/ui
+Write-Output "Copying ui output to kontext_copilot/ui"
+Copy-Item -Path .output\public\* -Destination ..\kontext_copilot\ui\ -Recurse -Force
 
 Set-Location ..
 

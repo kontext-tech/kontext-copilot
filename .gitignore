@@ -1,6 +1,6 @@
 .vs
-kontext_ai/ui
-kontext_ai/data/*.db
+kontext_copilot/ui
+kontext_copilot/data/*.db
 *.gguf
 .eslintcache
 

@@ -1,7 +1,0 @@
-Generic single-database configuration.
-
-Scripts in this folder are generated using the following command in root folder of the repository:
-
-```
-alembic init .\kontext_ai\data\alembic
-```
