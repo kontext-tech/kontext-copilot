@@ -81,3 +81,10 @@ textarea.main-textarea {
    padding-left: calc(0.5 * $spacer);
    padding-right: calc(0.5 * $spacer);
 }
+
+.message-card {
+   /*Last p remove bottom margin*/
+   p:last-child {
+      margin-bottom: 0 !important;
+   }
+}
