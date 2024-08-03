@@ -1,9 +1,10 @@
 import { Ollama, type ListResponse } from "ollama/browser"
 import { LlmEndointRequiredException } from "~/types/Errors"
 
-class LlmProxyService {
+export default class LlmProxyService {
    endpoint: string
    service: Ollama
+   models?: ListResponse
 
    constructor(endpoint: string) {
       if (endpoint === undefined) throw new LlmEndointRequiredException()
@@ -12,8 +13,7 @@ class LlmProxyService {
    }
 
    async getModels(): Promise<ListResponse> {
-      return await this.service.list()
+      if (this.models === undefined) this.models = await this.service.list()
+      return this.models
    }
 }
-
-export default LlmProxyService

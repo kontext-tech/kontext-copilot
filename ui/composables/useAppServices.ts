@@ -40,6 +40,8 @@ export default function useAppServices() {
          const proxy = new LlmProxyService(
             settingsWrapper.settings.llm_endpoint
          )
+         // get models
+         await proxy.getModels()
          llmProxyService.value = proxy
          settingsWrapper.error = null
          settingsWrapper.loaded = true
