@@ -4,20 +4,23 @@
    >
       <BCollapse
          id="mainSidebar"
-         class="position-relative-md sidebar-col d-md-flex flex-column align-items-stretch offcanvas-md offcanvas-start border-end flex-shrink-0 bg-body-tertiary"
+         class="position-relative-md sidebar-col d-md-flex flex-column align-items-stretch offcanvas-md offcanvas-start border-end flex-shrink-0 bg-body shadow-sm"
       >
          <div
-            class="px-4 header-primary d-flex align-items-center bg-primary flex-shrink-0"
+            class="px-4 header-primary d-flex align-items-center flex-shrink-0 border-bottom bg-body-tertiary shadow-sm"
          >
             <BLink
                v-b-toggle.mainSidebar
-               class="d-flex d-md-none text-white me-3"
+               class="d-flex d-md-none text-muted me-3"
                href="#"
             >
                <Icon name="material-symbols:menu" size="24" />
             </BLink>
             <a href="/" class="navbar-brand">
-               <img :src="logoWhite" alt="Kontext Logo" class="img-fluid" />
+               <span class="d-flex align-items-center gap-1">
+                  <img :src="logo" alt="Kontext Logo" class="img-fluid" />
+                  <em class="kontext-em h5 mb-0 fw-bold">Copilot</em></span
+               >
             </a>
          </div>
          <div
@@ -94,7 +97,7 @@
 </template>
 
 <script setup lang="ts">
-import logoWhite from "~/assets/images/logo-white.svg"
+import logo from "~/assets/images/logo.svg"
 
 const route = useRoute()
 const appConfig = useAppConfig()

@@ -88,3 +88,17 @@ textarea.main-textarea {
       margin-bottom: 0 !important;
    }
 }
+
+.kontext-em {
+   display: inline;
+   font-style: normal !important;
+   font-weight: inherit !important;
+   background-image: linear-gradient(90deg, $primary, $info 33%, $success);
+   -webkit-background-clip: text;
+   background-clip: text;
+   color: transparent;
+}
+
+/*Color mode dark*/
+@include color-mode(dark) {
+}
