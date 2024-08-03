@@ -1,5 +1,5 @@
 <template>
-   <BDropdown variant="outline-secondary">
+   <BDropdown variant="outline-secondary" size="sm">
       <template #button-content>
          <template v-if="selectedDataSource">
             {{ selectedDataSource.name }}

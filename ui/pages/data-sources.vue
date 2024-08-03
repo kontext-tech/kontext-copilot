@@ -1,7 +1,11 @@
 <template>
    <DefaultLayout>
       <template #header-secondary>
-         <BButton v-b-modal.createFormModal variant="outline-secondary">
+         <BButton
+            v-b-modal.createFormModal
+            variant="outline-secondary"
+            size="sm"
+         >
             <Icon name="material-symbols:add" /> Add data source
          </BButton>
          <BModal

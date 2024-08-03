@@ -2,6 +2,7 @@
    <BButton
       v-b-modal.llmsSettingsModal
       variant="outline-secondary"
+      size="sm"
       class="d-flex align-items-center"
    >
       <Icon name="material-symbols:neurology-outline" size="20" /> LLMs settings

@@ -4,6 +4,7 @@
       key="schemaSelector"
       variant="outline-secondary"
       :disabled="!dataProviderInfo.provider.supports_schema"
+      size="sm"
    >
       <template #button-content>
          <template v-if="selectedSchema">
@@ -25,6 +26,7 @@
       v-if="dataProviderInfo"
       key="tableSelector"
       variant="outline-secondary"
+      size="sm"
    >
       <template #button-content>
          <template v-if="selectedTables.length > 0">
