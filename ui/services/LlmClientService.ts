@@ -130,7 +130,6 @@ export default class LlmClientService {
    ) {
       const promptText =
          prompt !== "" ? this.replaceValues(prompt, userInput) : userInput
-      console.log("Prompt: %s", promptText)
       this.startGenerating()
       if (stream) {
          const res = await this.llmService.service.generate({
