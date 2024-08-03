@@ -19,8 +19,16 @@ class LlmProxyServiceRequiredException extends Error {
    }
 }
 
+class LlmEndointRequiredException extends Error {
+   constructor() {
+      super(`LlmService requires an endpoint`)
+      this.name = "LlmEndointRequiredException"
+   }
+}
+
 export {
    ServiceNotFoundException,
    NoInjectionContextFoundException,
-   LlmProxyServiceRequiredException
+   LlmProxyServiceRequiredException,
+   LlmEndointRequiredException
 }

@@ -141,14 +141,16 @@ watch(
 )
 
 const generateResponse = async () => {
-   llmClient.generate(
-      promptInput.value,
-      modelSelector.value?.selectedModelName,
-      jsonOption.value,
-      streaming.value,
-      undefined,
-      systemPromptInput.value
-   )
+   if (userInput.value)
+      llmClient.generate(
+         promptInput.value,
+         userInput.value,
+         modelSelector.value?.selectedModelName,
+         jsonOption.value,
+         streaming.value,
+         undefined,
+         systemPromptInput.value
+      )
 }
 
 const loadPromptTemplate = async (template_id: string) => {

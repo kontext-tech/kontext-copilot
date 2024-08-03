@@ -1,18 +1,18 @@
 import { Ollama, type ListResponse } from "ollama/browser"
+import { LlmEndointRequiredException } from "~/types/Errors"
 
 class LlmProxyService {
    endpoint: string
-   ollama: Ollama
+   service: Ollama
 
    constructor(endpoint: string) {
-      if (endpoint === undefined)
-         throw new Error("LlmService requires an endpoint")
+      if (endpoint === undefined) throw new LlmEndointRequiredException()
       this.endpoint = endpoint
-      this.ollama = new Ollama({ host: this.endpoint })
+      this.service = new Ollama({ host: this.endpoint })
    }
 
    async getModels(): Promise<ListResponse> {
-      return await this.ollama.list()
+      return await this.service.list()
    }
 }
 

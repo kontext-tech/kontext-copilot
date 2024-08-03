@@ -71,7 +71,7 @@ export default class LlmClientService {
    async chat(input: string, model: string): Promise<Message> {
       this.startGenerating()
       this.addUserMessage(input)
-      const response = await this.llmService.ollama.chat({
+      const response = await this.llmService.service.chat({
          model: model,
          messages: this.state.history,
          stream: false,
@@ -90,7 +90,7 @@ export default class LlmClientService {
    ): Promise<Message> {
       this.startGenerating()
       this.addUserMessage(input)
-      const response = await this.llmService.ollama.chat({
+      const response = await this.llmService.service.chat({
          model: model,
          messages: this.state.history,
          stream: true,
@@ -115,22 +115,25 @@ export default class LlmClientService {
       }
    }
 
-   replaceValues(input: string) {
-      return input.replace(/\{\{\$input\}\}/g, input)
+   replaceValues(promt: string, userInput: string) {
+      return promt.replace(/\{\{\$input\}\}/g, userInput)
    }
 
    async generate(
       prompt: string,
+      userInput: string,
       model: string,
       format: "json" | "",
       stream: boolean,
       callback?: StreamingCallback,
       systemPrompt?: string
    ) {
-      const promptText = this.replaceValues(prompt)
+      const promptText =
+         prompt !== "" ? this.replaceValues(prompt, userInput) : userInput
+      console.log("Prompt: %s", promptText)
       this.startGenerating()
       if (stream) {
-         const res = await this.llmService.ollama.generate({
+         const res = await this.llmService.service.generate({
             model: model,
             prompt: promptText,
             system: systemPrompt,
@@ -154,7 +157,7 @@ export default class LlmClientService {
             }
          }
       } else {
-         const res = await this.llmService.ollama.generate({
+         const res = await this.llmService.service.generate({
             model: model,
             prompt: promptText,
             system: systemPrompt,
@@ -170,7 +173,7 @@ export default class LlmClientService {
 
    async embeddings(prompt: string, model: string): Promise<string> {
       this.startGenerating()
-      this.llmService.ollama
+      this.llmService.service
          .embeddings({
             model: model,
             prompt: prompt,
