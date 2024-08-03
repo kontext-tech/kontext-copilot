@@ -167,4 +167,23 @@ export default class LlmClientService {
          this.addAssistantMessage(this.state.currentResponse.content)
       }
    }
+
+   async embeddings(prompt: string, model: string): Promise<string> {
+      this.startGenerating()
+      this.llmService.ollama
+         .embeddings({
+            model: model,
+            prompt: prompt,
+            options: this.options
+         })
+         .then((response) => {
+            this.state.currentResponse.content = JSON.stringify(
+               response.embedding
+            )
+         })
+         .finally(() => {
+            this.state.generating = false
+         })
+      return this.state.currentResponse.content
+   }
 }

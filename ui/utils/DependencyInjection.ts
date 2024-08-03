@@ -3,6 +3,7 @@ import type {
    DataSourceService,
    PromptService
 } from "~/services/ApiServices"
+import LlmClientService from "~/services/LlmClientService"
 import type LlmProxyService from "~/services/LlmProxyService"
 import {
    NoInjectionContextFoundException,
@@ -56,12 +57,19 @@ const getPromptService = (): PromptService => {
    return getService<PromptService>("PROMPT_SERVICE")
 }
 
+const getLlmClientService = (): LlmClientService => {
+   const settings = getSettings()
+   const llmProxyService = getLlmProxyService()
+   return new LlmClientService(llmProxyService.value, settings)
+}
+
 export {
    type ServiceName,
    getService,
    addService,
    getSettings,
    getLlmProxyService,
+   getLlmClientService,
    getDataSourceService,
    getDataProviderService,
    getPromptService

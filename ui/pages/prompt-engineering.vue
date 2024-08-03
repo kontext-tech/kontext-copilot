@@ -25,7 +25,7 @@
             dropdown list to get started.
          </p>
 
-         <div v-if="llmService" class="row d-flex gap-4">
+         <div v-if="llmClient" class="row d-flex gap-4">
             <div
                class="col-md d-flex flex-column gap-4 justify-content-center mb-3"
             >
@@ -106,7 +106,6 @@
 
 <script setup lang="ts">
 import DefaultLayout from "~/layouts/default-layout.vue"
-import LlmClientService from "~/services/LlmClientService"
 import type { PromptInfo, Prompt } from "~/types/Schemas"
 const streaming = ref(true)
 const jsonFormat = ref<boolean>(false)
@@ -115,12 +114,7 @@ const systemPromptInput = ref<string>()
 const promptInput = ref<string>("")
 const userInput = ref<string>()
 
-const settings = getSettings()
-const llmService = getLlmProxyService()
-const llmClient: LlmClientService = new LlmClientService(
-   llmService.value,
-   settings
-)
+const llmClient = getLlmClientService()
 const state = llmClient.state
 const promptService = getPromptService()
 

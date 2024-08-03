@@ -63,9 +63,7 @@
 <script setup lang="ts">
 import ChatMessageCard from "~/components/chat/message-card.vue"
 import DefaultLayout from "~/layouts/default-layout.vue"
-import LlmClientService, {
-   type StreamingCallback
-} from "~/services/LlmClientService"
+import { type StreamingCallback } from "~/services/LlmClientService"
 import { ChatRole } from "~/types/Schemas"
 
 const userInput = ref<string>("")
@@ -74,11 +72,7 @@ const chatInput = ref<HTMLTextAreaElement | null>(null)
 const modelSelector = ref()
 
 const settings = getSettings()
-const llmService = getLlmProxyService()
-const llmClient: LlmClientService = new LlmClientService(
-   llmService.value,
-   settings
-)
+const llmClient = getLlmClientService()
 const state = llmClient.state
 
 const sendButtonDisabled = computed(

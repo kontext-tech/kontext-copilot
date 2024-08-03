@@ -24,7 +24,7 @@
                   @click="generateResponse"
                >
                   Generate
-                  <BSpinner v-if="generating" small />
+                  <BSpinner v-if="state.generating" small />
                </BButton>
             </div>
             <div class="col-md">
@@ -32,10 +32,10 @@
                   >Generated embeddings
                </label>
                <textarea
-                  v-model="embeddings"
+                  v-model="state.currentResponse.content"
                   class="form-control main-textarea"
                   type="text"
-                  :disabled="generating"
+                  :disabled="state.generating"
                />
             </div>
          </div>
@@ -48,35 +48,18 @@ import DefaultLayout from "~/layouts/default-layout.vue"
 
 const modelSelector = ref()
 const promptInput = ref<string>("")
-const generating = ref<boolean>(false)
-const embeddings = ref<string>("")
 
-const settings = getSettings()
+const llmClient = getLlmClientService()
+const state = llmClient.state
 
 const disableGenerate = computed(
-   () => (promptInput.value ?? "").length === 0 || generating.value
+   () => (promptInput.value ?? "").length === 0 || state.generating
 )
-const llmService = getLlmProxyService()
 
 const generateResponse = async () => {
-   if (!settings || !llmService.value) return
-   generating.value = true
-   llmService.value.ollama
-      .embeddings({
-         model: modelSelector.value?.selectedModelName,
-         prompt: promptInput.value,
-         options: {
-            temperature: settings.value.llm_temperature,
-            top_p: settings.value.llm_top_p,
-            top_k: settings.value.llm_top_k,
-            seed: settings.value.llm_seed
-         }
-      })
-      .then((response) => {
-         embeddings.value = JSON.stringify(response.embedding)
-      })
-      .finally(() => {
-         generating.value = false
-      })
+   llmClient.embeddings(
+      promptInput.value,
+      modelSelector.value?.selectedModelName
+   )
 }
 </script>

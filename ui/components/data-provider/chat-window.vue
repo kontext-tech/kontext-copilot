@@ -54,9 +54,7 @@
 </template>
 
 <script setup lang="ts">
-import LlmClientService, {
-   type StreamingCallback
-} from "~/services/LlmClientService"
+import { type StreamingCallback } from "~/services/LlmClientService"
 import { ChatRole } from "~/types/Schemas"
 import type { ChatToDataCommonProps } from "~/types/UIProps"
 
@@ -65,11 +63,7 @@ const chatMain = ref<HTMLElement | null>(null)
 const chatInput = ref<HTMLTextAreaElement | null>(null)
 
 const settings = getSettings()
-const llmService = getLlmProxyService()
-const llmClient: LlmClientService = new LlmClientService(
-   llmService.value,
-   settings
-)
+const llmClient = getLlmClientService()
 const state = llmClient.state
 
 const sendButtonDisabled = computed(
@@ -101,7 +95,6 @@ const callback: StreamingCallback = (
 const sendMessage = async () => {
    if (!props.selectedModelName) return
    llmClient.chatStreaming(userInput.value, props.selectedModelName, callback)
-
    userInput.value = ""
 }
 
