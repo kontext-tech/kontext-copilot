@@ -35,7 +35,7 @@
                   @abort-clicked="handleAbortClicked"
                />
             </div>
-            <div class="flex-shrink-0 p-4 d-flex align-items-center">
+            <div class="flex-shrink-0 p-4 d-flex align-items-center mx-1">
                <span class="chat-icon">
                   <Icon
                      :name="getRoleIcon(ChatRole.USER)"
