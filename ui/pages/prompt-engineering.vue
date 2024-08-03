@@ -72,15 +72,16 @@
                      placeholder="User input"
                   />
                </div>
-
-               <BButton
-                  variant="primary"
-                  :disabled="disableGenerate"
-                  @click="generateResponse"
-               >
-                  Generate
-                  <BSpinner v-if="state.generating" small />
-               </BButton>
+               <div>
+                  <BButton
+                     variant="primary"
+                     :disabled="disableGenerate"
+                     @click="generateResponse"
+                  >
+                     Generate
+                     <BSpinner v-if="state.generating" small />
+                  </BButton>
+               </div>
             </div>
             <div class="col-md">
                <label for="userInput" class="form-label">Response </label>
@@ -88,6 +89,7 @@
                   v-model="state.currentResponse.content"
                   class="form-control main-textarea"
                   type="text"
+                  rows="8"
                   placeholder="Generated response"
                   :disabled="state.generating"
                />

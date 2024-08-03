@@ -15,17 +15,20 @@
                      v-model="promptInput"
                      class="form-control main-textarea"
                      type="text"
+                     rows="16"
                      placeholder="Prompt template"
                   />
                </div>
-               <BButton
-                  variant="primary"
-                  :disabled="disableGenerate"
-                  @click="generateResponse"
-               >
-                  Generate
-                  <BSpinner v-if="state.generating" small />
-               </BButton>
+               <div>
+                  <BButton
+                     variant="primary"
+                     :disabled="disableGenerate"
+                     @click="generateResponse"
+                  >
+                     Generate
+                     <BSpinner v-if="state.generating" small />
+                  </BButton>
+               </div>
             </div>
             <div class="col-md">
                <label for="embeddings" class="form-label"
@@ -35,6 +38,7 @@
                   v-model="state.currentResponse.content"
                   class="form-control main-textarea"
                   type="text"
+                  rows="16"
                   :disabled="state.generating"
                />
             </div>
@@ -63,4 +67,6 @@ const generateResponse = async () => {
    if (!llmToolbar.value?.model) throw new LlmModelRequiredException()
    llmClient.embeddings(promptInput.value, llmToolbar.value?.model)
 }
+
+usePageTitle()
 </script>
