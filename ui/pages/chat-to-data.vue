@@ -13,11 +13,13 @@
             @schema-changed="handleSchemaChange"
             @tables-changed="handleTablesChange"
          />
-         <LlmModelSelector
+         <LlmSettingsToolbar
             v-if="dataSourceSelctor?.selectedDataSource"
-            ref="modelSelector"
+            id="llmToolbar"
+            ref="llmToolbar"
+            model-selector
+            settings-button
          />
-         <LlmSettingsButton v-if="dataSourceSelctor?.selectedDataSource" />
       </template>
       <template v-if="dataSourceSelctor?.selectedDataSource" #secondary-sidebar>
          <DataSourceDisplay
@@ -86,6 +88,7 @@ import DefaultLayout from "~/layouts/default-layout.vue"
 import DataSourceSelector from "~/components/data-source/selector.vue"
 import type { DataProviderInfoWrapModel } from "~/types/Schemas"
 import DataProviderSchemaSelector from "~/components/data-provider/schema-selector.vue"
+import LlmSettingsToolbar from "~/components/llm/settings-toolbar.vue"
 
 const dataSourceSelctor = ref<InstanceType<typeof DataSourceSelector> | null>(
    null
@@ -96,8 +99,8 @@ const dataProviderInfo = reactive<DataProviderInfoWrapModel>({
 })
 const selectedSchema = ref<string>()
 const selectedTables = ref<string[]>([])
-const modelSelector = ref()
-const selectedModelName = computed(() => modelSelector.value?.selectedModelName)
+const llmToolbar = ref<InstanceType<typeof LlmSettingsToolbar> | null>(null)
+const selectedModelName = computed(() => llmToolbar.value?.model)
 
 const dataProviderService = getDataProviderService()
 

@@ -19,3 +19,12 @@ export interface ChatToDataCommonProps {
    selectedTables?: string[]
    selectedModelName?: string
 }
+
+export interface LlmSettingsToolbarProps {
+   modelSelector?: boolean
+   settingsButton?: boolean
+   streamingToggle?: boolean
+   jsonToogle?: boolean
+   streamingDefault?: boolean
+   jsonDefault?: boolean
+}

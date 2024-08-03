@@ -1,8 +1,14 @@
 <template>
    <DefaultLayout>
       <template #header-secondary>
-         <LlmModelSelector ref="modelSelector" />
-         <LlmSettingsButton />
+         <LlmSettingsToolbar
+            id="llmToolbar"
+            ref="llmToolbar"
+            model-selector
+            settings-button
+            streaming-toggle
+            :streaming-default="true"
+         />
       </template>
 
       <div class="mt-3 d-flex flex-column min-h-0 h-100 overflow-y-hidden">
@@ -61,15 +67,17 @@
 </template>
 
 <script setup lang="ts">
+import LlmSettingsToolbar from "~/components/llm/settings-toolbar.vue"
 import ChatMessageCard from "~/components/chat/message-card.vue"
 import DefaultLayout from "~/layouts/default-layout.vue"
-import { type StreamingCallback } from "~/services/LlmClientService"
+import { type LlmChatCallback } from "~/services/LlmClientService"
 import { ChatRole } from "~/types/Schemas"
+import { LlmModelRequiredException } from "~/types/Errors"
 
 const userInput = ref<string>("")
 const chatMain = ref<HTMLElement | null>(null)
 const chatInput = ref<HTMLTextAreaElement | null>(null)
-const modelSelector = ref()
+const llmToolbar = ref<InstanceType<typeof LlmSettingsToolbar> | null>(null)
 
 const settings = getSettings()
 const llmClient = getLlmClientService()
@@ -92,7 +100,7 @@ const scrollToBottom = async () => {
    }
 }
 
-const callback: StreamingCallback = (
+const callback: LlmChatCallback = (
    part: string,
    message: string | null,
    done: boolean
@@ -102,11 +110,12 @@ const callback: StreamingCallback = (
 }
 
 const sendMessage = async () => {
-   llmClient.chatStreaming(
-      userInput.value,
-      modelSelector.value?.selectedModelName,
-      callback
-   )
+   if (!llmToolbar.value?.model) throw new LlmModelRequiredException()
+   if (llmToolbar.value.streaming)
+      llmClient.chatStreaming(userInput.value, llmToolbar.value.model, callback)
+   else {
+      llmClient.chat(userInput.value, llmToolbar.value.model, callback)
+   }
    userInput.value = ""
 }
 </script>

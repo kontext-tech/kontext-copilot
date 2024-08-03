@@ -26,6 +26,12 @@ interface ChatMessage extends Message {
    generating?: boolean
 }
 
+interface LlmToolbarOptions {
+   streaming: boolean
+   format: "json" | ""
+   model?: string
+}
+
 interface LlmClientState {
    history: ChatMessage[]
    generating: boolean
@@ -150,6 +156,7 @@ type SqlType = keyof SqlStatementType
 export {
    ChatRole,
    type ChatMessage,
+   type LlmToolbarOptions,
    type LlmClientState,
    type Settings,
    type PromptInfo,

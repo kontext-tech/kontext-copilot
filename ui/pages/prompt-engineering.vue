@@ -1,22 +1,15 @@
 <template>
    <DefaultLayout>
       <template #header-secondary>
-         <LlmModelSelector ref="modelSelector" />
-         <LlmSettingsButton />
-         <BFormCheckbox
-            v-model="streaming"
-            switch
-            class="d-flex align-items-center gap-1"
-         >
-            Streaming
-         </BFormCheckbox>
-         <BFormCheckbox
-            v-model="jsonFormat"
-            switch
-            class="d-flex align-items-center gap-1"
-         >
-            JSON format
-         </BFormCheckbox>
+         <LlmSettingsToolbar
+            id="llmToolbar"
+            ref="llmToolbar"
+            model-selector
+            settings-button
+            streaming-toggle
+            json-toogle
+            :streaming-default="true"
+         />
       </template>
 
       <div class="px-4 mt-3">
@@ -105,11 +98,13 @@
 </template>
 
 <script setup lang="ts">
+import LlmSettingsToolbar from "~/components/llm/settings-toolbar.vue"
 import DefaultLayout from "~/layouts/default-layout.vue"
+import { LlmModelRequiredException } from "~/types/Errors"
 import type { PromptInfo, Prompt } from "~/types/Schemas"
-const streaming = ref(true)
-const jsonFormat = ref<boolean>(false)
-const modelSelector = ref()
+
+const llmToolbar = ref<InstanceType<typeof LlmSettingsToolbar> | null>(null)
+
 const systemPromptInput = ref<string>()
 const promptInput = ref<string>("")
 const userInput = ref<string>()
@@ -125,7 +120,6 @@ const promptTemplate = ref<Prompt | null>(null)
 const disableGenerate = computed(
    () => (promptInput.value ?? "").length === 0 || state.generating
 )
-const jsonOption = computed(() => (jsonFormat.value ? "json" : ""))
 
 onMounted(async () => {
    promptTemplates.value = await promptService.getPromptTemplates()
@@ -141,13 +135,15 @@ watch(
 )
 
 const generateResponse = async () => {
+   if (!llmToolbar.value?.model) throw new LlmModelRequiredException()
+
    if (userInput.value)
       llmClient.generate(
          promptInput.value,
          userInput.value,
-         modelSelector.value?.selectedModelName,
-         jsonOption.value,
-         streaming.value,
+         llmToolbar.value.model,
+         llmToolbar.value.format,
+         llmToolbar.value.streaming,
          undefined,
          systemPromptInput.value
       )

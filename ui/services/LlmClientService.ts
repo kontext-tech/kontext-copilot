@@ -9,7 +9,7 @@ import {
 import { LlmProxyServiceRequiredException } from "~/types/Errors"
 import type { Reactive } from "vue"
 
-export type StreamingCallback = (
+export type LlmChatCallback = (
    part: string,
    message: string | null,
    done: boolean
@@ -68,16 +68,24 @@ export default class LlmClientService {
       this.state.currentResponse = { ...LlmClientService.DEFAULT_RESPONSE }
    }
 
-   async chat(input: string, model: string): Promise<Message> {
+   async chat(
+      input: string,
+      model: string,
+      callback?: LlmChatCallback
+   ): Promise<Message> {
       this.startGenerating()
       this.addUserMessage(input)
-      const response = await this.llmService.service.chat({
+      if (callback) callback("", null, false)
+      let response = await this.llmService.service.chat({
          model: model,
          messages: this.state.history,
          stream: false,
          options: this.options
       })
+      if (typeof response === "string") response = JSON.parse(response)
       this.state.currentResponse.content = response.message.content
+      if (callback)
+         callback(response.message.content, response.message.content, true)
       this.state.generating = false
       this.addAssistantMessage(response.message.content)
       return response.message
@@ -86,7 +94,7 @@ export default class LlmClientService {
    async chatStreaming(
       input: string,
       model: string,
-      callback: StreamingCallback
+      callback: LlmChatCallback
    ): Promise<Message> {
       this.startGenerating()
       this.addUserMessage(input)
@@ -125,7 +133,7 @@ export default class LlmClientService {
       model: string,
       format: "json" | "",
       stream: boolean,
-      callback?: StreamingCallback,
+      callback?: LlmChatCallback,
       systemPrompt?: string
    ) {
       const promptText =
@@ -156,7 +164,7 @@ export default class LlmClientService {
             }
          }
       } else {
-         const res = await this.llmService.service.generate({
+         let res = await this.llmService.service.generate({
             model: model,
             prompt: promptText,
             system: systemPrompt,
@@ -164,6 +172,7 @@ export default class LlmClientService {
             stream: false,
             options: this.options
          })
+         if (typeof res === "string") res = JSON.parse(res)
          this.state.currentResponse.content = res.response
          this.state.generating = false
          this.addAssistantMessage(this.state.currentResponse.content)

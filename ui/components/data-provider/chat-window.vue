@@ -54,7 +54,7 @@
 </template>
 
 <script setup lang="ts">
-import { type StreamingCallback } from "~/services/LlmClientService"
+import { type LlmChatCallback } from "~/services/LlmClientService"
 import { ChatRole } from "~/types/Schemas"
 import type { ChatToDataCommonProps } from "~/types/UIProps"
 
@@ -83,7 +83,7 @@ const scrollToBottom = async () => {
    }
 }
 
-const callback: StreamingCallback = (
+const callback: LlmChatCallback = (
    part: string,
    message: string | null,
    done: boolean

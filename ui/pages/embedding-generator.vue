@@ -1,7 +1,7 @@
 <template>
    <DefaultLayout>
       <template #header-secondary>
-         <LlmModelSelector ref="modelSelector" />
+         <LlmSettingsToolbar id="llmToolbar" ref="llmToolbar" model-selector />
       </template>
 
       <div class="px-4 mt-3">
@@ -45,8 +45,11 @@
 
 <script setup lang="ts">
 import DefaultLayout from "~/layouts/default-layout.vue"
+import LlmSettingsToolbar from "~/components/llm/settings-toolbar.vue"
+import { LlmModelRequiredException } from "~/types/Errors"
 
-const modelSelector = ref()
+const llmToolbar = ref<InstanceType<typeof LlmSettingsToolbar> | null>(null)
+
 const promptInput = ref<string>("")
 
 const llmClient = getLlmClientService()
@@ -57,9 +60,7 @@ const disableGenerate = computed(
 )
 
 const generateResponse = async () => {
-   llmClient.embeddings(
-      promptInput.value,
-      modelSelector.value?.selectedModelName
-   )
+   if (!llmToolbar.value?.model) throw new LlmModelRequiredException()
+   llmClient.embeddings(promptInput.value, llmToolbar.value?.model)
 }
 </script>

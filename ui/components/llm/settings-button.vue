@@ -7,7 +7,7 @@
       <Icon name="material-symbols:neurology-outline" size="20" /> LLMs settings
    </BButton>
    <BModal id="llmsSettingsModal" title="LLMs settings" ok-only size="lg">
-      <LlmSettings />
+      <LlmSettingsPanel />
    </BModal>
 </template>
 

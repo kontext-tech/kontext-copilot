@@ -42,7 +42,7 @@
                   >
                </span>
             </template>
-            <LlmSettings />
+            <LlmSettingsPanel />
          </BTab>
       </BTabs>
    </DefaultLayout>

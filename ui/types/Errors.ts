@@ -26,9 +26,17 @@ class LlmEndointRequiredException extends Error {
    }
 }
 
+class LlmModelRequiredException extends Error {
+   constructor() {
+      super(`LLM model is required for this operation`)
+      this.name = "LlmModelRequiredException"
+   }
+}
+
 export {
    ServiceNotFoundException,
    NoInjectionContextFoundException,
    LlmProxyServiceRequiredException,
-   LlmEndointRequiredException
+   LlmEndointRequiredException,
+   LlmModelRequiredException
 }

@@ -27,7 +27,6 @@ export default function useModels() {
    }
 
    onMounted(() => {
-      const llmService = getLlmProxyService()
       if (llmService) getModels()
    })
 
