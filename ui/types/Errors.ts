@@ -12,4 +12,15 @@ class NoInjectionContextFoundException extends Error {
    }
 }
 
-export { ServiceNotFoundException, NoInjectionContextFoundException }
+class LlmProxyServiceRequiredException extends Error {
+   constructor() {
+      super(`LlmProxyService is required for this operation`)
+      this.name = "LlmProxyServiceRequiredException"
+   }
+}
+
+export {
+   ServiceNotFoundException,
+   NoInjectionContextFoundException,
+   LlmProxyServiceRequiredException
+}

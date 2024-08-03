@@ -7,7 +7,7 @@
             class="flex-grow-1 flex-shrink-1 overflow-y-auto"
          >
             <template
-               v-for="(message, i) in chatHistory"
+               v-for="(message, i) in state.history"
                :key="`${i}-${message.role}`"
             >
                <ChatMessageCard
@@ -16,8 +16,8 @@
                />
             </template>
             <ChatMessageCard
-               v-if="generating"
-               :message="currentResponse"
+               v-if="state.generating"
+               :message="state.currentResponse"
                :username="settings.general_username"
             />
          </div>
@@ -36,7 +36,7 @@
                   class="form-control"
                   type="text"
                   placeholder="Ask a question..."
-                  :disabled="generating"
+                  :disabled="state.generating"
                   @keydown.enter.prevent="sendMessage"
                />
                <button
@@ -54,31 +54,29 @@
 </template>
 
 <script setup lang="ts">
-import type { Message } from "ollama/browser"
-import { ChatRole, type ChatMessage } from "~/types/Schemas"
+import LlmClientService, {
+   type StreamingCallback
+} from "~/services/LlmClientService"
+import { ChatRole } from "~/types/Schemas"
 import type { ChatToDataCommonProps } from "~/types/UIProps"
 
-const settings = getSettings()
-
 const userInput = ref<string>("")
-
-const sendButtonDisabled = computed(
-   () => userInput.value.trim().length === 0 || generating.value
-)
-
-const generating = ref(false)
-
-const chatHistory = ref<Message[]>([])
-
 const chatMain = ref<HTMLElement | null>(null)
-
 const chatInput = ref<HTMLTextAreaElement | null>(null)
 
-const currentResponse = ref<ChatMessage>({
-   role: ChatRole.ASSISTANT,
-   message: "",
-   generating: false
-})
+const settings = getSettings()
+const llmService = getLlmProxyService()
+const llmClient: LlmClientService = new LlmClientService(
+   llmService.value,
+   settings
+)
+const state = llmClient.state
+
+const sendButtonDisabled = computed(
+   () => userInput.value.trim().length === 0 || state.generating
+)
+
+usePageTitle()
 
 const scrollToBottom = async () => {
    // Scroll to the bottom of the chat-main element
@@ -91,42 +89,20 @@ const scrollToBottom = async () => {
    }
 }
 
-const llmService = getLlmService()
+const callback: StreamingCallback = (
+   part: string,
+   message: string | null,
+   done: boolean
+) => {
+   scrollToBottom()
+   if (done) userInput.value = ""
+}
 
 const sendMessage = async () => {
-   generating.value = true
-   chatHistory.value.push({ role: "user", content: userInput.value })
+   if (!props.selectedModelName) return
+   llmClient.chatStreaming(userInput.value, props.selectedModelName, callback)
+
    userInput.value = ""
-   await scrollToBottom()
-   currentResponse.value.generating = true
-
-   if (props.selectedModelName === undefined || !llmService.value) return
-
-   const response = await llmService.value.ollama.chat({
-      model: props.selectedModelName,
-      messages: chatHistory.value,
-      stream: true,
-      options: {
-         temperature: settings.value.llm_temperature,
-         top_p: settings.value.llm_top_p,
-         top_k: settings.value.llm_top_k,
-         seed: settings.value.llm_seed
-      }
-   })
-   for await (const part of response) {
-      currentResponse.value.message += part.message.content
-      await scrollToBottom()
-      if (part.done) {
-         chatHistory.value.push({
-            role: "assistant",
-            content: currentResponse.value.message || ""
-         })
-         generating.value = false
-         /* Reset the value */
-         currentResponse.value.message = ""
-         await scrollToBottom()
-      }
-   }
 }
 
 const props = defineProps<ChatToDataCommonProps>()

@@ -56,7 +56,7 @@ const settings = getSettings()
 const disableGenerate = computed(
    () => (promptInput.value ?? "").length === 0 || generating.value
 )
-const llmService = getLlmService()
+const llmService = getLlmProxyService()
 
 const generateResponse = async () => {
    if (!settings || !llmService.value) return

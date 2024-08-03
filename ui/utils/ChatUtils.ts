@@ -3,7 +3,7 @@ import { ChatRole, type ChatMessage } from "~/types/Schemas"
 
 export const ollmaMessageToChatMessage = (message: Message): ChatMessage => {
    return {
-      message: message.content,
+      content: message.content,
       role: message.role as ChatRole
    }
 }

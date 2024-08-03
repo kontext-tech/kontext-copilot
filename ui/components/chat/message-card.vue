@@ -41,15 +41,15 @@ const props = defineProps<ChatMessageProps>()
 const md = new markdownit()
 
 const htmlMessage = computed(() => {
-   if (props.message.generating && props.message.message === "")
+   if (props.message.generating && props.message.content === "")
       return "<em>Thinking.....</em>"
-   return md.render(props.message.message)
+   return md.render(props.message.content)
 })
 
 const { copy } = useClipboard()
 
 const copyMessage = async () => {
-   copy(props.message.message)
+   copy(props.message.content)
 }
 </script>
 

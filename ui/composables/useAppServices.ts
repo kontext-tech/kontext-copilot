@@ -6,7 +6,8 @@ import {
    SettingService
 } from "~/services/ApiServices"
 import type { Settings, SettingsWrapper } from "~/types/Schemas"
-import LlmService from "~/services/LlmService"
+import LlmProxyService from "~/services/LlmProxyService"
+// import type LlmClientService from "~/services/LlmClientService"
 
 const settingsWrapper = reactive<SettingsWrapper>({
    isLoading: false,
@@ -22,7 +23,8 @@ export default function useAppServices() {
    const promptService = new PromptService(appConfig.apiBaseUrl)
    const dataSourceService = new DataSourceService(appConfig.apiBaseUrl)
    const dataProviderService = new DataProviderService(appConfig.apiBaseUrl)
-   const llmService = ref<LlmService | null>(null)
+   const llmProxyService = ref<LlmProxyService | null>(null)
+   // const llmClientService = ref<LlmClientService | null>(null)
    const settings = computed(() => settingsWrapper.settings)
 
    onMounted(() => {
@@ -35,9 +37,10 @@ export default function useAppServices() {
       settingsWrapper.isLoading = true
       try {
          settingsWrapper.settings = await settingService.getSettings()
-         llmService.value = new LlmService(
+         const proxy = new LlmProxyService(
             settingsWrapper.settings.llm_endpoint
          )
+         llmProxyService.value = proxy
          settingsWrapper.error = null
          settingsWrapper.loaded = true
       } catch (err) {
@@ -83,7 +86,8 @@ export default function useAppServices() {
    addService("PROMPT_SERVICE", promptService)
    addService("DATA_SOURCE_SERVICE", dataSourceService)
    addService("DATA_PROVIDER_SERVICE", dataProviderService)
-   addService("LLM_SERVICE", llmService)
+   addService("LLM_PROXY_SERVICE", llmProxyService)
+   // addService("LLM_CLIENT_SERVICE", llmClientService)
 
    return {
       settingsWrapper

@@ -3,7 +3,7 @@ import type {
    DataSourceService,
    PromptService
 } from "~/services/ApiServices"
-import type LlmService from "~/services/LlmService"
+import type LlmProxyService from "~/services/LlmProxyService"
 import {
    NoInjectionContextFoundException,
    ServiceNotFoundException
@@ -16,7 +16,8 @@ interface ServiceNames {
    PROMPT_SERVICE: unknown
    DATA_SOURCE_SERVICE: unknown
    DATA_PROVIDER_SERVICE: unknown
-   LLM_SERVICE: unknown
+   LLM_PROXY_SERVICE: unknown
+   LLM_CLIENT_SERVICE: unknown
 }
 
 type ServiceName = keyof ServiceNames
@@ -39,8 +40,8 @@ const getSettings = (): Ref<Settings> => {
    return getService<Ref<Settings>>("SETTINGS")
 }
 
-const getLlmService = (): Ref<LlmService | null> => {
-   return getService<Ref<LlmService>>("LLM_SERVICE")
+const getLlmProxyService = (): Ref<LlmProxyService | null> => {
+   return getService<Ref<LlmProxyService | null>>("LLM_PROXY_SERVICE")
 }
 
 const getDataSourceService = (): DataSourceService => {
@@ -60,7 +61,7 @@ export {
    getService,
    addService,
    getSettings,
-   getLlmService,
+   getLlmProxyService,
    getDataSourceService,
    getDataProviderService,
    getPromptService

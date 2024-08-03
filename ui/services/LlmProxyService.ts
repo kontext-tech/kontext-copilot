@@ -1,6 +1,6 @@
 import { Ollama, type ListResponse } from "ollama/browser"
 
-class LlmService {
+class LlmProxyService {
    endpoint: string
    ollama: Ollama
 
@@ -16,4 +16,4 @@ class LlmService {
    }
 }
 
-export default LlmService
+export default LlmProxyService

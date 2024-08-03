@@ -8,7 +8,7 @@ export default function useModels() {
 
    const defaultModelConfig = computed(() => settings?.value.llm_default_model)
 
-   const llmService = getLlmService()
+   const llmService = getLlmProxyService()
 
    const getModels = async () => {
       if (!llmService.value) return
@@ -27,7 +27,7 @@ export default function useModels() {
    }
 
    onMounted(() => {
-      const llmService = getLlmService()
+      const llmService = getLlmProxyService()
       if (llmService) getModels()
    })
 

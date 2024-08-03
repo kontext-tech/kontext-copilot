@@ -128,7 +128,7 @@ const disableGenerate = computed(
 const jsonOption = computed(() => (jsonFormat.value ? "json" : ""))
 const promptService = getPromptService()
 
-const llmService = getLlmService()
+const llmService = getLlmProxyService()
 
 const generateResponse = async () => {
    if (!llmService.value) return

@@ -13,17 +13,17 @@
                class="flex-grow-1 flex-shrink-1 overflow-y-auto px-4"
             >
                <template
-                  v-for="(message, i) in chatHistory"
+                  v-for="(message, i) in state.history"
                   :key="`${i}-${message.role}`"
                >
                   <ChatMessageCard
-                     :message="ollmaMessageToChatMessage(message)"
+                     :message="message"
                      :username="settings.general_username"
                   />
                </template>
                <ChatMessageCard
-                  v-if="generating"
-                  :message="currentResponse"
+                  v-if="state.generating"
+                  :message="state.currentResponse"
                   :username="settings.general_username"
                />
             </div>
@@ -42,7 +42,7 @@
                      class="form-control"
                      type="text"
                      placeholder="Type a message..."
-                     :disabled="generating"
+                     :disabled="state.generating"
                      @keydown.enter.prevent="sendMessage"
                   />
                   <button
@@ -61,36 +61,29 @@
 </template>
 
 <script setup lang="ts">
-import { type Message } from "ollama/browser"
 import ChatMessageCard from "~/components/chat/message-card.vue"
 import DefaultLayout from "~/layouts/default-layout.vue"
-import { ChatRole, type ChatMessage } from "~/types/Schemas"
-
-const settings = getSettings()
+import LlmClientService, {
+   type StreamingCallback
+} from "~/services/LlmClientService"
+import { ChatRole } from "~/types/Schemas"
 
 const userInput = ref<string>("")
-
-const sendButtonDisabled = computed(
-   () => userInput.value.trim().length === 0 || generating.value
-)
-
-const generating = ref(false)
-
-const chatHistory = ref<Message[]>([])
-
-const currentResponse = ref<ChatMessage>({
-   role: ChatRole.ASSISTANT,
-   message: "",
-   generating: false
-})
-
 const chatMain = ref<HTMLElement | null>(null)
-
 const chatInput = ref<HTMLTextAreaElement | null>(null)
-
 const modelSelector = ref()
 
-const llmService = getLlmService()
+const settings = getSettings()
+const llmService = getLlmProxyService()
+const llmClient: LlmClientService = new LlmClientService(
+   llmService.value,
+   settings
+)
+const state = llmClient.state
+
+const sendButtonDisabled = computed(
+   () => userInput.value.trim().length === 0 || state.generating
+)
 
 usePageTitle()
 
@@ -105,40 +98,21 @@ const scrollToBottom = async () => {
    }
 }
 
-/* Send user input and getting response */
+const callback: StreamingCallback = (
+   part: string,
+   message: string | null,
+   done: boolean
+) => {
+   scrollToBottom()
+   if (done) userInput.value = ""
+}
+
 const sendMessage = async () => {
-   generating.value = true
-   chatHistory.value.push({ role: "user", content: userInput.value })
+   llmClient.chatStreaming(
+      userInput.value,
+      modelSelector.value?.selectedModelName,
+      callback
+   )
    userInput.value = ""
-   await scrollToBottom()
-   currentResponse.value.generating = true
-   if (settings === undefined || !llmService.value) return
-   const response = await llmService.value.ollama.chat({
-      model: modelSelector.value?.selectedModelName,
-      messages: chatHistory.value,
-      stream: true,
-      options: {
-         temperature: settings.value.llm_temperature,
-         top_p: settings.value.llm_top_p,
-         top_k: settings.value.llm_top_k,
-         seed: settings.value.llm_seed
-      }
-   })
-   for await (const part of response) {
-      currentResponse.value.message += part.message.content
-      await scrollToBottom()
-      if (part.done) {
-         chatHistory.value.push({
-            role: "assistant",
-            content: currentResponse.value.message || ""
-         })
-         generating.value = false
-         /* Reset the value */
-         currentResponse.value.message = ""
-         await scrollToBottom()
-      }
-   }
 }
 </script>
-
-<style scoped lang="scss"></style>

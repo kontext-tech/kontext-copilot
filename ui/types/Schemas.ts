@@ -1,3 +1,5 @@
+import type { Message } from "ollama/browser"
+
 enum ChatRole {
    USER = "user",
    ASSISTANT = "assistant",
@@ -18,10 +20,17 @@ interface ThemeConfigItem {
    name: string
 }
 
-interface ChatMessage {
-   message: string
+interface ChatMessage extends Message {
+   content: string
    role: ChatRole
    generating?: boolean
+}
+
+interface LlmClientState {
+   history: ChatMessage[]
+   generating: boolean
+   error: string | null
+   currentResponse: ChatMessage
 }
 
 interface Settings {
@@ -141,6 +150,7 @@ type SqlType = keyof SqlStatementType
 export {
    ChatRole,
    type ChatMessage,
+   type LlmClientState,
    type Settings,
    type PromptInfo,
    type Prompt,
