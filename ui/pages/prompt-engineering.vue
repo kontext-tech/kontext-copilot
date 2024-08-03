@@ -86,17 +86,17 @@
                   @click="generateResponse"
                >
                   Generate
-                  <BSpinner v-if="generating" small />
+                  <BSpinner v-if="state.generating" small />
                </BButton>
             </div>
             <div class="col-md">
                <label for="userInput" class="form-label">Response </label>
                <textarea
-                  v-model="response"
+                  v-model="state.currentResponse.content"
                   class="form-control main-textarea"
                   type="text"
                   placeholder="Generated response"
-                  :disabled="generating"
+                  :disabled="state.generating"
                />
             </div>
          </div>
@@ -106,6 +106,7 @@
 
 <script setup lang="ts">
 import DefaultLayout from "~/layouts/default-layout.vue"
+import LlmClientService from "~/services/LlmClientService"
 import type { PromptInfo, Prompt } from "~/types/Schemas"
 const streaming = ref(true)
 const jsonFormat = ref<boolean>(false)
@@ -113,74 +114,24 @@ const modelSelector = ref()
 const systemPromptInput = ref<string>()
 const promptInput = ref<string>("")
 const userInput = ref<string>()
-const response = ref<string>()
-const generating = ref<boolean>(false)
 
 const settings = getSettings()
+const llmService = getLlmProxyService()
+const llmClient: LlmClientService = new LlmClientService(
+   llmService.value,
+   settings
+)
+const state = llmClient.state
+const promptService = getPromptService()
 
 const selectedTemplateId = ref(null)
 const promptTemplates = ref<PromptInfo[]>([])
 const promptTemplate = ref<Prompt | null>(null)
 
 const disableGenerate = computed(
-   () => (promptInput.value ?? "").length === 0 || generating.value
+   () => (promptInput.value ?? "").length === 0 || state.generating
 )
 const jsonOption = computed(() => (jsonFormat.value ? "json" : ""))
-const promptService = getPromptService()
-
-const llmService = getLlmProxyService()
-
-const generateResponse = async () => {
-   if (!llmService.value) return
-   generating.value = true
-   response.value = ""
-   let prompt_str = promptInput.value
-   /* Replace {{$input}} with user input */
-   if (userInput.value) {
-      prompt_str = prompt_str.replace(/\{\{\$input\}\}/g, userInput.value)
-   }
-
-   if (streaming.value) {
-      const res = await llmService.value.ollama.generate({
-         model: modelSelector.value?.selectedModelName,
-         prompt: prompt_str,
-         system: systemPromptInput.value,
-         format: jsonOption.value,
-         stream: true,
-         options: {
-            temperature: settings.value.llm_temperature,
-            top_p: settings.value.llm_top_p,
-            top_k: settings.value.llm_top_k,
-            seed: settings.value.llm_seed
-         }
-      })
-      for await (const part of res) {
-         // Append the response to the response textarea
-         if (response.value) response.value += part.response
-         else response.value = part.response
-
-         if (part.done) {
-            generating.value = false
-         }
-      }
-   } else {
-      const res = await llmService.value.ollama.generate({
-         model: modelSelector.value?.selectedModelName,
-         prompt: prompt_str,
-         system: systemPromptInput.value,
-         stream: false,
-         format: jsonOption.value,
-         options: {
-            temperature: settings.value.llm_temperature,
-            top_p: settings.value.llm_top_p,
-            top_k: settings.value.llm_top_k,
-            seed: settings.value.llm_seed
-         }
-      })
-      response.value = res.response
-      generating.value = false
-   }
-}
 
 onMounted(async () => {
    promptTemplates.value = await promptService.getPromptTemplates()
@@ -194,6 +145,17 @@ watch(
       }
    }
 )
+
+const generateResponse = async () => {
+   llmClient.generate(
+      promptInput.value,
+      modelSelector.value?.selectedModelName,
+      jsonOption.value,
+      streaming.value,
+      undefined,
+      systemPromptInput.value
+   )
+}
 
 const loadPromptTemplate = async (template_id: string) => {
    promptTemplate.value = await promptService.getPromptTemplate(template_id)

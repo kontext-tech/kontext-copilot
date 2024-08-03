@@ -16,7 +16,7 @@ export type StreamingCallback = (
 ) => void
 
 /* A service to handle all chats, generation, etc. */
-class LlmClientService {
+export default class LlmClientService {
    static readonly DEFAULT_RESPONSE: ChatMessage = {
       content: "",
       role: ChatRole.ASSISTANT,
@@ -111,9 +111,60 @@ class LlmClientService {
       }
       return {
          content: this.state.currentResponse.content ?? "",
-         role: "assistant"
+         role: ChatRole.ASSISTANT
+      }
+   }
+
+   replaceValues(input: string) {
+      return input.replace(/\{\{\$input\}\}/g, input)
+   }
+
+   async generate(
+      prompt: string,
+      model: string,
+      format: "json" | "",
+      stream: boolean,
+      callback?: StreamingCallback,
+      systemPrompt?: string
+   ) {
+      const promptText = this.replaceValues(prompt)
+      this.startGenerating()
+      if (stream) {
+         const res = await this.llmService.ollama.generate({
+            model: model,
+            prompt: promptText,
+            system: systemPrompt,
+            format: format,
+            stream: true,
+            options: this.options
+         })
+         for await (const part of res) {
+            this.state.currentResponse.content += part.response
+            if (callback)
+               callback(
+                  part.response,
+                  this.state.currentResponse.content,
+                  part.done
+               )
+            if (part.done) {
+               this.state.generating = false
+               this.addAssistantMessage(
+                  this.state.currentResponse.content ?? ""
+               )
+            }
+         }
+      } else {
+         const res = await this.llmService.ollama.generate({
+            model: model,
+            prompt: promptText,
+            system: systemPrompt,
+            format: format,
+            stream: false,
+            options: this.options
+         })
+         this.state.currentResponse.content = res.response
+         this.state.generating = false
+         this.addAssistantMessage(this.state.currentResponse.content)
       }
    }
 }
-
-export default LlmClientService
