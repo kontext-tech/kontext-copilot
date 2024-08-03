@@ -1,12 +1,4 @@
-import type { Message } from "ollama"
-import { ChatRole, type ChatMessage } from "~/types/Schemas"
-
-export const ollmaMessageToChatMessage = (message: Message): ChatMessage => {
-   return {
-      content: message.content,
-      role: message.role as ChatRole
-   }
-}
+import { ChatRole } from "~/types/Schemas"
 
 export const getRoleClass = (role: ChatRole) => {
    switch (role) {
@@ -26,7 +18,7 @@ export const getRoleIcon = (role: ChatRole) => {
       case ChatRole.ASSISTANT:
          return "material-symbols:neurology-outline"
       default:
-         return "material-symbols:settings-outline"
+         return "material-symbols:info-outline"
    }
 }
 

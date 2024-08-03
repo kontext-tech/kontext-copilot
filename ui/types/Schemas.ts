@@ -21,10 +21,12 @@ interface ThemeConfigItem {
 }
 
 interface ChatMessage extends Message {
+   id?: number
    content: string
    role: ChatRole
    generating?: boolean
    isStreaming?: boolean
+   isError?: boolean
 }
 
 interface LlmToolbarOptions {
@@ -39,6 +41,7 @@ interface LlmClientState {
    error: string | null
    currentResponse: ChatMessage
    abort: boolean
+   messageIndex: number
 }
 
 interface Settings {

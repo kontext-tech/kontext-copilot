@@ -9,7 +9,7 @@
       </div>
 
       <div class="flex-grow-1 d-flex flex-column">
-         <div class="px-1">
+         <div class="px-1 d-flex align-items-center">
             <strong v-if="message.role === ChatRole.USER">{{
                username
             }}</strong>
@@ -20,8 +20,15 @@
                small
                class="ms-1"
             />
+            <!-- <span v-if="message.id" class="ms-auto text-muted">
+               #{{ message.id }}
+            </span> -->
          </div>
-         <div class="p-3 rounded bg-body-tertiary my-1" v-html="htmlMessage" />
+         <div
+            class="p-3 rounded bg-body-tertiary my-1"
+            :class="{ 'bg-danger-subtle': message.isError }"
+            v-html="htmlMessage"
+         />
          <div v-if="message.generating">
             <BButton
                v-if="message.isStreaming"
@@ -37,6 +44,7 @@
          </div>
          <div v-else>
             <BButton
+               v-if="message.isError !== true"
                v-b-tooltip.click.top
                variant="link"
                size="sm"
@@ -44,6 +52,16 @@
                title="Copied!"
                @click="copyMessage"
                ><Icon name="material-symbols:content-copy-outline" />
+            </BButton>
+            <BButton
+               v-if="message.isError"
+               v-b-tooltip.click.top
+               variant="link"
+               size="sm"
+               class="text-danger"
+               title="Deleted!"
+               @click="deleteMsg"
+               ><Icon name="material-symbols:delete-outline" />
             </BButton>
          </div>
       </div>
@@ -76,7 +94,11 @@ const abort = () => {
    emits("abort-clicked")
 }
 
-const emits = defineEmits(["abort-clicked"])
+const deleteMsg = () => {
+   emits("delete-clicked", props.message.id)
+}
+
+const emits = defineEmits(["abort-clicked", "delete-clicked"])
 </script>
 
 <style scoped lang="scss"></style>

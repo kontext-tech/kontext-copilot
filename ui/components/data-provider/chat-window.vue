@@ -11,8 +11,9 @@
                :key="`${i}-${message.role}`"
             >
                <ChatMessageCard
-                  :message="ollmaMessageToChatMessage(message)"
+                  :message="message"
                   :username="settings.general_username"
+                  @delete-clicked="handleDeleteClicked"
                />
             </template>
             <ChatMessageCard
@@ -101,6 +102,10 @@ const sendMessage = async () => {
 
 const handleAbortClicked = () => {
    llmClient.abort()
+}
+
+const handleDeleteClicked = (messageId: number) => {
+   llmClient.deleteMessage(messageId)
 }
 
 const props = defineProps<ChatToDataCommonProps>()

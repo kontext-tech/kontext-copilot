@@ -30,7 +30,8 @@ export default class LlmClientService {
       history: [],
       error: null,
       currentResponse: { ...LlmClientService.DEFAULT_RESPONSE },
-      abort: false
+      abort: false,
+      messageIndex: 0
    })
 
    constructor(llmService: LlmProxyService | null, settings: Ref<Settings>) {
@@ -39,10 +40,10 @@ export default class LlmClientService {
       this.settings = settings
 
       // Setup options
-      this._setOptions()
+      this.setOptions()
    }
 
-   _setOptions() {
+   private setOptions() {
       this.options = {
          temperature: this.settings.value.llm_temperature,
          top_k: this.settings.value.llm_top_k,
@@ -51,45 +52,79 @@ export default class LlmClientService {
       }
    }
 
-   addUserMessage(message: string) {
-      this.state.history.push({ content: message, role: ChatRole.USER })
+   private addUserMessage(message: string) {
+      this.state.history.push({
+         content: message,
+         role: ChatRole.USER,
+         id: this.state.messageIndex++
+      })
    }
 
-   addAssistantMessage(message: string) {
-      this.state.history.push({ content: message, role: ChatRole.ASSISTANT })
+   private addAssistantMessage(message: string) {
+      this.state.history.push({
+         content: message,
+         role: ChatRole.ASSISTANT,
+         id: this.state.messageIndex++
+      })
    }
 
-   startGenerating() {
+   private addSystemMessage(message: string, isError?: boolean) {
+      const msg = {
+         content: message,
+         role: ChatRole.SYSTEM,
+         isError,
+         id: this.state.messageIndex++
+      }
+      this.state.history.push(msg)
+      return msg
+   }
+
+   private startGenerating() {
       this.resetCurrentResponse()
       this.state.generating = true
       this.state.currentResponse.generating = true
    }
 
-   resetCurrentResponse() {
+   private resetCurrentResponse() {
       this.state.currentResponse = { ...LlmClientService.DEFAULT_RESPONSE }
+   }
+
+   private getHistory() {
+      return this.state.history.filter((message) => message.isError !== true)
    }
 
    async chat(
       input: string,
       model: string,
       callback?: LlmChatCallback
-   ): Promise<Message> {
+   ): Promise<ChatMessage> {
       this.startGenerating()
       this.addUserMessage(input)
       if (callback) callback("", null, false)
-      let response = await this.llmService.service.chat({
-         model: model,
-         messages: this.state.history,
-         stream: false,
-         options: this.options
-      })
-      if (typeof response === "string") response = JSON.parse(response)
-      this.state.currentResponse.content = response.message.content
-      if (callback)
-         callback(response.message.content, response.message.content, true)
-      this.state.generating = false
-      this.addAssistantMessage(response.message.content)
-      return response.message
+
+      try {
+         let response = await this.llmService.service.chat({
+            model: model,
+            messages: this.getHistory(),
+            stream: false,
+            options: this.options
+         })
+         if (typeof response === "string") response = JSON.parse(response)
+         this.state.currentResponse.content = response.message.content
+         if (callback)
+            callback(response.message.content, response.message.content, true)
+         this.state.generating = false
+         this.addAssistantMessage(response.message.content)
+         return {
+            content: this.state.currentResponse.content ?? "",
+            role: ChatRole.ASSISTANT
+         }
+      } catch (e) {
+         this.state.error = e instanceof Error ? e.message : String(e)
+         this.state.generating = false
+         this.state.currentResponse.content = ""
+         return this.addSystemMessage(this.state.error, true)
+      }
    }
 
    async chatStreaming(
@@ -99,40 +134,52 @@ export default class LlmClientService {
    ): Promise<Message> {
       this.startGenerating()
       this.addUserMessage(input)
+      if (callback) callback("", null, false)
+
       const response = await this.llmService.service.chat({
          model: model,
-         messages: this.state.history,
+         messages: this.getHistory(),
          stream: true,
          options: this.options
       })
 
       this.state.currentResponse.isStreaming = true
-
-      for await (const part of response) {
-         if (this.state.abort && !part.done) {
-            response.abort()
-            this.state.abort = false
-            this.state.generating = false
-            this.addAssistantMessage(this.state.currentResponse.content ?? "")
+      try {
+         for await (const part of response) {
+            if (this.state.abort && !part.done) {
+               response.abort()
+               this.state.abort = false
+               this.state.generating = false
+               this.addAssistantMessage(
+                  this.state.currentResponse.content ?? ""
+               )
+            }
+            this.state.currentResponse.content += part.message.content
+            callback(
+               part.message.content,
+               this.state.currentResponse.content,
+               part.done
+            )
+            if (part.done) {
+               this.state.generating = false
+               this.addAssistantMessage(
+                  this.state.currentResponse.content ?? ""
+               )
+            }
          }
-         this.state.currentResponse.content += part.message.content
-         callback(
-            part.message.content,
-            this.state.currentResponse.content,
-            part.done
-         )
-         if (part.done) {
-            this.state.generating = false
-            this.addAssistantMessage(this.state.currentResponse.content ?? "")
+         return {
+            content: this.state.currentResponse.content ?? "",
+            role: ChatRole.ASSISTANT
          }
-      }
-      return {
-         content: this.state.currentResponse.content ?? "",
-         role: ChatRole.ASSISTANT
+      } catch (e) {
+         this.state.error = e instanceof Error ? e.message : String(e)
+         this.state.generating = false
+         this.state.currentResponse.content = ""
+         return this.addSystemMessage(this.state.error, true)
       }
    }
 
-   replaceValues(promt: string, userInput: string) {
+   private replaceValues(promt: string, userInput: string) {
       return promt.replace(/\{\{\$input\}\}/g, userInput)
    }
 
@@ -218,5 +265,14 @@ export default class LlmClientService {
 
    abort() {
       this.state.abort = true
+   }
+
+   deleteMessage(messageId: number) {
+      const index = this.state.history.findIndex(
+         (message) => message.id === messageId
+      )
+      if (index !== -1) {
+         this.state.history.splice(index, 1)
+      }
    }
 }
