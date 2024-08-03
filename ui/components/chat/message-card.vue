@@ -1,5 +1,5 @@
 <template>
-   <div class="py-3 d-flex align-items-top">
+   <div class="py-1 d-flex align-items-top">
       <div class="chat-icon">
          <Icon
             :name="getRoleIcon(message.role)"
@@ -14,35 +14,55 @@
                username
             }}</strong>
             <strong v-else>{{ getRoleName(message.role) }}</strong>
+            <BSpinner
+               v-if="message.generating"
+               variant="success"
+               small
+               class="ms-1"
+            />
          </div>
-         <div class="p-3 rounded bg-body-tertiary my-2" v-html="htmlMessage" />
-         <div v-if="!message.generating">
-            <span
+         <div class="p-3 rounded bg-body-tertiary my-1" v-html="htmlMessage" />
+         <div v-if="message.generating">
+            <BButton
+               v-if="message.isStreaming"
                v-b-tooltip.click.top
-               class="text-muted cursor-pointer"
+               variant="link"
+               size="sm"
+               class="text-danger"
+               title="Aborted!"
+               @click="abort"
+            >
+               <Icon name="material-symbols:stop-circle-outline" />
+            </BButton>
+         </div>
+         <div v-else>
+            <BButton
+               v-b-tooltip.click.top
+               variant="link"
+               size="sm"
+               class="text-muted"
                title="Copied!"
                @click="copyMessage"
-            >
-               <Icon name="material-symbols:content-copy-outline" size="18" />
-            </span>
+               ><Icon name="material-symbols:content-copy-outline" />
+            </BButton>
          </div>
       </div>
    </div>
 </template>
 
 <script setup lang="ts">
-import type { ChatMessageProps } from "~/types/UIProps"
+import type { ChatMessageCardProps } from "~/types/UIProps"
 import markdownit from "markdown-it"
 import { useClipboard } from "@vueuse/core"
 import { ChatRole } from "~/types/Schemas"
 
-const props = defineProps<ChatMessageProps>()
+const props = defineProps<ChatMessageCardProps>()
 
 const md = new markdownit()
 
 const htmlMessage = computed(() => {
    if (props.message.generating && props.message.content === "")
-      return "<em>Thinking.....</em>"
+      return "<em>Thinking...</em>"
    return md.render(props.message.content)
 })
 
@@ -51,6 +71,12 @@ const { copy } = useClipboard()
 const copyMessage = async () => {
    copy(props.message.content)
 }
+
+const abort = () => {
+   emits("abort-clicked")
+}
+
+const emits = defineEmits(["abort-clicked"])
 </script>
 
 <style scoped lang="scss"></style>

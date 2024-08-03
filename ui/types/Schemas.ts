@@ -24,6 +24,7 @@ interface ChatMessage extends Message {
    content: string
    role: ChatRole
    generating?: boolean
+   isStreaming?: boolean
 }
 
 interface LlmToolbarOptions {
@@ -37,6 +38,7 @@ interface LlmClientState {
    generating: boolean
    error: string | null
    currentResponse: ChatMessage
+   abort: boolean
 }
 
 interface Settings {

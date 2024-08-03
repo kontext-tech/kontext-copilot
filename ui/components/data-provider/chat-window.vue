@@ -19,6 +19,7 @@
                v-if="state.generating"
                :message="state.currentResponse"
                :username="settings.general_username"
+               @abort-clicked="handleAbortClicked"
             />
          </div>
          <div class="flex-shrink-0 py-4 d-flex align-items-center">
@@ -96,6 +97,10 @@ const sendMessage = async () => {
    if (!props.selectedModelName) return
    llmClient.chatStreaming(userInput.value, props.selectedModelName, callback)
    userInput.value = ""
+}
+
+const handleAbortClicked = () => {
+   llmClient.abort()
 }
 
 const props = defineProps<ChatToDataCommonProps>()

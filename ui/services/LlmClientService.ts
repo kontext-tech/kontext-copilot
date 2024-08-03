@@ -29,7 +29,8 @@ export default class LlmClientService {
       generating: false,
       history: [],
       error: null,
-      currentResponse: { ...LlmClientService.DEFAULT_RESPONSE }
+      currentResponse: { ...LlmClientService.DEFAULT_RESPONSE },
+      abort: false
    })
 
    constructor(llmService: LlmProxyService | null, settings: Ref<Settings>) {
@@ -105,7 +106,15 @@ export default class LlmClientService {
          options: this.options
       })
 
+      this.state.currentResponse.isStreaming = true
+
       for await (const part of response) {
+         if (this.state.abort && !part.done) {
+            response.abort()
+            this.state.abort = false
+            this.state.generating = false
+            this.addAssistantMessage(this.state.currentResponse.content ?? "")
+         }
          this.state.currentResponse.content += part.message.content
          callback(
             part.message.content,
@@ -140,7 +149,7 @@ export default class LlmClientService {
          prompt !== "" ? this.replaceValues(prompt, userInput) : userInput
       this.startGenerating()
       if (stream) {
-         const res = await this.llmService.service.generate({
+         const response = await this.llmService.service.generate({
             model: model,
             prompt: promptText,
             system: systemPrompt,
@@ -148,7 +157,16 @@ export default class LlmClientService {
             stream: true,
             options: this.options
          })
-         for await (const part of res) {
+         this.state.currentResponse.isStreaming = true
+         for await (const part of response) {
+            if (this.state.abort && !part.done) {
+               response.abort()
+               this.state.abort = false
+               this.state.generating = false
+               this.addAssistantMessage(
+                  this.state.currentResponse.content ?? ""
+               )
+            }
             this.state.currentResponse.content += part.response
             if (callback)
                callback(
@@ -196,5 +214,9 @@ export default class LlmClientService {
             this.state.generating = false
          })
       return this.state.currentResponse.content
+   }
+
+   abort() {
+      this.state.abort = true
    }
 }

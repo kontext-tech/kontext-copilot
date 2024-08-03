@@ -8,9 +8,10 @@ export interface NavItemProps {
    children?: NavItemProps[]
 }
 
-export interface ChatMessageProps {
+export interface ChatMessageCardProps {
    message: ChatMessage
    username: string
+   allowAbort?: boolean
 }
 
 export interface ChatToDataCommonProps {

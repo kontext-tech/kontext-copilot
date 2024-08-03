@@ -31,6 +31,7 @@
                   v-if="state.generating"
                   :message="state.currentResponse"
                   :username="settings.general_username"
+                  @abort-clicked="handleAbortClicked"
                />
             </div>
             <div class="flex-shrink-0 p-4 d-flex align-items-center">
@@ -117,5 +118,9 @@ const sendMessage = async () => {
       llmClient.chat(userInput.value, llmToolbar.value.model, callback)
    }
    userInput.value = ""
+}
+
+const handleAbortClicked = () => {
+   llmClient.abort()
 }
 </script>
