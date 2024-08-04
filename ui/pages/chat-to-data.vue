@@ -57,7 +57,7 @@
                   >
                </span>
             </template>
-            <DataProviderChatWindow
+            <ChatMainWindow
                :data-provider-info="dataProviderInfo"
                :schema="selectedSchema"
                :tables="selectedTables"
@@ -74,7 +74,7 @@
                   >
                </span>
             </template>
-            <DataProviderQueryWindow
+            <ChatQueryWindow
                :data-provider-info="dataProviderInfo"
                :selected-schema="selectedSchema"
                :selected-tables="selectedTables"
