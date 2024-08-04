@@ -27,6 +27,7 @@ export interface ChatMessage extends Message {
    generating?: boolean
    isStreaming?: boolean
    isError?: boolean
+   isSystemPrompt?: boolean
 }
 
 export interface LlmToolbarOptions {

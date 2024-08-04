@@ -13,11 +13,9 @@
             <strong v-if="message.role === ChatRole.USER">{{
                username
             }}</strong>
-            <strong
-               v-else
-               :class="{ 'text-muted': message.role === ChatRole.SYSTEM }"
-               >{{ getRoleName(message.role) }}</strong
-            >
+            <strong v-else-if="message.role === ChatRole.ASSISTANT">{{
+               getRoleName(message.role)
+            }}</strong>
             <BSpinner
                v-if="message.generating"
                variant="success"
@@ -48,7 +46,9 @@
          </div>
          <div v-else>
             <BButton
-               v-if="message.isError !== true"
+               v-if="
+                  message.isError !== true && message.role !== ChatRole.SYSTEM
+               "
                v-b-tooltip.click.top
                variant="link"
                size="sm"

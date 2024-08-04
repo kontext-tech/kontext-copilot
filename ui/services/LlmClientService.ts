@@ -72,11 +72,16 @@ export default class LlmClientService {
       })
    }
 
-   private addSystemMessage(message: string, isError?: boolean) {
+   private addSystemMessage(
+      message: string,
+      isError?: boolean,
+      isSystemPrompt?: boolean
+   ) {
       const msg = {
          content: message,
          role: ChatRole.SYSTEM,
          isError,
+         isSystemPrompt,
          id: this.state.messageIndex++
       }
       this.state.history.push(msg)
@@ -94,7 +99,13 @@ export default class LlmClientService {
    }
 
    private getHistory() {
-      return this.state.history.filter((message) => message.isError !== true)
+      /* Only send system prompt  */
+      return this.state.history.filter(
+         (message) =>
+            message.isError !== true &&
+            (message.role !== ChatRole.SYSTEM ||
+               message.isSystemPrompt === true)
+      )
    }
 
    async setSystemPrompt({
@@ -111,9 +122,23 @@ export default class LlmClientService {
          schema
       }
       const response = await this.llmService.getSystemPrompt(request)
-      /* Add system prompt to history */
-      this.addSystemMessage(response.prompt)
-      return response
+
+      /*Check is system prompt with isSystemPrompt true already exists in history */
+      const index = this.state.history.findIndex(
+         (message) => message.isSystemPrompt === true
+      )
+      /* If exists, update the content */
+      if (index !== -1) {
+         this.state.history[index].content = response.prompt
+
+         /* Add another system prompt about updated tables */
+         this.addSystemMessage(`Tables updated: ${tables?.join(", ")}`)
+         return response
+      } else {
+         /* Add system prompt to history */
+         this.addSystemMessage(response.prompt, false, true)
+         return response
+      }
    }
 
    async chat(

@@ -11,6 +11,7 @@
                :key="`${i}-${message.role}`"
             >
                <ChatMessageCard
+                  v-if="message.isSystemPrompt === undefined"
                   :message="message"
                   :username="settings.general_username"
                   @delete-clicked="handleDeleteClicked"
