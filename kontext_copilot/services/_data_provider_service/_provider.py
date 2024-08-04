@@ -88,6 +88,18 @@ class BaseProvider(ABC):
         metadata = MetaData()
         return Table(table, metadata, autoload_with=self.engine, schema=schema)
 
+    def get_all_tables_info(self, schema: Optional[str] = None) -> List[Table]:
+        """
+        Get all tables information from the data source.
+        """
+        metadata = MetaData()
+        tables = []
+        for table in self.get_tables(schema):
+            tables.append(
+                Table(table, metadata, autoload_with=self.engine, schema=schema)
+            )
+        return tables
+
     def get_columns_info(
         self, table: str, schema: Optional[str] = None
     ) -> Optional[List[ColumnInfoModel]]:
@@ -118,8 +130,17 @@ class BaseProvider(ABC):
         Get table creation SQL from the data source.
         """
         metadata = MetaData()
-        table = Table(table, metadata, autoload_with=self.engine, schema=schema)
-        create_table_sql = str(CreateTable(table).compile(self.engine))
+        table = Table(
+            table,
+            metadata,
+            autoload_with=self.engine,
+            schema=schema,
+            quote=True,
+            quote_schema=True,
+        )
+        create_table_sql = str(
+            CreateTable(table, if_not_exists=True).compile(self.engine)
+        )
         return create_table_sql
 
     def get_table_select_sql(
@@ -131,14 +152,22 @@ class BaseProvider(ABC):
         """
         Get table select SQL from the data source.
         """
-        columns = self.get_columns_info(table, schema)
-        columns_str = ", ".join([c["name"] for c in columns])
-        sql = f"SELECT {columns_str} FROM {table}"
-        if schema is not None:
-            sql = f"SELECT {columns_str} FROM {schema}.{table}"
+
+        table_obj = Table(
+            table,
+            MetaData(),
+            autoload_with=self.engine,
+            schema=schema,
+            quote=True,
+            quote_schema=True,
+        )
+        statement = table_obj.select()
         if record_count is not None:
-            sql += f" LIMIT {record_count}"
-        return sql
+            statement = statement.limit(record_count)
+
+        return str(
+            statement.compile(self.engine, compile_kwargs={"literal_binds": True})
+        )
 
     def get_table_data(
         self,

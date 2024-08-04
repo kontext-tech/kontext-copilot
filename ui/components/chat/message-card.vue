@@ -13,7 +13,11 @@
             <strong v-if="message.role === ChatRole.USER">{{
                username
             }}</strong>
-            <strong v-else>{{ getRoleName(message.role) }}</strong>
+            <strong
+               v-else
+               :class="{ 'text-muted': message.role === ChatRole.SYSTEM }"
+               >{{ getRoleName(message.role) }}</strong
+            >
             <BSpinner
                v-if="message.generating"
                variant="success"

@@ -109,4 +109,39 @@ const handleDeleteClicked = (messageId: number) => {
 }
 
 const props = defineProps<ChatToDataCommonProps>()
+
+watch(
+   [
+      () => props.selectedModelName,
+      () => props.selectedSchema,
+      () => props.selectedTables,
+      () => props.dataProviderInfo.provider?.id
+   ],
+   () => {
+      console.log("selectedModelName, selectedSchema, selectedTables changed")
+      if (
+         props.selectedModelName &&
+         props.dataProviderInfo.provider &&
+         props.selectedDataSourceId
+      ) {
+         llmClient.setSystemPrompt({
+            model: props.selectedModelName,
+            data_source_id: props.selectedDataSourceId,
+            tables: props.selectedTables,
+            schema: props.selectedSchema
+         })
+      }
+   }
+)
+
+// watchEffect(() => {
+//    if (props.selectedModelName && props.dataProviderInfo.provider) {
+//       llmClient.setSystemPrompt({
+//          model: props.selectedModelName,
+//          dataSourceId: props.dataProviderInfo.provider?.id,
+//          tables: props.selectedTables,
+//          schema: props.selectedSchema
+//       })
+//    }
+// })
 </script>

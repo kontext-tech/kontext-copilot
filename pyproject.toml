@@ -8,7 +8,7 @@ homepage = "https://kontext.tech"
 repository = "https://github.com/kontext-tech/kontext-copilot"
 license = "MIT"
 # Include the static website folder in the package
-include = ["kontext_copilot/ui/**/*", "kontext_copilot/api/**/*.json"]
+include = ["kontext_copilot/ui/**/*", "kontext_copilot/copilot/**/*.json", "kontext_copilot/copilot/**/*.md"]
 
 [tool.poetry.dependencies]
 python = "^3.9"

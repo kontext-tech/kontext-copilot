@@ -9,7 +9,7 @@ from kontext_copilot.data.schemas._setting import (
 from kontext_copilot.data.schemas._prompt import (
     PromptInfoModel,
     PromptModel,
-    PromptsModel,
+    PromptListModel,
 )
 
 from kontext_copilot.data.schemas._data import (
@@ -27,6 +27,11 @@ from kontext_copilot.data.schemas._data import (
 
 from kontext_copilot.data.schemas._llm import LlmModel, LlmModelDetail, ModelsResponse
 
+from kontext_copilot.data.schemas._copilot import (
+    CopilotSessionRequestModel,
+    CopilotSessionResponseModel,
+)
+
 __all__ = [
     "SettingModel",
     "SettingCreateModel",
@@ -36,7 +41,7 @@ __all__ = [
     "SettingsModel",
     "PromptInfoModel",
     "PromptModel",
-    "PromptsModel",
+    "PromptListModel",
     "DataSourceModel",
     "DataSourceCreateModel",
     "DataSourceUpdateModel",
@@ -50,4 +55,6 @@ __all__ = [
     "LlmModel",
     "LlmModelDetail",
     "ModelsResponse",
+    "CopilotSessionRequestModel",
+    "CopilotSessionResponseModel",
 ]

@@ -3,8 +3,9 @@ import type LlmProxyService from "./LlmProxyService"
 import {
    ChatRole,
    type ChatMessage,
+   type CopilotSessionRequestModel,
    type LlmClientState,
-   type Settings
+   type SettingsModel
 } from "~/types/Schemas"
 import { LlmProxyServiceRequiredException } from "~/types/Errors"
 import type { Reactive } from "vue"
@@ -23,7 +24,7 @@ export default class LlmClientService {
       generating: false
    }
    llmService: LlmProxyService
-   settings: Ref<Settings>
+   settings: Ref<SettingsModel>
    options: Partial<OllamaOptions> = {}
    state: Reactive<LlmClientState> = reactive({
       generating: false,
@@ -34,7 +35,10 @@ export default class LlmClientService {
       messageIndex: 0
    })
 
-   constructor(llmService: LlmProxyService | null, settings: Ref<Settings>) {
+   constructor(
+      llmService: LlmProxyService | null,
+      settings: Ref<SettingsModel>
+   ) {
       if (llmService === null) throw new LlmProxyServiceRequiredException()
       this.llmService = llmService
       this.settings = settings
@@ -91,6 +95,25 @@ export default class LlmClientService {
 
    private getHistory() {
       return this.state.history.filter((message) => message.isError !== true)
+   }
+
+   async setSystemPrompt({
+      model: modelId,
+      data_source_id,
+      tables,
+      schema
+   }: CopilotSessionRequestModel) {
+      /* Construct a request object using params */
+      const request: CopilotSessionRequestModel = {
+         model: modelId,
+         data_source_id,
+         tables,
+         schema
+      }
+      const response = await this.llmService.getSystemPrompt(request)
+      /* Add system prompt to history */
+      this.addSystemMessage(response.prompt)
+      return response
    }
 
    async chat(

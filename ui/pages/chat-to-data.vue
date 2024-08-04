@@ -62,6 +62,7 @@
                :selected-schema="selectedSchema"
                :selected-tables="selectedTables"
                :selected-model-name="selectedModelName"
+               :selected-data-source-id="selectedDataSourceId"
             />
          </BTab>
          <BTab id="queryTab">
@@ -92,6 +93,9 @@ import LlmSettingsToolbar from "~/components/llm/settings-toolbar.vue"
 
 const dataSourceSelctor = ref<InstanceType<typeof DataSourceSelector> | null>(
    null
+)
+const selectedDataSourceId = computed(
+   () => dataSourceSelctor.value?.selectedDataSource?.id
 )
 const dataProviderInfo = reactive<DataProviderInfoWrapModel>({
    isLoading: false,

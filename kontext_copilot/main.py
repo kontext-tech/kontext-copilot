@@ -4,7 +4,14 @@ import os
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
-from kontext_copilot.api import llm, settings, prompts, data_sources, data_providers
+from kontext_copilot.api import (
+    llm,
+    settings,
+    prompts,
+    data_sources,
+    data_providers,
+    copilot,
+)
 from kontext_copilot.utils import HOST, IS_LOCAL, CLIENT_APP_DIR, PORT
 
 app = FastAPI()
@@ -41,6 +48,7 @@ app.include_router(settings.settings_router)
 app.include_router(prompts.prompts_router)
 app.include_router(data_sources.data_sources_router)
 app.include_router(data_providers.data_providers_router)
+app.include_router(copilot.copilot_router)
 
 if __name__ == "__main__":
     import uvicorn

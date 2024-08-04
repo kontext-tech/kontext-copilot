@@ -1,8 +1,8 @@
 import axios from "axios"
 import type {
-   Settings,
-   PromptInfo,
-   Prompt,
+   SettingsModel,
+   PromptInfoModel,
+   PromptModel,
    DataSourceModel,
    DataSourceCreateModel,
    DataSourceUpdateModel,
@@ -12,10 +12,6 @@ import type {
    SqlRunResultModel
 } from "~/types/Schemas"
 
-const getBaseUrl = (apiBaseUrl: string) => {
-   return `${apiBaseUrl}/api`
-}
-
 axios.defaults.headers.post["Content-Type"] = "application/json"
 
 export class SettingService {
@@ -23,7 +19,7 @@ export class SettingService {
       axios.defaults.baseURL = getBaseUrl(apiBaseUrl)
    }
 
-   async getSettings(): Promise<Settings> {
+   async getSettings(): Promise<SettingsModel> {
       const response = await axios.get("/settings/")
       return response.data
    }
@@ -53,12 +49,12 @@ export class PromptService {
       axios.defaults.baseURL = getBaseUrl(apiBaseUrl)
    }
 
-   async getPromptTemplates(): Promise<PromptInfo[]> {
+   async getPromptTemplates(): Promise<PromptInfoModel[]> {
       const response = await axios.get("/prompts/templates")
       return response.data
    }
 
-   async getPromptTemplate(template_id: string): Promise<Prompt> {
+   async getPromptTemplate(template_id: string): Promise<PromptModel> {
       const response = await axios.get(`/prompts/templates/${template_id}`)
       return response.data
    }

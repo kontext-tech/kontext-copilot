@@ -9,7 +9,7 @@ import {
    NoInjectionContextFoundException,
    ServiceNotFoundException
 } from "~/types/Errors"
-import type { Settings } from "~/types/Schemas"
+import type { SettingsModel } from "~/types/Schemas"
 
 interface ServiceNames {
    SETTINGS: unknown
@@ -37,8 +37,8 @@ const getService = <T>(name: ServiceName): T => {
    } else throw new NoInjectionContextFoundException()
 }
 
-const getSettings = (): Ref<Settings> => {
-   return getService<Ref<Settings>>("SETTINGS")
+const getSettings = (): Ref<SettingsModel> => {
+   return getService<Ref<SettingsModel>>("SETTINGS")
 }
 
 const getLlmProxyService = (): Ref<LlmProxyService | null> => {

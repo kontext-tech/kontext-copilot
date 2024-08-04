@@ -1,26 +1,26 @@
 import type { Message } from "ollama/browser"
 
-enum ChatRole {
+export enum ChatRole {
    USER = "user",
    ASSISTANT = "assistant",
    SYSTEM = "system"
 }
 
-interface ThemeNames {
+export interface ThemeNames {
    dark: unknown
    light: unknown
    auto: unknown
 }
 
-type ThemeName = keyof ThemeNames
+export type ThemeName = keyof ThemeNames
 
-interface ThemeConfigItem {
+export interface ThemeConfigItem {
    key: ThemeName
    iconName: string
    name: string
 }
 
-interface ChatMessage extends Message {
+export interface ChatMessage extends Message {
    id?: number
    content: string
    role: ChatRole
@@ -29,13 +29,13 @@ interface ChatMessage extends Message {
    isError?: boolean
 }
 
-interface LlmToolbarOptions {
+export interface LlmToolbarOptions {
    streaming: boolean
    format: "json" | ""
    model?: string
 }
 
-interface LlmClientState {
+export interface LlmClientState {
    history: ChatMessage[]
    generating: boolean
    error: string | null
@@ -44,7 +44,7 @@ interface LlmClientState {
    messageIndex: number
 }
 
-interface Settings {
+export interface SettingsModel {
    llm_default_model: string
    llm_temperature: number
    llm_api_key: string | null
@@ -57,29 +57,29 @@ interface Settings {
    llm_seed: number
 }
 
-interface SettingsWrapper {
-   settings: Settings
+export interface SettingsModelWrapper {
+   settings: SettingsModel
    isLoading: boolean
    loaded: boolean
    error: string | null
 }
 
-interface PromptInfo {
+export interface PromptInfoModel {
    id: string
    name: string
 }
 
-interface Prompt extends PromptInfo {
+export interface PromptModel extends PromptInfoModel {
    prompt: string
    system_prompt?: string
    user_input: string
 }
 
-interface Prompts {
-   prompts: Prompt[]
+export interface PromptListModel {
+   prompts: PromptModel[]
 }
 
-enum DataSourceType {
+export enum DataSourceType {
    SQLite = "SQLite"
    // DuckDB = "DuckDB",
    // PostgreSQL = "PostgreSQL",
@@ -90,7 +90,7 @@ enum DataSourceType {
    // Redis = "Redis",
 }
 
-interface DataSourceModel {
+export interface DataSourceModel {
    id: number // Optional in TypeScript
    name: string
    description?: string // Optional in TypeScript
@@ -99,7 +99,7 @@ interface DataSourceModel {
 }
 
 // Create model excludes auto-generated fields like 'id'
-interface DataSourceCreateModel {
+export interface DataSourceCreateModel {
    name?: string
    description?: string // Made optional by adding '?'
    type?: DataSourceType | null
@@ -107,19 +107,19 @@ interface DataSourceCreateModel {
 }
 
 // Update model makes all fields optional
-interface DataSourceUpdateModel {
+export interface DataSourceUpdateModel {
    name?: string
    description?: string
    type?: DataSourceType
    conn_str?: string
 }
 
-interface SchemaTablesModel {
+export interface SchemaTablesModel {
    schema: string | null
    tables: string[]
 }
 
-interface ColumnInfoModel {
+export interface ColumnInfoModel {
    name: string
    primary_key: boolean
    index?: boolean
@@ -131,54 +131,40 @@ interface ColumnInfoModel {
    comment?: string
 }
 
-interface DataProviderInfoModel extends DataSourceModel {
+export interface DataProviderInfoModel extends DataSourceModel {
    supports_schema: boolean
    metadata: SchemaTablesModel[]
 }
 
-interface DataProviderInfoWrapModel {
+export interface DataProviderInfoWrapModel {
    provider: DataProviderInfoModel | null
    isLoading: boolean
 }
 
-interface SqlStatementModel {
+export interface SqlStatementModel {
    sql: string
 }
 
-interface SqlStatementType {
+export interface SqlStatementType {
    CREATE: unknown
    SELECT: unknown
 }
 
-interface SqlRunResultModel {
+export interface SqlRunResultModel {
    success: boolean
    message?: string
    data: Array<object>
 }
 
-type SqlType = keyof SqlStatementType
+export type SqlType = keyof SqlStatementType
 
-export {
-   ChatRole,
-   type ChatMessage,
-   type LlmToolbarOptions,
-   type LlmClientState,
-   type Settings,
-   type PromptInfo,
-   type Prompt,
-   type Prompts,
-   type SettingsWrapper,
-   DataSourceType,
-   type DataSourceModel,
-   type DataSourceCreateModel,
-   type DataSourceUpdateModel,
-   type SchemaTablesModel,
-   type ColumnInfoModel,
-   type DataProviderInfoModel,
-   type SqlStatementModel,
-   type SqlType,
-   type SqlRunResultModel,
-   type ThemeConfigItem,
-   type ThemeName,
-   type DataProviderInfoWrapModel
+export interface CopilotSessionRequestModel {
+   model: string
+   data_source_id: number
+   tables?: string[]
+   schema?: string
+}
+
+export interface CopilotSessionResponseModel {
+   prompt: string
 }

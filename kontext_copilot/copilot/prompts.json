@@ -1,0 +1,28 @@
+{
+    "prompts": [
+        {
+            "id": "system-prompt-da-metadata",
+            "name": "System Prompt - Data Analytics (using Metadata)",
+            "prompt": null,
+            "system_prompt": "./prompts/system-prompt-da-metadata.md",
+            "user_input": null,
+            "system_defined": true
+        },
+        {
+            "id": "sentiment-analysis",
+            "name": "Sentiment Analysis",
+            "prompt": "./prompts/sentiment-analysis.md",
+            "system_prompt": null,
+            "user_input": "I love GenAI!",
+            "system_defined": false
+        },
+        {
+            "id": "text-to-sql-static",
+            "name": "Text to SQL",
+            "prompt": "./prompts/text-to-sql-static.md",
+            "system_prompt": "You are a data analytics AI assistant from Kontext.",
+            "user_input": "How many accounts does the customer with ID 123 have?",
+            "system_defined": false
+        }
+    ]
+}

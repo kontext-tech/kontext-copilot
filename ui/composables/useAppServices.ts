@@ -5,15 +5,15 @@ import {
    PromptService,
    SettingService
 } from "~/services/ApiServices"
-import type { Settings, SettingsWrapper } from "~/types/Schemas"
+import type { SettingsModel, SettingsModelWrapper } from "~/types/Schemas"
 import LlmProxyService from "~/services/LlmProxyService"
 // import type LlmClientService from "~/services/LlmClientService"
 
-const settingsWrapper = reactive<SettingsWrapper>({
+const settingsWrapper = reactive<SettingsModelWrapper>({
    isLoading: false,
    loaded: false,
    error: null,
-   settings: {} as Settings
+   settings: {} as SettingsModel
 })
 
 export default function useAppServices() {
@@ -38,7 +38,8 @@ export default function useAppServices() {
       try {
          settingsWrapper.settings = await settingService.getSettings()
          const proxy = new LlmProxyService(
-            settingsWrapper.settings.llm_endpoint
+            settingsWrapper.settings.llm_endpoint,
+            appConfig.apiBaseUrl
          )
          // get models
          await proxy.getModels()
@@ -67,9 +68,9 @@ export default function useAppServices() {
       () => _.cloneDeep(settingsWrapper.settings),
       async (newSettings, oldSettings) => {
          // Determine what changed and call setSetting for those changes
-         const keys: Array<keyof Settings> = Object.keys(newSettings) as Array<
-            keyof Settings
-         >
+         const keys: Array<keyof SettingsModel> = Object.keys(
+            newSettings
+         ) as Array<keyof SettingsModel>
          // No need to update to for the initial load
          if (Object.keys(oldSettings).length > 0)
             for (const key of keys) {

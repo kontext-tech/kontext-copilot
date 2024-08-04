@@ -19,6 +19,7 @@ export interface ChatToDataCommonProps {
    selectedSchema?: string
    selectedTables?: string[]
    selectedModelName?: string
+   selectedDataSourceId?: number
 }
 
 export interface LlmSettingsToolbarProps {

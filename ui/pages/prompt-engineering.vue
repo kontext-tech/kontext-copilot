@@ -103,7 +103,7 @@
 import LlmSettingsToolbar from "~/components/llm/settings-toolbar.vue"
 import DefaultLayout from "~/layouts/default-layout.vue"
 import { LlmModelRequiredException } from "~/types/Errors"
-import type { PromptInfo, Prompt } from "~/types/Schemas"
+import type { PromptInfoModel, PromptModel } from "~/types/Schemas"
 
 const llmToolbar = ref<InstanceType<typeof LlmSettingsToolbar> | null>(null)
 
@@ -116,8 +116,8 @@ const state = llmClient.state
 const promptService = getPromptService()
 
 const selectedTemplateId = ref(null)
-const promptTemplates = ref<PromptInfo[]>([])
-const promptTemplate = ref<Prompt | null>(null)
+const promptTemplates = ref<PromptInfoModel[]>([])
+const promptTemplate = ref<PromptModel | null>(null)
 
 const disableGenerate = computed(
    () => (promptInput.value ?? "").length === 0 || state.generating
