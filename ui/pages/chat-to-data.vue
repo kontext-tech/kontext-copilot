@@ -59,10 +59,10 @@
             </template>
             <DataProviderChatWindow
                :data-provider-info="dataProviderInfo"
-               :selected-schema="selectedSchema"
-               :selected-tables="selectedTables"
-               :selected-model-name="selectedModelName"
-               :selected-data-source-id="selectedDataSourceId"
+               :schema="selectedSchema"
+               :tables="selectedTables"
+               :model="selectedModelName"
+               :data-source-id="selectedDataSourceId"
             />
          </BTab>
          <BTab id="queryTab">

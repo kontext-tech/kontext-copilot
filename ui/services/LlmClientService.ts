@@ -98,14 +98,14 @@ export default class LlmClientService {
    }
 
    async setSystemPrompt({
-      model: modelId,
+      model,
       data_source_id,
       tables,
       schema
    }: CopilotSessionRequestModel) {
       /* Construct a request object using params */
       const request: CopilotSessionRequestModel = {
-         model: modelId,
+         model,
          data_source_id,
          tables,
          schema

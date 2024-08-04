@@ -90,8 +90,9 @@ const tables = computed(() => {
 })
 
 const handleSelectTable = (table: string) => {
-   if (selectedTables.value.includes(table)) {
-      selectedTables.value = selectedTables.value.filter((t) => t !== table)
+   const index = selectedTables.value.indexOf(table)
+   if (index !== -1) {
+      selectedTables.value.splice(index, 1)
    } else {
       selectedTables.value.push(table)
    }

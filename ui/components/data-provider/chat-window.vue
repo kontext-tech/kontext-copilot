@@ -95,8 +95,8 @@ const callback: LlmChatCallback = (
 }
 
 const sendMessage = async () => {
-   if (!props.selectedModelName) return
-   llmClient.chatStreaming(userInput.value, props.selectedModelName, callback)
+   if (!props.model) return
+   llmClient.chatStreaming(userInput.value, props.model, callback)
    userInput.value = ""
 }
 
@@ -112,36 +112,25 @@ const props = defineProps<ChatToDataCommonProps>()
 
 watch(
    [
-      () => props.selectedModelName,
-      () => props.selectedSchema,
-      () => props.selectedTables,
+      () => props.model,
+      () => props.schema,
+      () => props.tables,
       () => props.dataProviderInfo.provider?.id
    ],
    () => {
-      console.log("selectedModelName, selectedSchema, selectedTables changed")
       if (
-         props.selectedModelName &&
+         props.model &&
          props.dataProviderInfo.provider &&
-         props.selectedDataSourceId
+         props.dataSourceId
       ) {
          llmClient.setSystemPrompt({
-            model: props.selectedModelName,
-            data_source_id: props.selectedDataSourceId,
-            tables: props.selectedTables,
-            schema: props.selectedSchema
+            model: props.model,
+            data_source_id: props.dataSourceId,
+            tables: props.tables,
+            schema: props.schema
          })
       }
-   }
+   },
+   { deep: true }
 )
-
-// watchEffect(() => {
-//    if (props.selectedModelName && props.dataProviderInfo.provider) {
-//       llmClient.setSystemPrompt({
-//          model: props.selectedModelName,
-//          dataSourceId: props.dataProviderInfo.provider?.id,
-//          tables: props.selectedTables,
-//          schema: props.selectedSchema
-//       })
-//    }
-// })
 </script>

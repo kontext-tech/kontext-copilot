@@ -16,10 +16,10 @@ export interface ChatMessageCardProps {
 
 export interface ChatToDataCommonProps {
    dataProviderInfo: DataProviderInfoWrapModel
-   selectedSchema?: string
-   selectedTables?: string[]
-   selectedModelName?: string
-   selectedDataSourceId?: number
+   schema?: string
+   tables?: string[]
+   model?: string
+   dataSourceId?: number
 }
 
 export interface LlmSettingsToolbarProps {
