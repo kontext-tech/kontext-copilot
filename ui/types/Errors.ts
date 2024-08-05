@@ -1,42 +1,41 @@
-class ServiceNotFoundException extends Error {
+export class ServiceNotFoundException extends Error {
    constructor(service: string) {
       super(`Requested service ${service} not found`)
       this.name = "ServiceNotFoundException"
    }
 }
 
-class NoInjectionContextFoundException extends Error {
+export class NoInjectionContextFoundException extends Error {
    constructor() {
       super(`No injection context found.`)
       this.name = "NoInjectionContextFoundException"
    }
 }
 
-class LlmProxyServiceRequiredException extends Error {
+export class LlmProxyServiceRequiredException extends Error {
    constructor() {
       super(`LlmProxyService is required for this operation`)
       this.name = "LlmProxyServiceRequiredException"
    }
 }
 
-class LlmEndointRequiredException extends Error {
+export class DataProviderServiceRequiredException extends Error {
+   constructor() {
+      super(`DataProviderService is required for this operation`)
+      this.name = "DataProviderServiceRequiredException"
+   }
+}
+
+export class LlmEndointRequiredException extends Error {
    constructor() {
       super(`LlmService requires an endpoint`)
       this.name = "LlmEndointRequiredException"
    }
 }
 
-class LlmModelRequiredException extends Error {
+export class LlmModelRequiredException extends Error {
    constructor() {
       super(`LLM model is required for this operation`)
       this.name = "LlmModelRequiredException"
    }
-}
-
-export {
-   ServiceNotFoundException,
-   NoInjectionContextFoundException,
-   LlmProxyServiceRequiredException,
-   LlmEndointRequiredException,
-   LlmModelRequiredException
 }

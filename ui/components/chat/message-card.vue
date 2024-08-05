@@ -57,6 +57,22 @@
                @click="copyMessage"
                ><Icon name="material-symbols:content-copy-outline" />
             </BButton>
+            <template
+               v-if="message.sqlStatements && message.sqlStatements.length > 0"
+            >
+               <BButton
+                  v-for="(sql, i) in message.sqlStatements"
+                  :key="`sql-${i}`"
+                  variant="outline-primary"
+                  size="sm"
+                  title="Run SQL"
+                  @click="runSql(sql, i, message.id)"
+                  ><Icon name="material-symbols:play-arrow-outline" />
+                  <span v-if="i === 0">Run SQL</span>
+                  <span v-else>Run SQL {{ i }}</span>
+               </BButton>
+            </template>
+
             <BButton
                v-if="message.isError"
                v-b-tooltip.click.top
@@ -77,10 +93,16 @@ import type { ChatMessageCardProps } from "~/types/UIProps"
 import markdownit from "markdown-it"
 import { useClipboard } from "@vueuse/core"
 import { ChatRole } from "~/types/Schemas"
+import tableClassPlugin from "~/utils/MarkdownitTableClass"
 
 const props = defineProps<ChatMessageCardProps>()
 
 const md = new markdownit()
+md.use(tableClassPlugin, {
+   defaultClass: "table table-striped table-hover table-sm",
+   parentElement: "div",
+   parentElementClass: "table-responsive"
+})
 
 const htmlMessage = computed(() => {
    if (props.message.generating && props.message.content === "")
@@ -102,7 +124,16 @@ const deleteMsg = () => {
    emits("delete-clicked", props.message.id)
 }
 
-const emits = defineEmits(["abort-clicked", "delete-clicked"])
+const runSql = (sql: string, index: number, messageId?: number) => {
+   console.log("Run SQL", index, sql, messageId)
+   emits("run-sql-clicked", sql, index, messageId)
+}
+
+const emits = defineEmits([
+   "abort-clicked",
+   "delete-clicked",
+   "run-sql-clicked"
+])
 </script>
 
 <style scoped lang="scss"></style>

@@ -15,6 +15,7 @@
                   :message="message"
                   :username="settings.general_username"
                   @delete-clicked="handleDeleteClicked"
+                  @run-sql-clicked="handlRunSqlClicked"
                />
             </template>
             <ChatMessageCard
@@ -109,6 +110,11 @@ const handleDeleteClicked = (messageId: number) => {
    llmClient.deleteMessage(messageId)
 }
 
+const handlRunSqlClicked = async (sql: string) => {
+   if (!props.dataSourceId) return
+   llmClient.runSql(props.dataSourceId, sql, props.schema, callback)
+}
+
 const props = defineProps<ChatToDataCommonProps>()
 
 watch(
@@ -124,12 +130,15 @@ watch(
          props.dataProviderInfo.provider &&
          props.dataSourceId
       ) {
-         llmClient.setSystemPrompt({
-            model: props.model,
-            data_source_id: props.dataSourceId,
-            tables: props.tables,
-            schema: props.schema
-         })
+         llmClient.generateSystemPrompt(
+            {
+               model: props.model,
+               data_source_id: props.dataSourceId,
+               tables: props.tables,
+               schema: props.schema
+            },
+            callback
+         )
       }
    },
    { deep: true }

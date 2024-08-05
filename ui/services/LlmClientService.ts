@@ -7,8 +7,12 @@ import {
    type LlmClientState,
    type SettingsModel
 } from "~/types/Schemas"
-import { LlmProxyServiceRequiredException } from "~/types/Errors"
+import {
+   DataProviderServiceRequiredException,
+   LlmProxyServiceRequiredException
+} from "~/types/Errors"
 import type { Reactive } from "vue"
+import type { DataProviderService } from "./ApiServices"
 
 export type LlmChatCallback = (
    part: string,
@@ -24,6 +28,7 @@ export default class LlmClientService {
       generating: false
    }
    llmService: LlmProxyService
+   dataProviderService: DataProviderService
    settings: Ref<SettingsModel>
    options: Partial<OllamaOptions> = {}
    state: Reactive<LlmClientState> = reactive({
@@ -37,10 +42,14 @@ export default class LlmClientService {
 
    constructor(
       llmService: LlmProxyService | null,
+      datProviderService: DataProviderService | null,
       settings: Ref<SettingsModel>
    ) {
       if (llmService === null) throw new LlmProxyServiceRequiredException()
+      if (datProviderService === null)
+         throw new DataProviderServiceRequiredException()
       this.llmService = llmService
+      this.dataProviderService = datProviderService
       this.settings = settings
 
       // Setup options
@@ -56,7 +65,7 @@ export default class LlmClientService {
       }
    }
 
-   private addUserMessage(message: string) {
+   addUserMessage(message: string) {
       this.state.history.push({
          content: message,
          role: ChatRole.USER,
@@ -64,15 +73,22 @@ export default class LlmClientService {
       })
    }
 
-   private addAssistantMessage(message: string) {
-      this.state.history.push({
+   addAssistantMessage(message: string, checkSql: boolean = true) {
+      const msg = {
          content: message,
          role: ChatRole.ASSISTANT,
          id: this.state.messageIndex++
-      })
+      } as ChatMessage
+
+      /* Extract SQL statements from the message */
+      if (checkSql) {
+         const sqlStatements = this.extractSqlFromMessage(message)
+         if (sqlStatements.length > 0) msg.sqlStatements = sqlStatements
+      }
+      this.state.history.push(msg)
    }
 
-   private addSystemMessage(
+   addSystemMessage(
       message: string,
       isError?: boolean,
       isSystemPrompt?: boolean
@@ -88,6 +104,88 @@ export default class LlmClientService {
       return msg
    }
 
+   async runSql(
+      dataSourceId: number,
+      sql: string,
+      schema?: string,
+      callback?: LlmChatCallback
+   ) {
+      this.startGenerating()
+      const currentResponse = this.state.currentResponse
+      currentResponse.role = ChatRole.ASSISTANT
+      const result = await this.dataProviderService.runSql(
+         dataSourceId,
+         sql,
+         schema
+      )
+      let part = "Sure thing!\n***SQL:***\n"
+      currentResponse.content = part
+      callback && callback(part, currentResponse.content, false)
+
+      part = "```sql\n" + sql + "\n```"
+      currentResponse.content += part
+      callback && callback(part, currentResponse.content, false)
+
+      part = "\n***Result:***\n\n"
+      currentResponse.content += part
+      callback && callback(part, currentResponse.content, false)
+
+      if (!result.success) {
+         part = result.message ?? "There is an error when executing the SQL.\n"
+         currentResponse.content += part
+         callback && callback(part, currentResponse.content, true)
+         this.addAssistantMessage(currentResponse.content, false)
+         this.state.generating = false
+      } else {
+         const data = result.data as { [key: string]: object }[]
+         if (data.length === 0) {
+            part = "0 rows returned.\n"
+         } else {
+            part = this.jsonToMarkdownTable(data)
+         }
+
+         currentResponse.content += part
+         callback && callback(part, currentResponse.content, true)
+         this.addAssistantMessage(currentResponse.content, false)
+         this.state.generating = false
+      }
+   }
+
+   private extractSqlFromMessage(message: string): string[] {
+      // Regular expression to match code blocks in Markdown, optionally marked with "sql"
+      const codeBlockRegex = /```(?:sql)?\s*([\s\S]*?)\s*```/gi
+
+      let match
+      const codeBlocks: string[] = []
+
+      // Find all matches
+      while ((match = codeBlockRegex.exec(message)) !== null) {
+         // Extract the code from the match
+         codeBlocks.push(match[1].trim())
+      }
+
+      return codeBlocks
+   }
+
+   private jsonToMarkdownTable(jsonArray: { [key: string]: object }[]): string {
+      if (jsonArray.length === 0) return ""
+
+      // Extract headers from the first object
+      const headers = Object.keys(jsonArray[0])
+
+      // Create the header row
+      const headerRow = `| ${headers.join(" | ")} |`
+      const separatorRow = `| ${headers.map(() => "---").join(" | ")} |`
+
+      // Create the data rows
+      const dataRows = jsonArray.map((obj) => {
+         return `| ${headers.map((header) => obj[header]).join(" | ")} |`
+      })
+
+      // Combine header, separator, and data rows
+      return [headerRow, separatorRow, ...dataRows].join("\n")
+   }
+
    private startGenerating() {
       this.resetCurrentResponse()
       this.state.generating = true
@@ -100,20 +198,28 @@ export default class LlmClientService {
 
    private getHistory() {
       /* Only send system prompt  */
-      return this.state.history.filter(
-         (message) =>
-            message.isError !== true &&
-            (message.role !== ChatRole.SYSTEM ||
-               message.isSystemPrompt === true)
-      )
+      /* Remap message to only include content and role */
+      return this.state.history
+         .filter(
+            (message) =>
+               message.isError !== true &&
+               (message.role !== ChatRole.SYSTEM ||
+                  message.isSystemPrompt === true)
+         )
+         .map((message) => {
+            return {
+               content: message.content,
+               role: message.role
+            }
+         })
    }
 
-   async setSystemPrompt({
-      model,
-      data_source_id,
-      tables,
-      schema
-   }: CopilotSessionRequestModel) {
+   async generateSystemPrompt(
+      { model, data_source_id, tables, schema }: CopilotSessionRequestModel,
+      callback?: LlmChatCallback
+   ) {
+      this.startGenerating()
+      this.state.generating = true
       /* Construct a request object using params */
       const request: CopilotSessionRequestModel = {
          model,
@@ -130,13 +236,17 @@ export default class LlmClientService {
       /* If exists, update the content */
       if (index !== -1) {
          this.state.history[index].content = response.prompt
-
-         /* Add another system prompt about updated tables */
-         this.addSystemMessage(`Tables updated: ${tables?.join(", ")}`)
+         const content = `Tables selected: ${tables && tables.length > 0 ? tables.join(", ") : "all"}; schema selected: ${schema ?? "default"}`
+         if (callback) callback(content, content, true)
+         this.state.generating = false
+         /* Add another system message about updated tables */
+         this.addSystemMessage(content)
          return response
       } else {
          /* Add system prompt to history */
          this.addSystemMessage(response.prompt, false, true)
+         if (callback) callback(response.prompt, response.prompt, true)
+         this.state.generating = false
          return response
       }
    }

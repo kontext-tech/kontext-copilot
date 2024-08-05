@@ -60,7 +60,12 @@ const getPromptService = (): PromptService => {
 const getLlmClientService = (): LlmClientService => {
    const settings = getSettings()
    const llmProxyService = getLlmProxyService()
-   return new LlmClientService(llmProxyService.value, settings)
+   const dataProviderService = getDataProviderService()
+   return new LlmClientService(
+      llmProxyService.value,
+      dataProviderService,
+      settings
+   )
 }
 
 export {

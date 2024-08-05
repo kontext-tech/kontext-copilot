@@ -28,6 +28,7 @@ export interface ChatMessage extends Message {
    isStreaming?: boolean
    isError?: boolean
    isSystemPrompt?: boolean
+   sqlStatements?: string[]
 }
 
 export interface LlmToolbarOptions {
