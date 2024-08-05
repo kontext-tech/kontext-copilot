@@ -20,6 +20,8 @@ export type LlmChatCallback = (
    done: boolean
 ) => void
 
+const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
+
 /* A service to handle all chats, generation, etc. */
 export default class LlmClientService {
    static readonly DEFAULT_RESPONSE: ChatMessage = {
@@ -118,7 +120,13 @@ export default class LlmClientService {
          sql,
          schema
       )
-      let part = "Sure thing!\n***SQL:***\n"
+      let part = "Sure thing!\n"
+      currentResponse.content = part
+      callback && callback(part, currentResponse.content, false)
+      // Pause for 0.5 second
+      await delay(500)
+
+      part = "***SQL:***\n"
       currentResponse.content = part
       callback && callback(part, currentResponse.content, false)
 
@@ -126,9 +134,15 @@ export default class LlmClientService {
       currentResponse.content += part
       callback && callback(part, currentResponse.content, false)
 
+      // Pause for 0.5 second
+      await delay(500)
+
       part = "\n***Result:***\n\n"
       currentResponse.content += part
       callback && callback(part, currentResponse.content, false)
+
+      // Pause for 1 second
+      await delay(2000)
 
       if (!result.success) {
          part = result.message ?? "There is an error when executing the SQL.\n"
@@ -139,7 +153,7 @@ export default class LlmClientService {
       } else {
          const data = result.data as { [key: string]: object }[]
          if (data.length === 0) {
-            part = "0 rows returned.\n"
+            part = "0 records returned.\n"
          } else {
             part = this.jsonToMarkdownTable(data)
          }
@@ -167,23 +181,35 @@ export default class LlmClientService {
       return codeBlocks
    }
 
-   private jsonToMarkdownTable(jsonArray: { [key: string]: object }[]): string {
+   private jsonToMarkdownTable(
+      jsonArray: { [key: string]: object }[],
+      maxRecords: number = 10
+   ): string {
       if (jsonArray.length === 0) return ""
 
       // Extract headers from the first object
       const headers = Object.keys(jsonArray[0])
+      const totalRecords = jsonArray.length
+      const note =
+         totalRecords > maxRecords
+            ? `(showing first **${maxRecords}** records of **${totalRecords}**)`
+            : ""
 
       // Create the header row
       const headerRow = `| ${headers.join(" | ")} |`
       const separatorRow = `| ${headers.map(() => "---").join(" | ")} |`
 
       // Create the data rows
+      // Limit the number of records to display
+      if (jsonArray.length > maxRecords) {
+         jsonArray = jsonArray.slice(0, maxRecords)
+      }
       const dataRows = jsonArray.map((obj) => {
          return `| ${headers.map((header) => obj[header]).join(" | ")} |`
       })
 
       // Combine header, separator, and data rows
-      return [headerRow, separatorRow, ...dataRows].join("\n")
+      return [note, headerRow, separatorRow, ...dataRows].join("\n")
    }
 
    private startGenerating() {
