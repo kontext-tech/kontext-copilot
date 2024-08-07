@@ -14,7 +14,7 @@
       "lintfix": "eslint --fix --cache . && prettier --write --list-different ."
    },
    "dependencies": {
-      "@nuxt/icon": "^1.4.4",
+      "@nuxt/icon": "^1.4.5",
       "@popperjs/core": "^2.11.8",
       "@vueuse/core": "^10.11.0",
       "axios": "^1.7.3",
