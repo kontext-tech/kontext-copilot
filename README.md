@@ -86,3 +86,7 @@ poetry build
 ```
 poetry publish
 ```
+
+### Initialize local database
+
+Run VS Code task `alembic: upgrade to head`
