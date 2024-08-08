@@ -25,7 +25,7 @@ export class SettingService {
    }
 
    async updateSetting(
-      key: string,
+      key: keyof SettingsModel,
       value: string | number | null
    ): Promise<boolean> {
       const response = await axios.post("/settings/", {

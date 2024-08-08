@@ -55,7 +55,10 @@ export default function useAppServices() {
    }
 
    // Function to update a setting using SettingsService
-   const setSetting = async (key: string, value: string | number | null) => {
+   const setSetting = async (
+      key: keyof SettingsModel,
+      value: string | number | null
+   ) => {
       try {
          await settingService.updateSetting(key, value)
       } catch (err) {

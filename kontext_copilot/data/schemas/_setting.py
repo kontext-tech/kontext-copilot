@@ -12,7 +12,7 @@ from kontext_copilot.utils import (
 
 class SettingBaseModel(BaseModel):
     key: str
-    value: Union[str, None] = None
+    value: Union[str, int, float, None] = None
 
 
 class SettingCreateModel(SettingBaseModel):

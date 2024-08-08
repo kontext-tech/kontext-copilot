@@ -12,13 +12,14 @@
          <div class="col-md-4">
             <BFormInput
                id="temperatureRange"
-               v-model="settings.llm_temperature"
+               v-model="llmTemperature"
                type="range"
                min="0"
                max="1"
                step="0.1"
+               number
             />
-            {{ settings.llm_temperature }}
+            {{ llmTemperature }}
          </div>
       </div>
       <hr />
@@ -32,13 +33,14 @@
          <div class="col-md-4">
             <BFormInput
                id="seed"
-               v-model="settings.llm_seed"
+               v-model="llmSeed"
                type="range"
                min="0"
                max="100"
                step="1"
+               number
             />
-            {{ settings.llm_seed }}
+            {{ llmSeed }}
          </div>
       </div>
       <hr />
@@ -54,13 +56,14 @@
          <div class="col-md-4">
             <BFormInput
                id="top_k_range"
-               v-model="settings.llm_top_k"
+               v-model="llmTopK"
                type="range"
                min="0"
                max="100"
                step="1"
+               number
             />
-            {{ settings.llm_top_k }}
+            {{ llmTopK }}
          </div>
       </div>
       <hr />
@@ -77,13 +80,14 @@
          <div class="col-md-4">
             <BFormInput
                id="top_p_range"
-               v-model="settings.llm_top_p"
+               v-model="llmTopP"
                type="range"
                min="0"
                max="1"
                step="0.05"
+               number
             />
-            {{ settings.llm_top_p }}
+            {{ llmTopP }}
          </div>
       </div>
       <hr />
@@ -139,7 +143,34 @@
 <script setup lang="ts">
 const settings = getSettings()
 
-// Handle null values
+const llmTemperature = computed({
+   get: () => settings.value.llm_temperature,
+   set: (value) => {
+      settings.value.llm_temperature = Number(value)
+   }
+})
+
+const llmTopK = computed({
+   get: () => settings.value.llm_top_k,
+   set: (value) => {
+      settings.value.llm_top_k = Number(value)
+   }
+})
+
+const llmTopP = computed({
+   get: () => settings.value.llm_top_p,
+   set: (value) => {
+      settings.value.llm_top_p = Number(value)
+   }
+})
+
+const llmSeed = computed({
+   get: () => settings.value.llm_seed,
+   set: (value) => {
+      settings.value.llm_seed = Number(value)
+   }
+})
+
 const llmApiKey = computed({
    get: () => settings?.value.llm_api_key ?? "",
    set: (value) => {
