@@ -125,7 +125,6 @@ const deleteMsg = () => {
 }
 
 const runSql = (sql: string, index: number, messageId?: number) => {
-   console.log("Run SQL", index, sql, messageId)
    emits("run-sql-clicked", sql, index, messageId)
 }
 

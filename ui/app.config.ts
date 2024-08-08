@@ -38,13 +38,13 @@ export default defineAppConfig({
                to: "/chat-to-data",
                icon: "material-symbols:chat-outline",
                text: "Chat to data"
-            },
-            {
-               id: "charts",
-               to: "/charts",
-               icon: "material-symbols:auto-graph",
-               text: "Charts"
             }
+            // {
+            //    id: "charts",
+            //    to: "/charts",
+            //    icon: "material-symbols:auto-graph",
+            //    text: "Charts"
+            // }
          ]
       },
       {

@@ -13,7 +13,10 @@
                   </tr>
                </thead>
                <tbody>
-                  <tr v-for="dataSource in dataSources" :key="dataSource.id">
+                  <tr
+                     v-for="dataSource in dataSources"
+                     :key="`tr-${dataSource.id}`"
+                  >
                      <td>{{ dataSource.id }}</td>
                      <td>{{ dataSource.name }}</td>
                      <td>
@@ -31,6 +34,14 @@
                         >
                            <Icon name="material-symbols:edit-outline" />
                         </BButton>
+                        <BButton
+                           :key="`${dataSource.id}-btn-copy`"
+                           variant="link"
+                           title="Copy"
+                           @click="copy(dataSource)"
+                        >
+                           <Icon name="material-symbols:content-copy-outline" />
+                        </BButton>
 
                         <BButton
                            :key="`${dataSource.id}-btn-delete`"
@@ -45,48 +56,49 @@
                </tbody>
             </table>
             <BModal
-               id="modalEdit"
-               key="modalEdit"
-               ref="editModal"
-               title="Edit data source"
-               size="lg"
+               :id="editModal.id"
+               :key="editModal.id"
+               v-model="editModal.open"
+               :title="editModal.title"
+               :size="editModal.size"
                ok-title="Save"
                @ok.prevent="updateDataSource"
+               @hide="resetEditModal"
             >
                <BAlert
-                  v-if="error"
-                  :model-value="error != null"
+                  v-if="editModal.error"
+                  :model-value="editModal.error != null"
                   variant="danger"
                >
-                  {{ error }}
+                  {{ editModal.error }}
                </BAlert>
                <EditForm
-                  v-if="currentModel"
+                  v-if="editModal.data"
                   id="editForm"
                   key="editForm"
                   ref="editForm"
-                  :update-model="currentModel"
+                  :update-model="editModal.data"
                />
             </BModal>
             <BModal
-               id="modalDelete"
-               key="modalDelete"
-               ref="deleteConfirmModal"
-               title="Delete data source"
-               size="md"
+               :id="deleteModal.id"
+               :key="deleteModal.id"
+               v-model="deleteModal.open"
+               :title="deleteModal.title"
+               :size="deleteModal.size"
                ok-title="Delete"
                ok-variant="danger"
                @ok.prevent="deleteDataSource"
             >
                <BAlert
-                  v-if="error"
-                  :model-value="error != null"
+                  v-if="deleteModal.error"
+                  :model-value="deleteModal.error != null"
                   variant="danger"
                >
-                  {{ error }}
+                  {{ deleteModal.error }}
                </BAlert>
                <p>Are you sure you want to delete this data source?</p>
-               <p><strong>Name:</strong> {{ currentModel?.name }}</p>
+               <p><strong>Name:</strong> {{ deleteModal.sourceName }}</p>
             </BModal>
          </div>
       </div>
@@ -102,68 +114,100 @@
 <script setup lang="ts">
 import type { DataSourceModel, DataSourceUpdateModel } from "~/types/Schemas"
 import EditForm from "./edit-form.vue"
-import type { BModal } from "bootstrap-vue-next"
+import type { BModal, Size } from "bootstrap-vue-next"
 
 const dataSourceService = getDataSourceService()
 
-const currentModel = ref<DataSourceUpdateModel | null>(null)
-const currentSourceId = ref<number | null>(null)
-const editModal = ref<InstanceType<typeof BModal> | null>(null)
-const deleteConfirmModal = ref<InstanceType<typeof BModal> | null>(null)
 const editForm = ref<InstanceType<typeof EditForm> | null>(null)
-const error = ref<string | null>(null)
+
+const editModal = reactive({
+   open: false,
+   id: "edit-modal",
+   title: "Edit data source",
+   isLoading: false,
+   error: null as string | null,
+   size: "lg" as Size,
+   data: null as DataSourceUpdateModel | null,
+   sourceId: null as number | null
+})
+const deleteModal = reactive({
+   open: false,
+   id: "delete-modal",
+   title: "Delete data source",
+   isLoading: false,
+   error: null as string | null,
+   size: "md" as Size,
+   sourceName: "" as string,
+   sourceId: null as number | null
+})
 
 const showDeleteConfirmModal = (model: DataSourceModel) => {
-   currentModel.value = model
-   currentSourceId.value = model.id
-   deleteConfirmModal.value?.show()
+   deleteModal.sourceName = model.name
+   deleteModal.sourceId = model.id
+   deleteModal.open = true
 }
 
 const showEditModal = (model: DataSourceModel) => {
-   currentModel.value = model
-   currentSourceId.value = model.id
-   editModal.value?.show()
+   editModal.data = { ...model }
+   editModal.sourceId = model.id
+   editModal.open = true
+}
+
+const resetEditModal = () => {
+   editModal.error = null
+   editModal.data = null
+   editModal.open = false
+   editModal.sourceId = null
 }
 
 const deleteDataSource = async () => {
-   if (currentSourceId.value) {
+   if (deleteModal.sourceId) {
       try {
-         await dataSourceService.deleteDataSource(currentSourceId.value)
+         await dataSourceService.deleteDataSource(deleteModal.sourceId)
          // Remove from data sources list
-         emit("delete", currentSourceId.value)
-         deleteConfirmModal.value?.hide()
-         currentSourceId.value = null
+         emit("delete", deleteModal.sourceId)
+         deleteModal.open = false
+         resetDeleteModal()
       } catch (err) {
-         error.value =
+         deleteModal.error =
             err instanceof Error ? err.message : "An unexpected error occurred"
-         console.error(error.value)
+         console.error(deleteModal.error)
       }
    }
+}
+
+const resetDeleteModal = () => {
+   deleteModal.error = null
+   deleteModal.sourceName = ""
+   deleteModal.sourceId = null
 }
 
 const updateDataSource = async () => {
    if (editForm.value) {
       const form = editForm.value
       form.setFormEntered(true)
-      if (form.formValid && currentSourceId.value && form.model) {
+      if (form.formValid && editModal.sourceId && form.model) {
          try {
-            await dataSourceService.updateDataSource(
-               currentSourceId.value,
+            const model = await dataSourceService.updateDataSource(
+               editModal.sourceId,
                form.model
             )
-            currentModel.value = null
+            emit("edit", model)
             form.setFormEntered(false)
-            error.value = null
-            editModal.value?.hide()
+            resetEditModal()
          } catch (err) {
-            error.value =
+            editModal.error =
                err instanceof Error
                   ? err.message
                   : "An unexpected error occurred"
-            console.error(error.value)
+            console.error(editModal.error)
          }
       }
    }
+}
+
+const copy = (dataSource: DataSourceModel) => {
+   emit("copy", dataSource)
 }
 
 defineProps<{
@@ -172,5 +216,7 @@ defineProps<{
 
 const emit = defineEmits<{
    delete: [id: number]
+   edit: [model: DataSourceModel]
+   copy: [dataSource: DataSourceModel]
 }>()
 </script>

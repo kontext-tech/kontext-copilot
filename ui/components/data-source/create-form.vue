@@ -75,7 +75,6 @@
 <script setup lang="ts">
 import { DataSourceType, type DataSourceCreateModel } from "~/types/Schemas"
 
-const dataSourceCreateModel = reactive<DataSourceCreateModel>({ type: null })
 const formEntered = ref(false)
 const formValid = computed(
    () => typeValidation.value && nameValidation.value && connStrValidation.value
@@ -87,30 +86,35 @@ const dataSourceTypes = [
 ]
 
 const typeValidation = computed(() =>
-   !formEntered.value ? null : dataSourceCreateModel.type ? true : false
+   !formEntered.value ? null : dataSourceCreateModel.value.type ? true : false
 )
 const nameValidation = computed(() =>
-   !formEntered.value ? null : dataSourceCreateModel.name ? true : false
+   !formEntered.value ? null : dataSourceCreateModel.value.name ? true : false
 )
 const connStrValidation = computed(() =>
-   !formEntered.value ? null : dataSourceCreateModel.conn_str ? true : false
+   !formEntered.value
+      ? null
+      : dataSourceCreateModel.value.conn_str
+        ? true
+        : false
 )
 
 const setFormEntered = (status: boolean = true) => {
    formEntered.value = status
 }
 
-const reset = () => {
-   dataSourceCreateModel.type = null
-   dataSourceCreateModel.name = undefined
-   dataSourceCreateModel.description = undefined
-   dataSourceCreateModel.conn_str = undefined
-}
+const props = defineProps<{
+   createModel: DataSourceCreateModel
+}>()
+
+const dataSourceCreateModel = ref<DataSourceCreateModel>({
+   ...props.createModel
+})
 
 defineExpose({
    setFormEntered,
    formValid,
    dataSourceCreateModel,
-   resetForm: reset
+   model: dataSourceCreateModel
 })
 </script>

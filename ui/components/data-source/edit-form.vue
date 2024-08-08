@@ -100,7 +100,7 @@ const props = defineProps<{
    updateModel: DataSourceUpdateModel
 }>()
 
-const model = ref<DataSourceUpdateModel>(props.updateModel)
+const model = reactive<DataSourceUpdateModel>({ ...props.updateModel })
 
 defineExpose({
    setFormEntered,
