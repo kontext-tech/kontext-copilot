@@ -1,4 +1,4 @@
-import type { Message, Options as OllamaOptions } from "ollama/browser"
+import type { Message } from "ollama/browser"
 import type LlmProxyService from "./LlmProxyService"
 import {
    ChatRole,
@@ -32,7 +32,6 @@ export default class LlmClientService {
    llmService: LlmProxyService
    dataProviderService: DataProviderService
    settings: Ref<SettingsModel>
-   options: Partial<OllamaOptions> = {}
    state: Reactive<LlmClientState> = reactive({
       generating: false,
       history: [],
@@ -53,13 +52,10 @@ export default class LlmClientService {
       this.llmService = llmService
       this.dataProviderService = datProviderService
       this.settings = settings
-
-      // Setup options
-      this.setOptions()
    }
 
-   private setOptions() {
-      this.options = {
+   private getLlmOptions() {
+      return {
          temperature: this.settings.value.llm_temperature,
          top_k: this.settings.value.llm_top_k,
          top_p: this.settings.value.llm_top_p,
@@ -291,7 +287,7 @@ export default class LlmClientService {
             model: model,
             messages: this.getHistory(),
             stream: false,
-            options: this.options
+            options: this.getLlmOptions()
          })
          if (typeof response === "string") response = JSON.parse(response)
          this.state.currentResponse.content = response.message.content
@@ -324,7 +320,7 @@ export default class LlmClientService {
          model: model,
          messages: this.getHistory(),
          stream: true,
-         options: this.options
+         options: this.getLlmOptions()
       })
 
       this.state.currentResponse.isStreaming = true
@@ -386,7 +382,7 @@ export default class LlmClientService {
             system: systemPrompt,
             format: format,
             stream: true,
-            options: this.options
+            options: this.getLlmOptions()
          })
          this.state.currentResponse.isStreaming = true
          for await (const part of response) {
@@ -419,7 +415,7 @@ export default class LlmClientService {
             system: systemPrompt,
             format: format,
             stream: false,
-            options: this.options
+            options: this.getLlmOptions()
          })
          if (typeof res === "string") res = JSON.parse(res)
          this.state.currentResponse.content = res.response
@@ -434,7 +430,7 @@ export default class LlmClientService {
          .embeddings({
             model: model,
             prompt: prompt,
-            options: this.options
+            options: this.getLlmOptions()
          })
          .then((response) => {
             this.state.currentResponse.content = JSON.stringify(
