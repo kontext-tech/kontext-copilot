@@ -30,12 +30,7 @@ export class SettingService {
    ): Promise<boolean> {
       const response = await axios.post("/settings/", {
          key,
-         value:
-            value === null
-               ? null
-               : typeof value === "number"
-                 ? value.toString()
-                 : value
+         value
       })
       if (response.status === 200) {
          return true

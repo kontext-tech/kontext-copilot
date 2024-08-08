@@ -24,7 +24,7 @@ class SettingsService:
 
     def __init__(self, engine):
         self.engine = engine
-        self.session = sessionmaker(bind=self.engine)
+        self.sessionmaker = sessionmaker(bind=self.engine)
 
     def get_settings(self):
         """
@@ -33,7 +33,7 @@ class SettingsService:
         Returns:
             dict: A dictionary containing all settings where the key is the setting key and the value is the setting value.
         """
-        session = self.session()
+        session = self.sessionmaker()
         try:
             settings = session.query(Setting).all()
             return {setting.key: setting.value for setting in settings}
@@ -46,8 +46,22 @@ class SettingsService:
         """
         settings = self.get_settings()
 
+        settingsModel = SettingsModel()
+
         # Convert dictionary to class object
-        return SettingsModel(**settings)
+        # Check data type in settingsModel and convert string to the correct type
+        for key, value in settings.items():
+            if hasattr(settingsModel, key):
+                # get type of the attribute
+                attr_type = type(getattr(settingsModel, key))
+                # convert value to the correct type
+                if attr_type == int:
+                    value = int(value)
+                elif attr_type == float:
+                    value = float(value)
+                setattr(settingsModel, key, value)
+
+        return settingsModel
 
     def get_setting(self, key):
         """
@@ -59,7 +73,7 @@ class SettingsService:
         Returns:
             str: The value of the setting if found, None otherwise.
         """
-        session = self.session()
+        session = self.sessionmaker()
         try:
             setting = session.query(Setting).filter_by(key=key).first()
             return setting.value if setting else None
@@ -77,13 +91,26 @@ class SettingsService:
         Returns:
             None
         """
-        session = self.session()
+        session = self.sessionmaker()
+
+        settings = self.get_settings_obj()
+        typed_value = value
+        # Check data type in settingsModel and convert string to the correct type
+        if hasattr(settings, key):
+            # get type of the attribute
+            attr_type = type(getattr(settings, key))
+            # convert value to the correct type
+            if attr_type == int:
+                typed_value = int(value)
+            elif attr_type == float:
+                typed_value = float(value)
+
         try:
             setting = session.query(Setting).filter_by(key=key).first()
             if setting:
-                setting.value = value
+                setting.value = typed_value
             else:
-                new_setting = Setting(key=key, value=value)
+                new_setting = Setting(key=key, value=typed_value)
                 session.add(new_setting)
             session.commit()
         finally:
@@ -99,7 +126,7 @@ class SettingsService:
         Returns:
             None
         """
-        session = self.session()
+        session = self.sessionmaker()
         try:
             setting = session.query(Setting).filter_by(key=key).first()
             if setting:
