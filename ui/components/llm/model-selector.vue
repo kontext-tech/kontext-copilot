@@ -4,7 +4,7 @@
          <template #button-content>
             <template v-if="defaultModel">
                {{ defaultModel.name }}
-               {{ defaultModel.details.parameter_size }}
+               {{ defaultModel.details.parameterSize }}
                <Icon name="material-symbols:arrow-drop-down" />
             </template>
             <template v-else> Loading </template>
@@ -12,15 +12,25 @@
          <BDropdownItem
             v-for="model in models"
             :key="model.name"
+            class="border-bottom"
             @click="selectModel(model)"
          >
-            <div class="d-flex align-items-center cursor-pointer">
-               <span>{{ model.name }} {{ model.details.parameter_size }}</span>
-               <Icon
-                  v-if="defaultModel?.name === model.name"
-                  name="material-symbols:check"
-                  class="ms-auto text-primary"
-               />
+            <div class="d-flex flex-column cursor-pointer">
+               <div class="d-flex gap-3">
+                  <span class="fw-bold"
+                     >{{ model.name }} {{ model.details.parameterSize }}</span
+                  >
+                  <Icon
+                     v-if="defaultModel?.name === model.name"
+                     name="material-symbols:check"
+                     class="text-primary"
+                  />
+               </div>
+               <div class="text-muted">
+                  family: {{ model.details.family }}; quantization:
+                  {{ model.details.quantizationLevel }}; format:
+                  {{ model.details.format }}
+               </div>
             </div>
          </BDropdownItem>
       </BDropdown>
@@ -28,11 +38,11 @@
 </template>
 
 <script setup lang="ts">
-import type { ModelResponse } from "ollama/browser"
+import type { LlmModelResponse } from "~/types/Schemas"
 
 const { models, defaultModel, setDefaultModel, getModels } = useModels()
 
-const selectModel = (model: ModelResponse) => {
+const selectModel = (model: LlmModelResponse) => {
    setDefaultModel(model)
 }
 

@@ -20,6 +20,29 @@ export interface ThemeConfigItem {
    name: string
 }
 
+export interface LlmModelResponse {
+   name: string
+   modifiedAt: Date
+   size: number
+   digest: string
+   details: LlmModelDetails
+   expiresAt: Date
+   sizeVram: number
+}
+
+export interface LlmModelDetails {
+   parentModel: string
+   format: string
+   family: string
+   families: string[]
+   parameterSize: string
+   quantizationLevel: string
+}
+
+export interface LlmModelListResponse {
+   models: LlmModelResponse[]
+}
+
 export interface LlmChatMessage extends Message {
    id?: number
    content: string

@@ -21,7 +21,7 @@ class LlmModel(CamelAliasBaseModel):
     details: LlmModelDetail
 
 
-class ModelsResponse(CamelAliasBaseModel):
+class LlmModelListResponse(CamelAliasBaseModel):
     models: List[LlmModel]
 
 

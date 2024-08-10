@@ -5,7 +5,7 @@ from typing import (
 from fastapi import APIRouter, Depends, Request
 from fastapi.responses import StreamingResponse
 from kontext_copilot import ollama
-from kontext_copilot.data.schemas import ModelsResponse
+from kontext_copilot.data.schemas import LlmModelListResponse
 from kontext_copilot.utils import get_logger
 from kontext_copilot.services import SettingsService, get_settings_service
 
@@ -29,7 +29,7 @@ def _get_client(settings_service: SettingsService) -> ollama.Client:
 @router.get("/tags")
 def list_models(
     settings_service: SettingsService = Depends(get_settings_service),
-) -> ModelsResponse:
+) -> LlmModelListResponse:
     """
     Get a list of available models.
     """

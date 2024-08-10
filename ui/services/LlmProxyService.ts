@@ -1,12 +1,13 @@
 import axios from "axios"
-import { Ollama, type ListResponse } from "ollama/browser"
+import { Ollama } from "ollama/browser"
 import { LlmEndointRequiredException } from "~/types/Errors"
 import type {
    CopilotSessionRequestModel,
    CopilotSessionResponseModel,
    LlmChatResponse,
    CopilotRunSqlRequestModel,
-   ErrorResponseModel
+   ErrorResponseModel,
+   LlmModelListResponse
 } from "~/types/Schemas"
 import { AbortableAsyncIterator } from "~/utils/CommonUtils"
 
@@ -15,19 +16,25 @@ axios.defaults.headers.post["Content-Type"] = "application/json"
 export default class LlmProxyService {
    endpoint: string
    service: Ollama
-   models?: ListResponse
+   models?: LlmModelListResponse
    apiBaseUrl: string
 
    constructor(endpoint: string, apiBaseUrl: string) {
       if (endpoint === undefined) throw new LlmEndointRequiredException()
       this.endpoint = endpoint
       this.service = new Ollama({ host: this.endpoint })
-      this.apiBaseUrl = getBaseUrl(apiBaseUrl)
-      axios.defaults.baseURL = this.apiBaseUrl
+      this.apiBaseUrl = apiBaseUrl
+      axios.defaults.baseURL = getBaseUrl(apiBaseUrl)
    }
 
-   async getModels(): Promise<ListResponse> {
-      if (this.models === undefined) this.models = await this.service.list()
+   async getModels(): Promise<LlmModelListResponse> {
+      if (this.models === undefined) {
+         /* Request without baseURL */
+         const response = await axios.get<LlmModelListResponse>(
+            `${this.apiBaseUrl}/llms/api/tags`
+         )
+         this.models = response.data
+      }
       return this.models
    }
 
@@ -47,14 +54,17 @@ export default class LlmProxyService {
    ): Promise<AbortableAsyncIterator<LlmChatResponse>> {
       const abortController = new AbortController()
 
-      const response = await fetch(`${this.apiBaseUrl}/copilot/run-sql`, {
-         method: "POST",
-         headers: {
-            "Content-Type": "application/json"
-         },
-         body: JSON.stringify(request),
-         signal: abortController.signal
-      })
+      const response = await fetch(
+         `${getBaseUrl(this.apiBaseUrl)}/copilot/run-sql`,
+         {
+            method: "POST",
+            headers: {
+               "Content-Type": "application/json"
+            },
+            body: JSON.stringify(request),
+            signal: abortController.signal
+         }
+      )
 
       if (!response.body) {
          throw new Error("No response body")

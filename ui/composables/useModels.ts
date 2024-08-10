@@ -1,8 +1,8 @@
-import type { ModelResponse } from "ollama/browser"
 import { LlmProxyServiceRequiredException } from "~/types/Errors"
+import type { LlmModelResponse } from "~/types/Schemas"
 
-const models = ref<ModelResponse[]>([])
-const defaultModel = ref<ModelResponse>()
+const models = ref<LlmModelResponse[]>([])
+const defaultModel = ref<LlmModelResponse>()
 
 export default function useModels() {
    const settings = getSettings()
@@ -25,7 +25,7 @@ export default function useModels() {
       else defaultModel.value = models.value[0]
    }
 
-   const setDefaultModel = (model: ModelResponse) => {
+   const setDefaultModel = (model: LlmModelResponse) => {
       defaultModel.value = model
       if (settings) settings.value.llmDefaultModel = model.name
    }
