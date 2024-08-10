@@ -54,7 +54,7 @@
          >
             <BFormInput
                id="dataSourceConnStr"
-               v-model="model.conn_str"
+               v-model="model.connStr"
                required
                placeholder="Enter connection string"
                :state="connStrValidation"
@@ -89,7 +89,7 @@ const nameValidation = computed(() =>
    !formEntered.value ? null : props.updateModel?.name ? true : false
 )
 const connStrValidation = computed(() =>
-   !formEntered.value ? null : props.updateModel?.conn_str ? true : false
+   !formEntered.value ? null : props.updateModel?.connStr ? true : false
 )
 
 const setFormEntered = (status: boolean = true) => {

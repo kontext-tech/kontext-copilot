@@ -99,7 +99,7 @@
             >
          </div>
          <div class="col-md-4">
-            <BFormInput id="endpoint" v-model="settings.llm_endpoint" />
+            <BFormInput id="endpoint" v-model="settings.llmEndpoint" />
          </div>
       </div>
       <hr />
@@ -111,7 +111,7 @@
          <div class="col-md-4">
             <BFormInput
                id="endpointOllama"
-               v-model="settings.llm_ollama_endpoint"
+               v-model="settings.llmOllamaEndpoint"
             />
          </div>
       </div>
@@ -144,38 +144,38 @@
 const settings = getSettings()
 
 const llmTemperature = computed({
-   get: () => settings.value.llm_temperature,
+   get: () => settings.value.llmTemperature,
    set: (value) => {
-      settings.value.llm_temperature = Number(value)
+      settings.value.llmTemperature = Number(value)
    }
 })
 
 const llmTopK = computed({
-   get: () => settings.value.llm_top_k,
+   get: () => settings.value.llmTopK,
    set: (value) => {
-      settings.value.llm_top_k = Number(value)
+      settings.value.llmTopK = Number(value)
    }
 })
 
 const llmTopP = computed({
-   get: () => settings.value.llm_top_p,
+   get: () => settings.value.llmTopP,
    set: (value) => {
-      settings.value.llm_top_p = Number(value)
+      settings.value.llmTopP = Number(value)
    }
 })
 
 const llmSeed = computed({
-   get: () => settings.value.llm_seed,
+   get: () => settings.value.llmSeed,
    set: (value) => {
-      settings.value.llm_seed = Number(value)
+      settings.value.llmSeed = Number(value)
    }
 })
 
 const llmApiKey = computed({
-   get: () => settings?.value.llm_api_key ?? "",
+   get: () => settings?.value.llmApiKey ?? "",
    set: (value) => {
       if (settings.value) {
-         settings.value.llm_api_key = value
+         settings.value.llmApiKey = value
       }
    }
 })

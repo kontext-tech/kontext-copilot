@@ -1,5 +1,6 @@
 from datetime import datetime
 import json
+from typing import Optional
 from fastapi import APIRouter, Body
 from fastapi.responses import StreamingResponse
 from kontext_copilot.copilot import Planner
@@ -23,7 +24,11 @@ router = APIRouter(
 logger = get_logger()
 
 
-def _get_planner(data_source_id: int, tables: list[str] = None, schema: str = None):
+def _get_planner(
+    data_source_id: int,
+    tables: Optional[list[str]] = None,
+    schema: Optional[str] = None,
+):
     """
     Get planner
     """
@@ -45,9 +50,9 @@ def init_session(
     """
     logger.debug("Request: %s", request)
     planner = _get_planner(
-        data_source_id=request.get("data_source_id"),
-        tables=request.get("tables"),
-        schema=request.get("schema"),
+        data_source_id=request.data_source_id,
+        tables=request.tables,
+        schema=request.schema_name,
     )
 
     prompt = planner.get_system_prompt()
@@ -78,16 +83,14 @@ def run_sql(request: CopilotRunSqlRequestModel = Body(None)):
                 created_at=datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
                 done=False,
             )
-            yield json.dumps(message) + "\n"
+            yield message.model_dump_json() + "\n"
 
         # Return a message to indicate the SQL execution is done
-        yield json.dumps(
-            MessageModel(
-                message=Message(role="assistant", content=""),
-                model="copilot",
-                created_at=datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
-                done=True,
-            )
-        ) + "\n"
+        yield MessageModel(
+            message=Message(role="assistant", content=""),
+            model="copilot",
+            created_at=datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
+            done=True,
+        ).model_dump_json() + "\n"
 
     return StreamingResponse(generate_response(), media_type="application/x-ndjson")

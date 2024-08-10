@@ -7,7 +7,7 @@ const defaultModel = ref<ModelResponse>()
 export default function useModels() {
    const settings = getSettings()
 
-   const defaultModelConfig = computed(() => settings?.value.llm_default_model)
+   const defaultModelConfig = computed(() => settings?.value.llmDefaultModel)
 
    const llmService = getLlmProxyService()
 
@@ -27,7 +27,7 @@ export default function useModels() {
 
    const setDefaultModel = (model: ModelResponse) => {
       defaultModel.value = model
-      if (settings) settings.value.llm_default_model = model.name
+      if (settings) settings.value.llmDefaultModel = model.name
    }
 
    onMounted(() => {

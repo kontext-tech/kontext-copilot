@@ -1,23 +1,15 @@
-import sys
 from typing import Optional
-from pydantic import BaseModel
-
 from kontext_copilot.data.schemas._common import CamelAliasBaseModel
 
-if sys.version_info < (3, 12):
-    from typing_extensions import TypedDict, NotRequired
-else:
-    from typing import TypedDict, NotRequired
 
-
-class CopilotSessionRequestModel(TypedDict):
+class CopilotSessionRequestModel(CamelAliasBaseModel):
     model: str
     data_source_id: int
-    tables: NotRequired[list[str]]
-    schema: NotRequired[str]
+    tables: Optional[list[str]] = None
+    schema_name: Optional[str] = None
 
 
-class CopilotSessionResponseModel(TypedDict):
+class CopilotSessionResponseModel(CamelAliasBaseModel):
     prompt: str
 
 

@@ -24,14 +24,14 @@
                >
                   <ChatMessageCard
                      :message="message"
-                     :username="settings.general_username"
+                     :username="settings.generalUsername"
                      @delete-clicked="handleDeleteClicked"
                   />
                </template>
                <ChatMessageCard
                   v-if="state.generating"
                   :message="state.currentResponse"
-                  :username="settings.general_username"
+                  :username="settings.generalUsername"
                   @abort-clicked="handleAbortClicked"
                />
             </div>

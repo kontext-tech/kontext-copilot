@@ -134,18 +134,16 @@ class PromptFactory:
         # if value is a path (for example, "./prompts/sentiment-analysis.md"),
         # get the content from the file and replace the value
         for prompt in model_list.prompts:
-            prompt_content = prompt.get("prompt")
-            sys_prompt_content = prompt.get("system_prompt")
+            prompt_content = prompt.prompt
+            sys_prompt_content = prompt.system_prompt
             if prompt_content is not None and prompt_content.startswith("./prompts/"):
                 logger.info(f"Read prompt from file: {prompt_content}")
-                prompt["prompt"] = read_prompt_file_with_cache(prompt_content)
+                prompt.prompt = read_prompt_file_with_cache(prompt_content)
             if sys_prompt_content is not None and sys_prompt_content.startswith(
                 "./prompts/"
             ):
                 logger.info(f"Read prompt from file: {sys_prompt_content}")
-                prompt["system_prompt"] = read_prompt_file_with_cache(
-                    sys_prompt_content
-                )
+                prompt.system_prompt = read_prompt_file_with_cache(sys_prompt_content)
         return model_list
 
     @staticmethod
@@ -162,6 +160,6 @@ class PromptFactory:
         prompts = PromptFactory.load_prompts_from_json()
 
         # find prompt by id
-        prompt = next((p for p in prompts.prompts if p["id"] == template_id), None)
+        prompt = next((p for p in prompts.prompts if p.id == template_id), None)
 
         return prompt

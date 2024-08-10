@@ -65,12 +65,14 @@ class BaseProvider(ABC):
             schemas = self.get_schemas()
             for schema in schemas:
                 schema_tables.append(
-                    SchemaTablesModel(schema=schema, tables=self.get_tables(schema))
+                    SchemaTablesModel(
+                        schema_name=schema, tables=self.get_tables(schema)
+                    )
                 )
             return schema_tables
         else:
             schema_tables.append(
-                SchemaTablesModel(schema=None, tables=self.get_tables())
+                SchemaTablesModel(schema_name=None, tables=self.get_tables())
             )
         return schema_tables
 

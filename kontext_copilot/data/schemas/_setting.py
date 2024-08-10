@@ -1,7 +1,6 @@
 from typing import Optional, Union
 
-from pydantic import BaseModel
-
+from kontext_copilot.data.schemas._common import CamelAliasBaseModel
 from kontext_copilot.utils import (
     DEFAULT_MODEL,
     DEFAULT_ENDPOINT,
@@ -10,7 +9,7 @@ from kontext_copilot.utils import (
 )
 
 
-class SettingBaseModel(BaseModel):
+class SettingBaseModel(CamelAliasBaseModel):
     key: str
     value: Union[str, int, float, None] = None
 
@@ -29,7 +28,7 @@ class SettingModel(SettingBaseModel):
         from_attributes = True
 
 
-class GeneralSettingsModel(BaseModel):
+class GeneralSettingsModel(CamelAliasBaseModel):
     """
     Model for general settings.
     """
@@ -38,7 +37,7 @@ class GeneralSettingsModel(BaseModel):
     general_username: str = DEFAULT_USERNAME
 
 
-class LlmSettingsModel(BaseModel):
+class LlmSettingsModel(CamelAliasBaseModel):
     """
     Model for LLM settings.
     """

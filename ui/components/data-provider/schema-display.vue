@@ -132,7 +132,7 @@ import type {
 } from "~/types/Schemas"
 import { useClipboard } from "@vueuse/core"
 
-const schemaName = computed(() => props.schema?.schema ?? "default")
+const schemaName = computed(() => props.schema?.schemaName ?? "default")
 
 const sampleDataModal = reactive({
    open: false,
@@ -164,14 +164,14 @@ const showSampleDataModal = (table: string) => {
    if (props.dataProviderInfo.provider?.id) {
       sampleDataModal.isLoading = true
       sampleDataModal.title = currentTable.value
-         ? `Sample data for ${props.schema?.schema ? props.schema.schema + "." : ""}${currentTable.value}`
+         ? `Sample data for ${props.schema?.schemaName ? props.schema.schemaName + "." : ""}${currentTable.value}`
          : "Sample data"
       sampleDataModal.open = true
       dataProviderService
          .getTableSamples(
             props.dataProviderInfo.provider.id,
             table,
-            props.schema?.schema ?? undefined
+            props.schema?.schemaName ?? undefined
          )
          .then((data) => {
             sampleDataModal.data = data
@@ -214,8 +214,8 @@ const resetSqlModal = () => {
 const showSqlModal = (table: string, sqlType: SqlType) => {
    if (props.dataProviderInfo.provider?.id) {
       sqlModal.isLoading = true
-      const table_full_name = props.schema?.schema
-         ? `${props.schema.schema}.${table}`
+      const table_full_name = props.schema?.schemaName
+         ? `${props.schema.schemaName}.${table}`
          : table
       sqlModal.title =
          sqlType == "CREATE"
@@ -229,7 +229,7 @@ const showSqlModal = (table: string, sqlType: SqlType) => {
       func(
          props.dataProviderInfo.provider.id,
          table,
-         props.schema?.schema ?? undefined
+         props.schema?.schemaName ?? undefined
       )
          .then((data) => {
             sqlModal.sql = data.sql

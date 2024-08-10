@@ -1,4 +1,3 @@
-from typing import TypedDict
 from pydantic import BaseModel
 
 
@@ -11,6 +10,7 @@ class CamelAliasBaseModel(BaseModel):
 
     class Config:
         alias_generator = to_camel
+        populate_by_name = True
 
 
 class ErrorResponseModel(CamelAliasBaseModel):

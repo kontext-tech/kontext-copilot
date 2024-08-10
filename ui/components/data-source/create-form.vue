@@ -57,7 +57,7 @@
          >
             <BFormInput
                id="dataSourceConnStr"
-               v-model="dataSourceCreateModel.conn_str"
+               v-model="dataSourceCreateModel.connStr"
                required
                placeholder="Enter connection string"
                :state="connStrValidation"
@@ -94,7 +94,7 @@ const nameValidation = computed(() =>
 const connStrValidation = computed(() =>
    !formEntered.value
       ? null
-      : dataSourceCreateModel.value.conn_str
+      : dataSourceCreateModel.value.connStr
         ? true
         : false
 )

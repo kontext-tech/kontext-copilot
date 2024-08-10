@@ -1,23 +1,18 @@
 from typing import List, Optional
 
-import sys
-
-if sys.version_info < (3, 12):
-    from typing_extensions import TypedDict
-else:
-    from typing import TypedDict
+from kontext_copilot.data.schemas._common import CamelAliasBaseModel
 
 
-class LlmModelDetail(TypedDict):
+class LlmModelDetail(CamelAliasBaseModel):
     parent_model: str
     format: str
     family: str
-    families: Optional[List[str]]
+    families: Optional[List[str]] = None
     parameter_size: str
     quantization_level: str
 
 
-class LlmModel(TypedDict):
+class LlmModel(CamelAliasBaseModel):
     name: str
     model: str
     modified_at: str
@@ -26,16 +21,16 @@ class LlmModel(TypedDict):
     details: LlmModelDetail
 
 
-class ModelsResponse(TypedDict):
+class ModelsResponse(CamelAliasBaseModel):
     models: List[LlmModel]
 
 
-class Message(TypedDict):
+class Message(CamelAliasBaseModel):
     role: str
     content: str
 
 
-class MessageModel(TypedDict):
+class MessageModel(CamelAliasBaseModel):
     model: str
     created_at: str
     message: Message

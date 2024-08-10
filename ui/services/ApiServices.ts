@@ -164,7 +164,7 @@ export class DataProviderService {
       schema?: string,
       recordCount?: number
    ): Promise<SqlRunResultModel> {
-      const params = { sql, schema, record_count: recordCount }
+      const params = { sql, schema, recordCount: recordCount }
       const response = await axios.post<SqlRunResultModel>(
          `/data-providers/${dataSourceId}/run-sql`,
          params

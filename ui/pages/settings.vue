@@ -27,7 +27,7 @@
                <div class="col-md-4">
                   <BFormInput
                      id="username"
-                     v-model="settings.general_username"
+                     v-model="settings.generalUsername"
                   />
                </div>
             </div>

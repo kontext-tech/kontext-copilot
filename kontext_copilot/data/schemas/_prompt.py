@@ -1,25 +1,19 @@
-import sys
 from typing import List, Optional
 
-from pydantic import BaseModel
-
-if sys.version_info < (3, 12):
-    from typing_extensions import TypedDict, NotRequired
-else:
-    from typing import TypedDict, NotRequired
+from kontext_copilot.data.schemas._common import CamelAliasBaseModel
 
 
-class PromptInfoModel(TypedDict):
+class PromptInfoModel(CamelAliasBaseModel):
     id: str
-    name: NotRequired[str]
-    system_defined: NotRequired[bool] = False
+    name: Optional[str] = None
+    system_defined: Optional[bool] = False
 
 
 class PromptModel(PromptInfoModel):
-    prompt: Optional[str]
-    system_prompt: Optional[str]
-    user_input: Optional[str]
+    prompt: Optional[str] = None
+    system_prompt: Optional[str] = None
+    user_input: Optional[str] = None
 
 
-class PromptListModel(BaseModel):
+class PromptListModel(CamelAliasBaseModel):
     prompts: List[PromptModel]

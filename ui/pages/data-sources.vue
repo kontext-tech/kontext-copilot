@@ -84,7 +84,7 @@ const showCreateModal = () => {
    createFormModal.data = {
       type: null,
       name: "",
-      conn_str: "",
+      connStr: "",
       description: ""
    }
    createFormModal.open = true
@@ -133,7 +133,7 @@ const handleCopyDataSource = (model: DataSourceModel) => {
    createFormModal.data = {
       type: model.type,
       name: model.name,
-      conn_str: model.conn_str,
+      connStr: model.connStr,
       description: model.description
    }
    createFormModal.open = true

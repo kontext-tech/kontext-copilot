@@ -54,7 +54,7 @@ class Planner:
         self._check_session()
         self._logger.debug("Running SQL: %s", sql)
         yield "Sure thing!\n"
-        yield "***SQL:***\n"
+        yield "\n***SQL:***\n"
         yield f"```sql\n{sql}\n```\n"
 
         provider = self._get_provider(self.session.data_source_id)

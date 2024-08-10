@@ -13,7 +13,7 @@
                <ChatMessageCard
                   v-if="message.isSystemPrompt === undefined"
                   :message="message"
-                  :username="settings.general_username"
+                  :username="settings.generalUsername"
                   @delete-clicked="handleDeleteClicked"
                   @run-sql-clicked="handlRunSqlClicked"
                />
@@ -21,7 +21,7 @@
             <ChatMessageCard
                v-if="state.generating"
                :message="state.currentResponse"
-               :username="settings.general_username"
+               :username="settings.generalUsername"
                @abort-clicked="handleAbortClicked"
             />
          </div>
@@ -130,12 +130,12 @@ watch(
          props.dataProviderInfo.provider &&
          props.dataSourceId
       ) {
-         llmClient.generateSystemPrompt(
+         llmClient.init_session(
             {
                model: props.model,
-               data_source_id: props.dataSourceId,
+               dataSourceId: props.dataSourceId,
                tables: props.tables,
-               schema: props.schema
+               schemaName: props.schema
             },
             callback
          )

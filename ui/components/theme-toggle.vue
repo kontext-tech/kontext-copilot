@@ -38,7 +38,7 @@ const colorMode = useColorMode({ selector: "html", storageKey: "theme" })
 const settings = getSettings()
 
 const preference = computed(() => {
-   return settings.value.general_theme
+   return settings.value.generalTheme
 })
 const disabled = computed(() => {
    return !settings
@@ -74,7 +74,7 @@ const selectedTheme = computed(() => {
 })
 
 const setPreference = (mode: ThemeName) => {
-   settings.value.general_theme = mode
+   settings.value.generalTheme = mode
 }
 
 const { simple } = defineProps<{

@@ -28,9 +28,9 @@ def get_prompt_templates() -> List[PromptInfoModel]:
     # convert Prompts object to list of PromptInfo objects
     # filter out system defined prompts
     return [
-        PromptInfoModel(id=prompt.get("id"), name=prompt.get("name"))
+        PromptInfoModel(id=prompt.id, name=prompt.name)
         for prompt in prompts.prompts
-        if not prompt.get("system_defined")
+        if not prompt.system_defined
     ]
 
 

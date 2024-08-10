@@ -38,7 +38,7 @@ export default function useAppServices() {
       try {
          settingsWrapper.settings = await settingService.getSettings()
          const proxy = new LlmProxyService(
-            settingsWrapper.settings.llm_endpoint,
+            settingsWrapper.settings.llmEndpoint,
             appConfig.apiBaseUrl
          )
          // get models
@@ -60,6 +60,10 @@ export default function useAppServices() {
       value: string | number | null
    ) => {
       try {
+         /* Convert key to snake case */
+         key = key
+            .replace(/([A-Z])/g, "_$1")
+            .toLowerCase() as keyof SettingsModel
          await settingService.updateSetting(key, value)
       } catch (err) {
          settingsWrapper.error =

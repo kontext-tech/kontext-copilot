@@ -155,9 +155,9 @@ def run_sql(
     Run SQL the data source.
     """
     try:
-        sql = payload.get("sql")
-        schema = payload.get("schema")
-        record_count = payload.get("record_count")
+        sql = payload.sql
+        schema = payload.schema_name
+        record_count = payload.record_count
         logger.info(f"Run SQL: {sql}")
         provider = get_data_provider(data_source_id, source_service)
         data = provider.run_sql(sql=sql, record_count=record_count, schema=schema)

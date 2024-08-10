@@ -1,16 +1,12 @@
-import sys
-from pydantic import BaseModel
 from typing import Any, List, Optional
 from kontext_copilot.data.models import DataSourceType, DataSource
 
-if sys.version_info < (3, 12):
-    from typing_extensions import TypedDict, NotRequired
-else:
-    from typing import TypedDict, NotRequired
+
+from kontext_copilot.data.schemas._common import CamelAliasBaseModel
 
 
 # Define the Pydantic schema for DataSource
-class DataSourceModel(BaseModel):
+class DataSourceModel(CamelAliasBaseModel):
     id: int
     name: str
     description: Optional[str] = None
@@ -36,7 +32,7 @@ class DataSourceModel(BaseModel):
 
 
 # Create model excludes auto-generated fields like 'id'
-class DataSourceCreateModel(BaseModel):
+class DataSourceCreateModel(CamelAliasBaseModel):
     name: str
     description: Optional[str] = None
     type: DataSourceType
@@ -44,27 +40,27 @@ class DataSourceCreateModel(BaseModel):
 
 
 # Update model makes all fields optional
-class DataSourceUpdateModel(BaseModel):
+class DataSourceUpdateModel(CamelAliasBaseModel):
     name: Optional[str] = None
     description: Optional[str] = None
     type: Optional[DataSourceType] = None
     conn_str: Optional[str] = None
 
 
-class SchemaTablesModel(TypedDict):
-    schema: Optional[str]
+class SchemaTablesModel(CamelAliasBaseModel):
+    schema_name: Optional[str]
     tables: list[str]
 
 
-class ColumnInfoModel(TypedDict):
+class ColumnInfoModel(CamelAliasBaseModel):
     name: str
     """column name"""
 
     primary_key: bool
 
-    index: Optional[bool]
+    index: Optional[bool] = False
 
-    unique: Optional[bool]
+    unique: Optional[bool] = False
 
     data_type: str
 
@@ -74,7 +70,7 @@ class ColumnInfoModel(TypedDict):
     default: Optional[str]
     """column default expression as a SQL string"""
 
-    autoincrement: NotRequired[bool]
+    autoincrement: Optional[bool] = None
     """database-dependent autoincrement flag.
 
     This flag indicates if the column has a database-side "autoincrement"
@@ -87,7 +83,7 @@ class ColumnInfoModel(TypedDict):
 
     """
 
-    comment: NotRequired[Optional[str]]
+    comment: Optional[str] = None
     """comment for the column, if present.
     Only some dialects return this key
     """
@@ -98,20 +94,20 @@ class DataProviderInfoModel(DataSourceModel):
     metadata: List[SchemaTablesModel]
 
 
-class SqlStatementModel(TypedDict):
+class SqlStatementModel(CamelAliasBaseModel):
     sql: str
 
 
-class RunSqlResultModel(TypedDict):
+class RunSqlResultModel(CamelAliasBaseModel):
     success: bool
     message: Optional[str]
     data: Any
 
 
-class RunSqlPostBodyModel(TypedDict):
+class RunSqlPostBodyModel(CamelAliasBaseModel):
     sql: str
-    schema: NotRequired[str]
-    record_count: NotRequired[int]
-    offset: NotRequired[int]
-    order_by: NotRequired[str]
-    order_type: NotRequired[str]
+    schema_name: Optional[str] = None
+    record_count: Optional[int] = None
+    offset: Optional[int] = None
+    order_by: Optional[str] = None
+    order_type: Optional[str] = None

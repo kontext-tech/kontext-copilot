@@ -56,10 +56,10 @@ export default class LlmClientService {
 
    private getLlmOptions() {
       return {
-         temperature: this.settings.value.llm_temperature,
-         top_k: this.settings.value.llm_top_k,
-         top_p: this.settings.value.llm_top_p,
-         seed: this.settings.value.llm_seed
+         temperature: this.settings.value.llmTemperature,
+         top_k: this.settings.value.llmTopK,
+         top_p: this.settings.value.llmTopP,
+         seed: this.settings.value.llmSeed
       }
    }
 
@@ -200,8 +200,13 @@ export default class LlmClientService {
          })
    }
 
-   async generateSystemPrompt(
-      { model, data_source_id, tables, schema }: CopilotSessionRequestModel,
+   async init_session(
+      {
+         model,
+         dataSourceId,
+         tables,
+         schemaName: schema
+      }: CopilotSessionRequestModel,
       callback?: LlmChatCallback
    ) {
       this.startGenerating()
@@ -209,9 +214,9 @@ export default class LlmClientService {
       /* Construct a request object using params */
       const request: CopilotSessionRequestModel = {
          model,
-         data_source_id,
+         dataSourceId,
          tables,
-         schema
+         schemaName: schema
       }
       const response = await this.llmService.init_session(request)
 

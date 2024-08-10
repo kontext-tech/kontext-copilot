@@ -154,9 +154,9 @@ const generateResponse = async () => {
 const loadPromptTemplate = async (template_id: string) => {
    promptTemplate.value = await promptService.getPromptTemplate(template_id)
    if (promptTemplate.value) {
-      systemPromptInput.value = promptTemplate.value.system_prompt
+      systemPromptInput.value = promptTemplate.value.systemPrompt
       promptInput.value = promptTemplate.value.prompt
-      userInput.value = promptTemplate.value.user_input
+      userInput.value = promptTemplate.value.userInput
       generateResponse()
    }
 }

@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import List, Optional
+from typing import List
 
 from kontext_copilot.data.schemas import PromptModel
 
@@ -121,8 +121,8 @@ class PromptNode:
 
         Replace each key in format {{$key}} with the value from kwargs.
         """
-        prompt_content = self.prompt_model.get("prompt")
-        system_prompt_content = self.prompt_model.get("system_prompt")
+        prompt_content = self.prompt_model.prompt
+        system_prompt_content = self.prompt_model.system_prompt
 
         prompts = []
         if system_prompt_content:
@@ -132,10 +132,8 @@ class PromptNode:
         prompt_str = "\n".join(prompts)
 
         # replace user input
-        if self.prompt_model.get("user_input"):
-            prompt_str = prompt_str.replace(
-                "{{$input}}", self.prompt_model.get("user_input")
-            )
+        if self.prompt_model.user_input:
+            prompt_str = prompt_str.replace("{{$input}}", self.prompt_model.user_input)
 
         for key, value in self.kwargs.items():
             if value:

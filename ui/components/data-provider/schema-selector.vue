@@ -15,10 +15,10 @@
       </template>
       <BDropdownItem
          v-for="schema in dataProviderInfo.provider.metadata"
-         :key="schema.schema ?? '-'"
-         @click="handleSelectSchema(schema.schema)"
+         :key="schema.schemaName ?? '-'"
+         @click="handleSelectSchema(schema.schemaName)"
       >
-         {{ schema.schema }}
+         {{ schema.schemaName }}
       </BDropdownItem>
    </BDropdown>
 
@@ -75,7 +75,7 @@ const tables = computed(() => {
    if (props.dataProviderInfo.provider) {
       const schema = props.dataProviderInfo.provider.supports_schema
          ? props.dataProviderInfo.provider.metadata.find(
-              (m) => m.schema === selectedSchema.value
+              (m) => m.schemaName === selectedSchema.value
            )
          : props.dataProviderInfo.provider.metadata[0]
       return (

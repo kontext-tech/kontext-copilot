@@ -51,16 +51,16 @@ export interface LlmClientState {
 }
 
 export interface SettingsModel {
-   llm_default_model: string
-   llm_temperature: number
-   llm_api_key: string | null
-   llm_endpoint: string
-   llm_ollama_endpoint: string
-   general_theme: ThemeName
-   general_username: string
-   llm_top_p: number
-   llm_top_k: number
-   llm_seed: number
+   llmDefaultModel: string
+   llmTemperature: number
+   llmApiKey: string | null
+   llmEndpoint: string
+   llmOllamaEndpoint: string
+   generalTheme: ThemeName
+   generalUsername: string
+   llmTopP: number
+   llmTopK: number
+   llmSeed: number
 }
 
 export interface SettingsModelWrapper {
@@ -77,8 +77,8 @@ export interface PromptInfoModel {
 
 export interface PromptModel extends PromptInfoModel {
    prompt: string
-   system_prompt?: string
-   user_input: string
+   systemPrompt?: string
+   userInput: string
 }
 
 export interface PromptListModel {
@@ -101,7 +101,7 @@ export interface DataSourceModel {
    name: string
    description?: string // Optional in TypeScript
    type: DataSourceType
-   conn_str: string
+   connStr: string
 }
 
 // Create model excludes auto-generated fields like 'id'
@@ -109,7 +109,7 @@ export interface DataSourceCreateModel {
    name?: string
    description?: string // Made optional by adding '?'
    type?: DataSourceType | null
-   conn_str?: string
+   connStr?: string
 }
 
 // Update model makes all fields optional
@@ -117,20 +117,20 @@ export interface DataSourceUpdateModel {
    name?: string
    description?: string
    type?: DataSourceType
-   conn_str?: string
+   connStr?: string
 }
 
 export interface SchemaTablesModel {
-   schema: string | null
+   schemaName: string | null
    tables: string[]
 }
 
 export interface ColumnInfoModel {
    name: string
-   primary_key: boolean
+   primaryKey: boolean
    index?: boolean
    unique?: boolean
-   data_type: string
+   dataType: string
    nullable: boolean
    default?: string
    autoincrement?: boolean
@@ -166,9 +166,9 @@ export type SqlType = keyof SqlStatementType
 
 export interface CopilotSessionRequestModel {
    model: string
-   data_source_id: number
+   dataSourceId: number
    tables?: string[]
-   schema?: string
+   schemaName?: string
 }
 
 export interface CopilotSessionResponseModel {
