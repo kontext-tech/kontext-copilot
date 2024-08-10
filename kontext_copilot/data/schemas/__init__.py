@@ -25,12 +25,21 @@ from kontext_copilot.data.schemas._data import (
     RunSqlPostBodyModel,
 )
 
-from kontext_copilot.data.schemas._llm import LlmModel, LlmModelDetail, ModelsResponse
+from kontext_copilot.data.schemas._llm import (
+    LlmModel,
+    LlmModelDetail,
+    ModelsResponse,
+    Message,
+    MessageModel,
+)
 
 from kontext_copilot.data.schemas._copilot import (
     CopilotSessionRequestModel,
     CopilotSessionResponseModel,
+    CopilotRunSqlRequestModel,
 )
+
+from kontext_copilot.data.schemas._common import ErrorResponseModel
 
 __all__ = [
     "SettingModel",
@@ -57,4 +66,8 @@ __all__ = [
     "ModelsResponse",
     "CopilotSessionRequestModel",
     "CopilotSessionResponseModel",
+    "CopilotRunSqlRequestModel",
+    "Message",
+    "MessageModel",
+    "ErrorResponseModel",
 ]

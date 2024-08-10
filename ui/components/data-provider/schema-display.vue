@@ -132,7 +132,7 @@ import type {
 } from "~/types/Schemas"
 import { useClipboard } from "@vueuse/core"
 
-const schemaName = computed(() => props.schema?.schema ?? "(empty)")
+const schemaName = computed(() => props.schema?.schema ?? "default")
 
 const sampleDataModal = reactive({
    open: false,

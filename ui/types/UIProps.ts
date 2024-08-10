@@ -1,4 +1,4 @@
-import type { DataProviderInfoWrapModel, ChatMessage } from "./Schemas"
+import type { DataProviderInfoWrapModel, LlmChatMessage } from "./Schemas"
 
 export interface NavItemProps {
    id: string
@@ -9,7 +9,7 @@ export interface NavItemProps {
 }
 
 export interface ChatMessageCardProps {
-   message: ChatMessage
+   message: LlmChatMessage
    username: string
    allowAbort?: boolean
 }

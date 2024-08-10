@@ -39,3 +39,10 @@ export class LlmModelRequiredException extends Error {
       this.name = "LlmModelRequiredException"
    }
 }
+
+export class NoDoneOrScucessResposneException extends Error {
+   constructor() {
+      super(`Did not receive done or success response in stream.`)
+      this.name = "NoDoneOrScucessResposneException"
+   }
+}

@@ -28,3 +28,15 @@ class LlmModel(TypedDict):
 
 class ModelsResponse(TypedDict):
     models: List[LlmModel]
+
+
+class Message(TypedDict):
+    role: str
+    content: str
+
+
+class MessageModel(TypedDict):
+    model: str
+    created_at: str
+    message: Message
+    done: bool

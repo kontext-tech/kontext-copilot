@@ -1,4 +1,4 @@
-import type { Message } from "ollama/browser"
+import type { ChatResponse, Message } from "ollama/browser"
 
 export enum ChatRole {
    USER = "user",
@@ -20,7 +20,7 @@ export interface ThemeConfigItem {
    name: string
 }
 
-export interface ChatMessage extends Message {
+export interface LlmChatMessage extends Message {
    id?: number
    content: string
    role: ChatRole
@@ -31,6 +31,10 @@ export interface ChatMessage extends Message {
    sqlStatements?: string[]
 }
 
+export interface LlmChatResponse extends ChatResponse {
+   message: LlmChatMessage
+}
+
 export interface LlmToolbarOptions {
    streaming: boolean
    format: "json" | ""
@@ -38,10 +42,10 @@ export interface LlmToolbarOptions {
 }
 
 export interface LlmClientState {
-   history: ChatMessage[]
+   history: LlmChatMessage[]
    generating: boolean
    error: string | null
-   currentResponse: ChatMessage
+   currentResponse: LlmChatMessage
    abort: boolean
    messageIndex: number
 }
@@ -169,4 +173,15 @@ export interface CopilotSessionRequestModel {
 
 export interface CopilotSessionResponseModel {
    prompt: string
+}
+
+export interface CopilotRunSqlRequestModel {
+   dataSourceId: number
+   sql: string
+   schemaName?: string
+   maxRecords?: number
+}
+
+export interface ErrorResponseModel {
+   error: string
 }

@@ -2,7 +2,7 @@ import type { Message } from "ollama/browser"
 import type LlmProxyService from "./LlmProxyService"
 import {
    ChatRole,
-   type ChatMessage,
+   type LlmChatMessage,
    type CopilotSessionRequestModel,
    type LlmClientState,
    type SettingsModel
@@ -20,11 +20,11 @@ export type LlmChatCallback = (
    done: boolean
 ) => void
 
-const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
+// const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 
 /* A service to handle all chats, generation, etc. */
 export default class LlmClientService {
-   static readonly DEFAULT_RESPONSE: ChatMessage = {
+   static readonly DEFAULT_RESPONSE: LlmChatMessage = {
       content: "",
       role: ChatRole.ASSISTANT,
       generating: false
@@ -76,7 +76,7 @@ export default class LlmClientService {
          content: message,
          role: ChatRole.ASSISTANT,
          id: this.state.messageIndex++
-      } as ChatMessage
+      } as LlmChatMessage
 
       /* Extract SQL statements from the message */
       if (checkSql) {
@@ -109,55 +109,50 @@ export default class LlmClientService {
       callback?: LlmChatCallback
    ) {
       this.startGenerating()
-      const currentResponse = this.state.currentResponse
-      currentResponse.role = ChatRole.ASSISTANT
-      const result = await this.dataProviderService.runSql(
-         dataSourceId,
-         sql,
-         schema
-      )
-      let part = "Sure thing!\n"
-      currentResponse.content = part
-      callback && callback(part, currentResponse.content, false)
-      // Pause for 0.5 second
-      await delay(500)
+      if (callback) callback("", null, false)
 
-      part = "***SQL:***\n"
-      currentResponse.content = part
-      callback && callback(part, currentResponse.content, false)
-
-      part = "```sql\n" + sql + "\n```"
-      currentResponse.content += part
-      callback && callback(part, currentResponse.content, false)
-
-      // Pause for 0.5 second
-      await delay(500)
-
-      part = "\n***Result:***\n\n"
-      currentResponse.content += part
-      callback && callback(part, currentResponse.content, false)
-
-      // Pause for 1 second
-      await delay(2000)
-
-      if (!result.success) {
-         part = result.message ?? "There is an error when executing the SQL.\n"
-         currentResponse.content += part
-         callback && callback(part, currentResponse.content, true)
-         this.addAssistantMessage(currentResponse.content, false)
-         this.state.generating = false
-      } else {
-         const data = result.data as { [key: string]: object }[]
-         if (data.length === 0) {
-            part = "0 records returned.\n"
-         } else {
-            part = this.jsonToMarkdownTable(data)
+      try {
+         const response = await this.llmService.runSql(
+            {
+               dataSourceId: dataSourceId,
+               sql: sql,
+               schemaName: schema
+            },
+            () => {}
+         )
+         this.state.currentResponse.isStreaming = true
+         for await (const part of response) {
+            if (this.state.abort && !part.done) {
+               response.abort()
+               this.state.abort = false
+               this.state.generating = false
+               this.addAssistantMessage(
+                  this.state.currentResponse.content ?? ""
+               )
+            }
+            this.state.currentResponse.content += part.message.content
+            if (callback)
+               callback(
+                  part.message.content,
+                  this.state.currentResponse.content,
+                  part.done
+               )
+            if (part.done) {
+               this.state.generating = false
+               this.addAssistantMessage(
+                  this.state.currentResponse.content ?? ""
+               )
+            }
          }
-
-         currentResponse.content += part
-         callback && callback(part, currentResponse.content, true)
-         this.addAssistantMessage(currentResponse.content, false)
+         return {
+            content: this.state.currentResponse.content ?? "",
+            role: ChatRole.ASSISTANT
+         }
+      } catch (e) {
+         this.state.error = e instanceof Error ? e.message : String(e)
          this.state.generating = false
+         this.state.currentResponse.content = ""
+         return this.addSystemMessage(this.state.error, true)
       }
    }
 
@@ -175,37 +170,6 @@ export default class LlmClientService {
       }
 
       return codeBlocks
-   }
-
-   private jsonToMarkdownTable(
-      jsonArray: { [key: string]: object }[],
-      maxRecords: number = 10
-   ): string {
-      if (jsonArray.length === 0) return ""
-
-      // Extract headers from the first object
-      const headers = Object.keys(jsonArray[0])
-      const totalRecords = jsonArray.length
-      const note =
-         totalRecords > maxRecords
-            ? `(showing first **${maxRecords}** records of **${totalRecords}**)`
-            : ""
-
-      // Create the header row
-      const headerRow = `| ${headers.join(" | ")} |`
-      const separatorRow = `| ${headers.map(() => "---").join(" | ")} |`
-
-      // Create the data rows
-      // Limit the number of records to display
-      if (jsonArray.length > maxRecords) {
-         jsonArray = jsonArray.slice(0, maxRecords)
-      }
-      const dataRows = jsonArray.map((obj) => {
-         return `| ${headers.map((header) => obj[header]).join(" | ")} |`
-      })
-
-      // Combine header, separator, and data rows
-      return [note, headerRow, separatorRow, ...dataRows].join("\n")
    }
 
    private startGenerating() {
@@ -249,7 +213,7 @@ export default class LlmClientService {
          tables,
          schema
       }
-      const response = await this.llmService.getSystemPrompt(request)
+      const response = await this.llmService.init_session(request)
 
       /*Check is system prompt with isSystemPrompt true already exists in history */
       const index = this.state.history.findIndex(
@@ -277,7 +241,7 @@ export default class LlmClientService {
       input: string,
       model: string,
       callback?: LlmChatCallback
-   ): Promise<ChatMessage> {
+   ): Promise<LlmChatMessage> {
       this.startGenerating()
       this.addUserMessage(input)
       if (callback) callback("", null, false)
