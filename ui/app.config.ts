@@ -26,6 +26,7 @@ export default defineAppConfig({
          id: "data",
          icon: "material-symbols:analytics-outline",
          text: "Data analytics",
+         flat: true,
          children: [
             {
                id: "dataSources",
@@ -51,6 +52,7 @@ export default defineAppConfig({
          id: "tools",
          icon: "material-symbols:tools-wrench-outline",
          text: "GenAI utils",
+         flat: true,
          children: [
             {
                id: "newChat",

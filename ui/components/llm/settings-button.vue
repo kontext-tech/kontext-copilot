@@ -1,11 +1,12 @@
 <template>
    <BButton
       v-b-modal.llmsSettingsModal
-      variant="outline-secondary"
+      variant="link"
       size="sm"
       class="d-flex align-items-center"
+      title="LLMs settings"
    >
-      <Icon name="material-symbols:neurology-outline" size="20" /> LLMs settings
+      <Icon name="material-symbols:neurology-outline" size="20" />
    </BButton>
    <BModal id="llmsSettingsModal" title="LLMs settings" ok-only size="lg">
       <LlmSettingsPanel />

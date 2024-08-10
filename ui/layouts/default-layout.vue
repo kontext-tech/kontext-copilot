@@ -65,7 +65,10 @@
                <h1 class="fs-6 mb-0 pb-0 fw-bold">
                   {{ route.meta["title"] ?? route.name }}
                </h1>
-               <ThemeToggle class="ms-auto" simple />
+               <div class="d-flex align-items-center gap-1 ms-auto">
+                  <LlmSettingsButton />
+                  <ThemeToggle simple />
+               </div>
             </div>
             <div
                v-if="$slots['header-secondary']"

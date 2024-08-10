@@ -3,7 +3,6 @@
       class="d-flex flex-wrap gap-3 justify-content-center align-items-center"
    >
       <LlmModelSelector v-if="props.modelSelector" />
-      <LlmSettingsButton v-if="props.settingsButton" />
       <BFormCheckbox
          v-if="props.streamingToggle"
          v-model="options.streaming"

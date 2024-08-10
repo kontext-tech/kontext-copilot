@@ -6,6 +6,7 @@ export interface NavItemProps {
    icon: string
    text: string
    children?: NavItemProps[]
+   flat?: boolean
 }
 
 export interface ChatMessageCardProps {
@@ -24,7 +25,6 @@ export interface ChatToDataCommonProps {
 
 export interface LlmSettingsToolbarProps {
    modelSelector?: boolean
-   settingsButton?: boolean
    streamingToggle?: boolean
    jsonToogle?: boolean
    streamingDefault?: boolean

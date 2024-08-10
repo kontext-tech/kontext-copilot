@@ -7,9 +7,6 @@
 </template>
 
 <script setup lang="ts">
-import SidebarNavItem from "./nav-item.vue"
 const config = useAppConfig()
 const navItems = config.navItems
 </script>
-
-<style lang="scss" scoped></style>
