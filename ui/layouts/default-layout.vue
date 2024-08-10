@@ -34,9 +34,16 @@
                   </div>
                </div>
                <div
-                  class="px-1 text-center d-flex flex-shrink-0 justify-content-center border-top py-1"
+                  class="px-1 text-center d-flex flex-shrink-0 align-items-center border-top py-1 gap-1"
                >
-                  <small class="mt-1 mb-0 text-muted"> @ Kontext 2024 </small>
+                  <span
+                     class="btn btn-circle btn-circle-nav btn-outline-secondary d-flex align-items-center justify-content-center"
+                  >
+                     {{ initials }}
+                  </span>
+                  <span class="fw-bold">
+                     {{ settings.generalUsername }}
+                  </span>
                </div>
             </div>
          </div>
@@ -101,6 +108,15 @@ import logo from "~/assets/images/logo.svg"
 
 const route = useRoute()
 const appConfig = useAppConfig()
+
+const settings = getSettings()
+
+const initials = computed(() => {
+   return settings.value.generalUsername
+      .split(" ")
+      .map((n) => n[0])
+      .join("")
+})
 
 watchEffect(() => {
    useHead({
