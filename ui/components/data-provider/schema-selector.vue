@@ -3,7 +3,7 @@
       v-if="dataProviderInfo.provider"
       key="schemaSelector"
       variant="outline-secondary"
-      :disabled="!dataProviderInfo.provider.supports_schema"
+      :disabled="!dataProviderInfo.provider.supportsSchema"
       size="sm"
    >
       <template #button-content>
@@ -73,7 +73,7 @@ const handleSelectSchema = (schema: string | null) => {
 const selectedTables = ref<string[]>([])
 const tables = computed(() => {
    if (props.dataProviderInfo.provider) {
-      const schema = props.dataProviderInfo.provider.supports_schema
+      const schema = props.dataProviderInfo.provider.supportsSchema
          ? props.dataProviderInfo.provider.metadata.find(
               (m) => m.schemaName === selectedSchema.value
            )

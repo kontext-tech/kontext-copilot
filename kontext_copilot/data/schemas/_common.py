@@ -1,3 +1,4 @@
+from typing import Optional
 from pydantic import BaseModel
 
 
@@ -15,3 +16,4 @@ class CamelAliasBaseModel(BaseModel):
 
 class ErrorResponseModel(CamelAliasBaseModel):
     error: str
+    detail: Optional[str] = None

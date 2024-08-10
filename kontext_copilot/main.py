@@ -1,7 +1,8 @@
 """FastAPI app with Nuxt.js frontend"""
 
 import os
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from kontext_copilot.api import (
@@ -12,6 +13,7 @@ from kontext_copilot.api import (
     data_providers,
     copilot,
 )
+from kontext_copilot.data.schemas import ErrorResponseModel
 from kontext_copilot.utils import HOST, IS_LOCAL, CLIENT_APP_DIR, PORT
 
 app = FastAPI()
@@ -49,6 +51,18 @@ app.include_router(prompts.prompts_router)
 app.include_router(data_sources.data_sources_router)
 app.include_router(data_providers.data_providers_router)
 app.include_router(copilot.copilot_router)
+
+
+# Generic error handler
+@app.exception_handler(Exception)
+async def generic_exception_handler(request: Request, exc: Exception):
+    return JSONResponse(
+        status_code=500,
+        content=ErrorResponseModel(
+            error="Internal Server Error", detail=str(exc)
+        ).model_dump_json(),
+    )
+
 
 if __name__ == "__main__":
     import uvicorn

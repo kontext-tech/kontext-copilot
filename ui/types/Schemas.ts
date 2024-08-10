@@ -138,7 +138,7 @@ export interface ColumnInfoModel {
 }
 
 export interface DataProviderInfoModel extends DataSourceModel {
-   supports_schema: boolean
+   supportsSchema: boolean
    metadata: SchemaTablesModel[]
 }
 
@@ -184,4 +184,5 @@ export interface CopilotRunSqlRequestModel {
 
 export interface ErrorResponseModel {
    error: string
+   detail?: string
 }
