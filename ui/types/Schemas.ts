@@ -1,6 +1,6 @@
 import type { ChatResponse, Message } from "ollama/browser"
 
-export enum ChatRole {
+export enum ChatRoles {
    USER = "user",
    ASSISTANT = "assistant",
    SYSTEM = "system"
@@ -23,7 +23,7 @@ export interface ThemeConfigItem {
 export interface LlmChatMessage extends Message {
    id?: number
    content: string
-   role: ChatRole
+   role: ChatRoles
    generating?: boolean
    isStreaming?: boolean
    isError?: boolean

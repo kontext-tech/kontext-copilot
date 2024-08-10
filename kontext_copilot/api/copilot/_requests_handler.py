@@ -1,5 +1,4 @@
 from datetime import datetime
-import json
 from typing import Optional
 from fastapi import APIRouter, Body
 from fastapi.responses import StreamingResponse
@@ -10,6 +9,7 @@ from kontext_copilot.data.schemas import (
     CopilotRunSqlRequestModel,
     MessageModel,
     Message,
+    ChatRoles,
 )
 from kontext_copilot.utils import get_logger
 
@@ -78,7 +78,7 @@ def run_sql(request: CopilotRunSqlRequestModel = Body(None)):
     def generate_response():
         for res in response:
             message = MessageModel(
-                message=Message(role="assistant", content=res),
+                message=Message(role=ChatRoles.ASSISTANT, content=res),
                 model="copilot",
                 created_at=datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
                 done=False,
@@ -87,7 +87,7 @@ def run_sql(request: CopilotRunSqlRequestModel = Body(None)):
 
         # Return a message to indicate the SQL execution is done
         yield MessageModel(
-            message=Message(role="assistant", content=""),
+            message=Message(role=ChatRoles.SYSTEM, content=""),
             model="copilot",
             created_at=datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
             done=True,

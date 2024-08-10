@@ -1,32 +1,32 @@
-import { ChatRole } from "~/types/Schemas"
+import { ChatRoles } from "~/types/Schemas"
 
-export const getRoleClass = (role: ChatRole) => {
+export const getRoleClass = (role: ChatRoles) => {
    switch (role) {
-      case ChatRole.USER:
+      case ChatRoles.USER:
          return "text-primary"
-      case ChatRole.ASSISTANT:
+      case ChatRoles.ASSISTANT:
          return "text-success"
       default:
          return "text-secondary"
    }
 }
 
-export const getRoleIcon = (role: ChatRole) => {
+export const getRoleIcon = (role: ChatRoles) => {
    switch (role) {
-      case ChatRole.USER:
+      case ChatRoles.USER:
          return "material-symbols:person-outline"
-      case ChatRole.ASSISTANT:
+      case ChatRoles.ASSISTANT:
          return "material-symbols:neurology-outline"
       default:
          return "material-symbols:info-outline"
    }
 }
 
-export const getRoleName = (role: ChatRole) => {
+export const getRoleName = (role: ChatRoles) => {
    switch (role) {
-      case ChatRole.USER:
+      case ChatRoles.USER:
          return "User"
-      case ChatRole.ASSISTANT:
+      case ChatRoles.ASSISTANT:
          return "AI Assistant"
       default:
          return "System"

@@ -39,7 +39,7 @@ from kontext_copilot.data.schemas._copilot import (
     CopilotRunSqlRequestModel,
 )
 
-from kontext_copilot.data.schemas._common import ErrorResponseModel
+from kontext_copilot.data.schemas._common import ErrorResponseModel, ChatRoles
 
 __all__ = [
     "SettingModel",
@@ -70,4 +70,5 @@ __all__ = [
     "Message",
     "MessageModel",
     "ErrorResponseModel",
+    "ChatRoles",
 ]

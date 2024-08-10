@@ -23,6 +23,7 @@
       </template>
       <template v-if="dataSourceSelctor?.selectedDataSource" #secondary-sidebar>
          <DataSourceDisplay
+            v-if="dataSourceSelctor?.selectedDataSource"
             :selected-data-source="dataSourceSelctor.selectedDataSource"
          />
          <hr />

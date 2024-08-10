@@ -38,9 +38,9 @@
             <div class="flex-shrink-0 p-4 d-flex align-items-center mx-1">
                <span class="chat-icon">
                   <Icon
-                     :name="getRoleIcon(ChatRole.USER)"
+                     :name="getRoleIcon(ChatRoles.USER)"
                      size="24"
-                     :class="getRoleClass(ChatRole.USER)"
+                     :class="getRoleClass(ChatRoles.USER)"
                   />
                </span>
                <div class="input-group">
@@ -73,7 +73,7 @@ import LlmSettingsToolbar from "~/components/llm/settings-toolbar.vue"
 import ChatMessageCard from "~/components/chat/message-card.vue"
 import DefaultLayout from "~/layouts/default-layout.vue"
 import { type LlmChatCallback } from "~/services/LlmClientService"
-import { ChatRole } from "~/types/Schemas"
+import { ChatRoles } from "~/types/Schemas"
 import { LlmModelRequiredException } from "~/types/Errors"
 
 const userInput = ref<string>("")

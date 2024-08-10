@@ -1,3 +1,4 @@
+from enum import Enum
 from typing import Optional
 from pydantic import BaseModel
 
@@ -17,3 +18,9 @@ class CamelAliasBaseModel(BaseModel):
 class ErrorResponseModel(CamelAliasBaseModel):
     error: str
     detail: Optional[str] = None
+
+
+class ChatRoles(Enum):
+    USER = "user"
+    ASSISTANT = "assistant"
+    SYSTEM = "system"

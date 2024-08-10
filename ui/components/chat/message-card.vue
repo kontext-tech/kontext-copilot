@@ -10,10 +10,10 @@
 
       <div class="flex-grow-1 d-flex flex-column">
          <div class="px-1 d-flex align-items-center">
-            <strong v-if="message.role === ChatRole.USER">{{
+            <strong v-if="message.role === ChatRoles.USER">{{
                username
             }}</strong>
-            <strong v-else-if="message.role === ChatRole.ASSISTANT">{{
+            <strong v-else-if="message.role === ChatRoles.ASSISTANT">{{
                getRoleName(message.role)
             }}</strong>
             <BSpinner
@@ -47,7 +47,7 @@
          <div v-else>
             <BButton
                v-if="
-                  message.isError !== true && message.role !== ChatRole.SYSTEM
+                  message.isError !== true && message.role !== ChatRoles.SYSTEM
                "
                v-b-tooltip.click.top
                variant="link"
@@ -92,7 +92,7 @@
 import type { ChatMessageCardProps } from "~/types/UIProps"
 import markdownit from "markdown-it"
 import { useClipboard } from "@vueuse/core"
-import { ChatRole } from "~/types/Schemas"
+import { ChatRoles } from "~/types/Schemas"
 import tableClassPlugin from "~/utils/MarkdownitTableClass"
 
 const props = defineProps<ChatMessageCardProps>()

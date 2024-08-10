@@ -28,9 +28,9 @@
          <div class="flex-shrink-0 py-4 d-flex align-items-center mx-1">
             <span class="chat-icon">
                <Icon
-                  :name="getRoleIcon(ChatRole.USER)"
+                  :name="getRoleIcon(ChatRoles.USER)"
                   size="24"
-                  :class="getRoleClass(ChatRole.USER)"
+                  :class="getRoleClass(ChatRoles.USER)"
                />
             </span>
             <div class="input-group">
@@ -59,7 +59,7 @@
 
 <script setup lang="ts">
 import { type LlmChatCallback } from "~/services/LlmClientService"
-import { ChatRole } from "~/types/Schemas"
+import { ChatRoles } from "~/types/Schemas"
 import type { ChatToDataCommonProps } from "~/types/UIProps"
 
 const userInput = ref<string>("")
@@ -112,7 +112,7 @@ const handleDeleteClicked = (messageId: number) => {
 
 const handlRunSqlClicked = async (sql: string) => {
    if (!props.dataSourceId) return
-   llmClient.runSql(props.dataSourceId, sql, props.schema, callback)
+   llmClient.runCopilotSql(props.dataSourceId, sql, props.schema, callback)
 }
 
 const props = defineProps<ChatToDataCommonProps>()

@@ -1,7 +1,7 @@
 import type { Message } from "ollama/browser"
 import type LlmProxyService from "./LlmProxyService"
 import {
-   ChatRole,
+   ChatRoles,
    type LlmChatMessage,
    type CopilotSessionRequestModel,
    type LlmClientState,
@@ -26,7 +26,7 @@ export type LlmChatCallback = (
 export default class LlmClientService {
    static readonly DEFAULT_RESPONSE: LlmChatMessage = {
       content: "",
-      role: ChatRole.ASSISTANT,
+      role: ChatRoles.ASSISTANT,
       generating: false
    }
    llmService: LlmProxyService
@@ -66,7 +66,7 @@ export default class LlmClientService {
    addUserMessage(message: string) {
       this.state.history.push({
          content: message,
-         role: ChatRole.USER,
+         role: ChatRoles.USER,
          id: this.state.messageIndex++
       })
    }
@@ -74,7 +74,7 @@ export default class LlmClientService {
    addAssistantMessage(message: string, checkSql: boolean = true) {
       const msg = {
          content: message,
-         role: ChatRole.ASSISTANT,
+         role: ChatRoles.ASSISTANT,
          id: this.state.messageIndex++
       } as LlmChatMessage
 
@@ -93,7 +93,7 @@ export default class LlmClientService {
    ) {
       const msg = {
          content: message,
-         role: ChatRole.SYSTEM,
+         role: ChatRoles.SYSTEM,
          isError,
          isSystemPrompt,
          id: this.state.messageIndex++
@@ -102,7 +102,7 @@ export default class LlmClientService {
       return msg
    }
 
-   async runSql(
+   async runCopilotSql(
       dataSourceId: number,
       sql: string,
       schema?: string,
@@ -139,14 +139,12 @@ export default class LlmClientService {
                )
             if (part.done) {
                this.state.generating = false
-               this.addAssistantMessage(
-                  this.state.currentResponse.content ?? ""
-               )
+               this.addSystemMessage(this.state.currentResponse.content ?? "")
             }
          }
          return {
             content: this.state.currentResponse.content ?? "",
-            role: ChatRole.ASSISTANT
+            role: ChatRoles.SYSTEM
          }
       } catch (e) {
          this.state.error = e instanceof Error ? e.message : String(e)
@@ -189,7 +187,7 @@ export default class LlmClientService {
          .filter(
             (message) =>
                message.isError !== true &&
-               (message.role !== ChatRole.SYSTEM ||
+               (message.role !== ChatRoles.SYSTEM ||
                   message.isSystemPrompt === true)
          )
          .map((message) => {
@@ -266,7 +264,7 @@ export default class LlmClientService {
          this.addAssistantMessage(response.message.content)
          return {
             content: this.state.currentResponse.content ?? "",
-            role: ChatRole.ASSISTANT
+            role: ChatRoles.ASSISTANT
          }
       } catch (e) {
          this.state.error = e instanceof Error ? e.message : String(e)
@@ -318,7 +316,7 @@ export default class LlmClientService {
          }
          return {
             content: this.state.currentResponse.content ?? "",
-            role: ChatRole.ASSISTANT
+            role: ChatRoles.ASSISTANT
          }
       } catch (e) {
          this.state.error = e instanceof Error ? e.message : String(e)
