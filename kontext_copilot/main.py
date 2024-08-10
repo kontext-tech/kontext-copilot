@@ -1,5 +1,6 @@
 """FastAPI app with Nuxt.js frontend"""
 
+from contextlib import asynccontextmanager
 import os
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
@@ -14,9 +15,20 @@ from kontext_copilot.api import (
     copilot,
 )
 from kontext_copilot.data.schemas import ErrorResponseModel
-from kontext_copilot.utils import HOST, IS_LOCAL, CLIENT_APP_DIR, PORT
+from kontext_copilot.utils import HOST, IS_LOCAL, CLIENT_APP_DIR, PORT, get_logger
 
-app = FastAPI()
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    logger = get_logger()
+    try:
+        logger.info("Starting Kontext Copilot")
+        yield
+    finally:
+        logger.info("Shutting down Kontext Copilot")
+
+
+app = FastAPI(lifespan=lifespan)
 
 # CORS configuration
 origins = [

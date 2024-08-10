@@ -1,11 +1,9 @@
-import logging
 import os
+import logging
+import logging.config
+import colorlog
 
-from dotenv import load_dotenv
-
-load_dotenv()
-
-ENV_NAME = os.getenv("KONTEXT_COPILOT_ENV", "development")
+ENV_NAME = os.getenv("ENV_NAME", "development")
 IS_LOCAL = ENV_NAME == "local"
 CLIENT_APP_DIR = os.getenv("KONTEXT_COPILOT_CLIENTAPP_DIR", "./ui")
 HOST = os.getenv("KONTEXT_COPILOT_HOST", "localhost")
@@ -21,11 +19,12 @@ DEFAULT_ENDPOINT_OLLAMA = os.getenv(
 )
 DEFAULT_USERNAME = os.getenv("KONTEXT_COPILOT_APP_NAME", "Kontext User")
 
+# Get absolute path of the logging config file
+LOGGING_CONFIG_FILE = os.path.join(os.path.dirname(__file__), "logging_config.ini")
+logging.config.fileConfig(LOGGING_CONFIG_FILE, disable_existing_loggers=False)
+
 
 def get_logger(env: str = ENV_NAME) -> logging.Logger:
-    logging.basicConfig(
-        level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
-    )
     return logging.getLogger(f"kontextAI{env}")
 
 

@@ -20,6 +20,7 @@ sqlalchemy = "^2.0.31"
 alembic = "^1.13.2"
 
 pydantic = "^2.8.2"
+colorlog = "^6.8.2"
 [tool.commitizen]
 name = "cz_conventional_commits"
 tag_format = "$version"
