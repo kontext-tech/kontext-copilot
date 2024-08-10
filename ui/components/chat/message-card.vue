@@ -2,6 +2,7 @@
    <div class="py-1 d-flex align-items-top mx-1">
       <div class="chat-icon">
          <Icon
+            v-if="message.role !== ChatRoles.SYSTEM"
             :name="getRoleIcon(message.role)"
             size="24"
             :class="getRoleClass(message.role)"
