@@ -199,13 +199,9 @@ export default class CopilotClientService {
    }
 
    async init_session(
-      {
-         model,
-         dataSourceId,
-         tables,
-         schemaName: schema
-      }: SessionInitRequestModel,
-      callback?: LlmChatCallback
+      { model, dataSourceId, tables, schemaName }: SessionInitRequestModel,
+      callback?: LlmChatCallback,
+      reinit: boolean = false
    ) {
       this.startGenerating()
       this.state.generating = true
@@ -214,9 +210,11 @@ export default class CopilotClientService {
          model,
          dataSourceId,
          tables,
-         schemaName: schema
+         schemaName
       }
+      if (!reinit) request.sessionId = this.state.session?.sessionId
       const response = await this.llmService.init_session(request)
+      this.state.session = response
 
       /*Check is system prompt with isSystemPrompt true already exists in history */
       const index = this.state.history.findIndex(
@@ -225,7 +223,7 @@ export default class CopilotClientService {
       /* If exists, update the content */
       if (index !== -1) {
          this.state.history[index].content = response.systemPrompt
-         const content = `Tables selected: ${tables && tables.length > 0 ? tables.join(", ") : "all"}; schema selected: ${schema ?? "default"}`
+         const content = `Tables selected: ${tables && tables.length > 0 ? tables.join(", ") : "all"}; schema selected: ${schemaName ?? "default"}`
          if (callback) callback(content, content, true)
          this.state.generating = false
          /* Add another system message about updated tables */

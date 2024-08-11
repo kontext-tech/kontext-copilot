@@ -39,6 +39,7 @@ from kontext_copilot.data.schemas._copilot import (
     RunSqlRequestModel,
     CreateSessionModel,
     SessionModel,
+    SessionUpdateModel,
 )
 
 from kontext_copilot.data.schemas._common import ErrorResponseModel, ChatRoles
@@ -75,4 +76,5 @@ __all__ = [
     "ChatRoles",
     "CreateSessionModel",
     "SessionModel",
+    "SessionUpdateModel",
 ]

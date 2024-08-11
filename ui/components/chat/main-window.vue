@@ -130,6 +130,14 @@ watch(
          props.dataProviderInfo.provider &&
          props.dataSourceId
       ) {
+         let reinit = true
+         // If the data source and model are the same, reinitialize the session
+         if (
+            state.session?.dataSourceId === props.dataSourceId &&
+            state.session?.model === props.model
+         ) {
+            reinit = false
+         }
          llmClient.init_session(
             {
                model: props.model,
@@ -137,7 +145,8 @@ watch(
                tables: props.tables,
                schemaName: props.schema
             },
-            callback
+            callback,
+            reinit
          )
       }
    },

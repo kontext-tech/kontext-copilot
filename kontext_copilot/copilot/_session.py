@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Optional
 
 from kontext_copilot.copilot._prompt_factory import PromptFactory as pf
@@ -23,11 +24,13 @@ class CopilotSession:
         data_source_id: int,
         tables: Optional[list[str]],
         schema: Optional[str],
+        session_id: Optional[int] = None,
     ):
         self.model = model
         self.data_source_id = data_source_id
         self.table_names = tables
         self.schema = schema
+        self.session_id = session_id
         self._initialise()
 
     def _initialise(self):
@@ -56,20 +59,43 @@ class CopilotSession:
         self._generate_system_prompt()
 
         # Add session object to the database
-        self._create_session()
+        self._create_or_update_session()
 
-    def _create_session(self):
+    def _create_or_update_session(self):
         """
-        Create a new session
+        Create a new session if session_id is not provided or update the existing session
         """
-        session_create = CreateSessionModel(
-            model=self.model,
-            data_source_id=self.data_source_id,
-            tables=",".join(self.table_names),
-            schema_name=self.schema,
-            system_prompt=self.system_prompt.get_prompt_str(),
-        )
-        self.session_model = self._session_service.create_session(session_create)
+        session_exists = False
+        if self.session_id:
+            self.session_model = self._session_service.get_session(
+                self.session_id, raise_error=False
+            )
+            if self.session_model is not None:
+                session_exists = True
+
+        if session_exists:
+            self._logger.info("Updating existing session: %s", self.session_id)
+            self.session_model.system_prompt = self.system_prompt.get_prompt_str()
+            self.session_model.data_source_id = self.data_source_id
+            self.session_model.tables = self.table_names
+            self.session_model.schema_name = self.schema
+            self.session_model = self._session_service.update_session(
+                self.session_id, self.session_model
+            )
+        else:
+            self._logger.info("Creating new session")
+            created_at = datetime.now()
+            session_create = CreateSessionModel(
+                model=self.model,
+                data_source_id=self.data_source_id,
+                tables=self.table_names,
+                schema_name=self.schema,
+                system_prompt=self.system_prompt.get_prompt_str(),
+                created_at=created_at,
+                title=f"{self.data_source.name}-{self.schema if self.schema else 'default'}-{int(created_at.timestamp())}",
+            )
+            self.session_model = self._session_service.create_session(session_create)
+            self._logger.info("Session created: %s", self.session_model.id)
 
     def get_params(self):
         """

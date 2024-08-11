@@ -29,6 +29,7 @@ def _get_planner(
     data_source_id: int,
     tables: Optional[list[str]] = None,
     schema: Optional[str] = None,
+    session_id: Optional[int] = None,
 ):
     """
     Get planner
@@ -39,6 +40,7 @@ def _get_planner(
         data_source_id=data_source_id,
         tables=tables,
         schema=schema,
+        session_id=session_id,
     )
     return planner
 
@@ -56,14 +58,22 @@ def init_session(
         data_source_id=request.data_source_id,
         tables=request.tables,
         schema=request.schema_name,
+        session_id=request.session_id,
     )
 
     prompt = planner.get_system_prompt()
 
     logger.debug("System prompt: %s", prompt)
 
+    session = planner.get_session_model()
     return SessionInitResponseModel(
-        system_prompt=prompt, session_id=planner.get_session_model().id
+        system_prompt=prompt,
+        session_id=session.id,
+        title=session.title,
+        schema_name=session.schema_name,
+        tables=session.tables,
+        model=session.model,
+        data_source_id=session.data_source_id,
     )
 
 

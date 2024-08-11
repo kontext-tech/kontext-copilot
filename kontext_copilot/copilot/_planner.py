@@ -21,13 +21,13 @@ class Planner:
         data_source_id: int,
         tables: Optional[list[str]],
         schema: Optional[str],
+        session_id: Optional[int] = None,
     ) -> CopilotSession:
         """
         Initialise session for the copilot
         """
         self._logger.info("Initialising session for data source: %s", data_source_id)
-        self.session = CopilotSession(model, data_source_id, tables, schema)
-        self._logger.info("Session initialised")
+        self.session = CopilotSession(model, data_source_id, tables, schema, session_id)
         return self.session
 
     def _check_session(self):

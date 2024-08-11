@@ -71,6 +71,7 @@ export interface LlmClientState {
    currentResponse: LlmChatMessage
    abort: boolean
    messageIndex: number
+   session?: SessionInitResponseModel
 }
 
 export interface SettingsModel {
@@ -192,12 +193,17 @@ export interface SessionInitRequestModel {
    dataSourceId: number
    tables?: string[]
    schemaName?: string
+   sessionId?: number
 }
 
 export interface SessionInitResponseModel {
    systemPrompt: string
    sessionId: number
    title?: string
+   model?: string
+   dataSourceId: number
+   tables?: string[]
+   schemaName?: string
 }
 
 export interface RunSqlRequestModel {
