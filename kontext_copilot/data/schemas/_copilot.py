@@ -10,6 +10,7 @@ class RunSqlRequestModel(CamelAliasBaseModel):
     sql: str
     schema_name: Optional[str] = None
     max_records: Optional[int] = 10
+    session_id: Optional[int] = None
 
 
 class SessionInitRequestModel(CamelAliasBaseModel):

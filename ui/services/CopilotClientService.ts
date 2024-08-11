@@ -116,7 +116,8 @@ export default class CopilotClientService {
             {
                dataSourceId: dataSourceId,
                sql: sql,
-               schemaName: schema
+               schemaName: schema,
+               sessionId: this.state.session?.sessionId
             },
             () => {}
          )
@@ -198,7 +199,7 @@ export default class CopilotClientService {
          })
    }
 
-   async init_session(
+   async initCopilotSession(
       { model, dataSourceId, tables, schemaName }: SessionInitRequestModel,
       callback?: LlmChatCallback,
       reinit: boolean = false
@@ -216,7 +217,7 @@ export default class CopilotClientService {
       else {
          this.state.history = []
       }
-      const response = await this.llmService.init_session(request)
+      const response = await this.llmService.initSession(request)
       this.state.session = response
 
       /*Check is system prompt with isSystemPrompt true already exists in history */

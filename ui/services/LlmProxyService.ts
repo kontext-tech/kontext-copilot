@@ -38,7 +38,7 @@ export default class LlmProxyService {
       return this.models
    }
 
-   async init_session(
+   async initSession(
       request: SessionInitRequestModel
    ): Promise<SessionInitResponseModel> {
       const response = await axios.post<SessionInitResponseModel>(

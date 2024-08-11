@@ -211,6 +211,7 @@ export interface RunSqlRequestModel {
    sql: string
    schemaName?: string
    maxRecords?: number
+   sessionId?: number
 }
 
 export interface ErrorResponseModel {

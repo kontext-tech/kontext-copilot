@@ -86,6 +86,7 @@ def run_sql(request: RunSqlRequestModel = Body(None)):
         model="copilot",
         data_source_id=request.data_source_id,
         schema=request.schema_name,
+        session_id=request.session_id,
     )
     response = planner.run_sql(
         sql=request.sql,

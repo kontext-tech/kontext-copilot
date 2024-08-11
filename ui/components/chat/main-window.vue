@@ -139,7 +139,7 @@ watch(
          ) {
             reinit = false
          }
-         await llmClient.init_session(
+         await llmClient.initCopilotSession(
             {
                model: props.model,
                dataSourceId: props.dataSourceId,
