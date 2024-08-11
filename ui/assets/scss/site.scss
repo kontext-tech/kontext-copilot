@@ -83,7 +83,6 @@ textarea.main-textarea {
 }
 
 .message-card {
-   max-width: 100vw !important;
    /*Last p remove bottom margin*/
    p:last-child {
       margin-bottom: 0 !important;
@@ -92,7 +91,6 @@ textarea.main-textarea {
    pre {
       white-space: pre-wrap; /* Ensures text wraps */
       overflow-x: auto; /* Enables horizontal scrolling if needed */
-      max-width: 100vw !important;
    }
 }
 

@@ -33,17 +33,17 @@
                      <slot name="aside" />
                   </div>
                </div>
-               <div
-                  class="px-1 text-center d-flex flex-shrink-0 align-items-center border-top py-1 gap-1"
-               >
-                  <span
-                     class="btn btn-circle btn-circle-nav btn-outline-secondary d-flex align-items-center justify-content-center"
-                  >
-                     {{ initials }}
-                  </span>
-                  <span class="fw-bold">
-                     {{ settings.generalUsername }}
-                  </span>
+               <div class="px-1 flex-shrink-0 border-top py-1">
+                  <div class="d-flex align-items-center mx-2 gap-1">
+                     <span
+                        class="btn btn-circle btn-circle-nav btn-outline-secondary d-flex justify-content-center"
+                     >
+                        {{ initials }}
+                     </span>
+                     <span class="fw-bold">
+                        {{ settings.generalUsername }}
+                     </span>
+                  </div>
                </div>
             </div>
          </div>
@@ -77,19 +77,19 @@
                <slot name="header-secondary" />
             </div>
             <div
-               class="flex-grow-1 flex-shrink-1 d-flex flex-column overflow-y-auto default-area"
+               class="flex-grow-1 flex-shrink-1 mw-100 w-100 d-flex flex-column overflow-y-auto default-area"
             >
                <div
                   v-if="$slots['secondary-sidebar']"
-                  class="d-flex w-100 inset-0 h-100"
+                  class="inset-0 h-100 row g-0"
                >
                   <div
-                     class="flex-grow-1 flex-shrink-1 d-flex flex-column overflow-y-auto col-md-8 col-lg-9 h-100"
+                     class="col-md-8 col-lg-9 d-flex flex-column overflow-y-auto h-100"
                   >
                      <slot name="default" />
                   </div>
                   <div
-                     class="flex-shrink-0 secondary-sidebar border-start d-none d-md-flex flex-column overflow-y-auto col-md-4 col-lg-3 p-4 h-100"
+                     class="col-md-4 col-lg-3 p-4 border-start d-none d-md-flex flex-column overflow-y-auto h-100"
                   >
                      <slot name="secondary-sidebar" />
                   </div>

@@ -45,9 +45,9 @@
          v-else
          class="d-flex flex-column align-items-stretch overflow-y-auto pt-3"
          nav-wrapper-class="flex-grow-0 flex-shrink-0"
-         nav-class="px-4 w-100 mb-3"
-         content-class="flex-grow-1 px-4 w-100 inset-0 min-h-0 overflow-y-hidden d-flex flex-column align-items-stretch"
-         tab-class="inset-0 min-h-0 overflow-y-hidden"
+         nav-class="px-4 w-auto mb-3"
+         content-class="flex-grow-1 px-4 w-auto inset-0 min-h-0 overflow-y-hidden d-flex flex-column align-items-stretch"
+         tab-class="w-auto inset-0 min-h-0 overflow-y-hidden"
       >
          <BTab id="chatToDataTab" active>
             <template #title>

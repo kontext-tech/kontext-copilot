@@ -1,6 +1,6 @@
 <template>
    <div class="py-1 d-flex align-items-top mx-1">
-      <div class="chat-icon">
+      <div class="flex-shink-0 chat-icon">
          <Icon
             v-if="message.role !== ChatRoles.SYSTEM"
             :name="getRoleIcon(message.role)"
@@ -9,7 +9,7 @@
          />
       </div>
 
-      <div class="flex-grow-1 d-flex flex-column">
+      <div class="flex-grow-0 flex-wrap d-flex flex-column">
          <div class="px-1 d-flex align-items-center">
             <strong v-if="message.role === ChatRoles.USER">{{
                username
@@ -100,7 +100,7 @@ const props = defineProps<ChatMessageCardProps>()
 
 const md = new markdownit()
 md.use(tableClassPlugin, {
-   defaultClass: "table table-striped table-hover table-sm",
+   defaultClass: "table table-hover table-sm text-break",
    parentElement: "div",
    parentElementClass: "table-responsive"
 })
