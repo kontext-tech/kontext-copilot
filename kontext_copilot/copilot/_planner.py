@@ -1,6 +1,6 @@
 from typing import Iterator, Optional
 from kontext_copilot.copilot._prompt_factory import PromptFactory as pf
-from kontext_copilot.copilot._session import Session
+from kontext_copilot.copilot._session import CopilotSession
 from kontext_copilot.services import (
     get_data_sources_service,
     get_db_engine,
@@ -16,13 +16,17 @@ class Planner:
         self._ds_service = get_data_sources_service(self._engine)
 
     def init_session(
-        self, data_source_id: int, tables: Optional[list[str]], schema: Optional[str]
-    ) -> Session:
+        self,
+        model: str,
+        data_source_id: int,
+        tables: Optional[list[str]],
+        schema: Optional[str],
+    ) -> CopilotSession:
         """
         Initialise session for the copilot
         """
         self._logger.info("Initialising session for data source: %s", data_source_id)
-        self.session = Session(data_source_id, tables, schema)
+        self.session = CopilotSession(model, data_source_id, tables, schema)
         self._logger.info("Session initialised")
         return self.session
 
@@ -99,3 +103,10 @@ class Planner:
         self._logger.debug("System prompt: %s", prompt)
 
         return prompt.get_prompt_str()
+
+    def get_session_model(self):
+        """
+        Get the session model
+        """
+        self._check_session()
+        return self.session.session_model

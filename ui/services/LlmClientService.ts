@@ -3,7 +3,7 @@ import type LlmProxyService from "./LlmProxyService"
 import {
    ChatRoles,
    type LlmChatMessage,
-   type CopilotSessionRequestModel,
+   type SessionInitRequestModel,
    type LlmClientState,
    type SettingsModel
 } from "~/types/Schemas"
@@ -204,13 +204,13 @@ export default class LlmClientService {
          dataSourceId,
          tables,
          schemaName: schema
-      }: CopilotSessionRequestModel,
+      }: SessionInitRequestModel,
       callback?: LlmChatCallback
    ) {
       this.startGenerating()
       this.state.generating = true
       /* Construct a request object using params */
-      const request: CopilotSessionRequestModel = {
+      const request: SessionInitRequestModel = {
          model,
          dataSourceId,
          tables,
@@ -224,7 +224,7 @@ export default class LlmClientService {
       )
       /* If exists, update the content */
       if (index !== -1) {
-         this.state.history[index].content = response.prompt
+         this.state.history[index].content = response.systemPrompt
          const content = `Tables selected: ${tables && tables.length > 0 ? tables.join(", ") : "all"}; schema selected: ${schema ?? "default"}`
          if (callback) callback(content, content, true)
          this.state.generating = false
@@ -233,8 +233,9 @@ export default class LlmClientService {
          return response
       } else {
          /* Add system prompt to history */
-         this.addSystemMessage(response.prompt, false, true)
-         if (callback) callback(response.prompt, response.prompt, true)
+         this.addSystemMessage(response.systemPrompt, false, true)
+         if (callback)
+            callback(response.systemPrompt, response.systemPrompt, true)
          this.state.generating = false
          return response
       }

@@ -2,22 +2,29 @@ from typing import Optional
 
 from kontext_copilot.copilot._prompt_factory import PromptFactory as pf
 from kontext_copilot.copilot._types import PromptNode
+from kontext_copilot.data.schemas import CreateSessionModel
 from kontext_copilot.services import (
     DataProviderService,
     get_data_sources_service,
     get_db_engine,
+    get_session_service,
 )
 from kontext_copilot.utils import get_logger
 
 
-class Session:
+class CopilotSession:
     """
     A session object that holds the current context
     """
 
     def __init__(
-        self, data_source_id: int, tables: Optional[list[str]], schema: Optional[str]
+        self,
+        model: str,
+        data_source_id: int,
+        tables: Optional[list[str]],
+        schema: Optional[str],
     ):
+        self.model = model
         self.data_source_id = data_source_id
         self.table_names = tables
         self.schema = schema
@@ -31,6 +38,7 @@ class Session:
         self._engine = get_db_engine()
         self._ds_service = get_data_sources_service(self._engine)
         self.data_source = self._ds_service.get_data_source(self.data_source_id)
+        self._session_service = get_session_service(self._engine)
         if self.data_source is None:
             raise ValueError(f"Data source not found: {self.data_source_id}")
         self._data_provider = DataProviderService.get_data_provider(self.data_source)
@@ -45,6 +53,23 @@ class Session:
                 self.tables.append(table_info)
 
         self.system_prompt: PromptNode = None
+        self._generate_system_prompt()
+
+        # Add session object to the database
+        self._create_session()
+
+    def _create_session(self):
+        """
+        Create a new session
+        """
+        session_create = CreateSessionModel(
+            model=self.model,
+            data_source_id=self.data_source_id,
+            tables=",".join(self.table_names),
+            schema_name=self.schema,
+            system_prompt=self.system_prompt.get_prompt_str(),
+        )
+        self.session_model = self._session_service.create_session(session_create)
 
     def get_params(self):
         """
@@ -62,7 +87,7 @@ class Session:
         """
         return self.tables
 
-    def generate_system_prompt(self, force=False):
+    def _generate_system_prompt(self, force=False):
         """
         Generate a system prompt for the current session
         """
@@ -76,6 +101,6 @@ class Session:
         Get the system prompt for the current session
         """
         if not self.system_prompt:
-            self.generate_system_prompt()
+            self._generate_system_prompt()
 
         return self.system_prompt

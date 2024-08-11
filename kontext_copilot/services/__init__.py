@@ -9,6 +9,10 @@ from kontext_copilot.services._data_source_service import (
     get_data_sources_service,
 )
 from kontext_copilot.services._data_provider_service import DataProviderService
+from kontext_copilot.services._session_service import (
+    SessionService,
+    get_session_service,
+)
 
 __all__ = [
     "SettingsService",
@@ -18,4 +22,6 @@ __all__ = [
     "DataSourceService",
     "get_data_sources_service",
     "DataProviderService",
+    "SessionService",
+    "get_session_service",
 ]

@@ -17,7 +17,7 @@ class DataSourceService:
     This service utilizes SQLAlchemy for ORM operations.
     """
 
-    def __init__(self, engine):
+    def __init__(self, engine: Engine):
         """
         Initializes the DataSourceService with a given database engine.
 

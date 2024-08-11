@@ -187,18 +187,20 @@ export interface SqlRunResultModel {
 
 export type SqlType = keyof SqlStatementType
 
-export interface CopilotSessionRequestModel {
+export interface SessionInitRequestModel {
    model: string
    dataSourceId: number
    tables?: string[]
    schemaName?: string
 }
 
-export interface CopilotSessionResponseModel {
-   prompt: string
+export interface SessionInitResponseModel {
+   systemPrompt: string
+   sessionId: number
+   title?: string
 }
 
-export interface CopilotRunSqlRequestModel {
+export interface RunSqlRequestModel {
    dataSourceId: number
    sql: string
    schemaName?: string

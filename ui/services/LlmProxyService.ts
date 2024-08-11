@@ -2,10 +2,10 @@ import axios from "axios"
 import { Ollama } from "ollama/browser"
 import { LlmEndointRequiredException } from "~/types/Errors"
 import type {
-   CopilotSessionRequestModel,
-   CopilotSessionResponseModel,
+   SessionInitRequestModel,
+   SessionInitResponseModel,
    LlmChatResponse,
-   CopilotRunSqlRequestModel,
+   RunSqlRequestModel,
    ErrorResponseModel,
    LlmModelListResponse
 } from "~/types/Schemas"
@@ -39,9 +39,9 @@ export default class LlmProxyService {
    }
 
    async init_session(
-      request: CopilotSessionRequestModel
-   ): Promise<CopilotSessionResponseModel> {
-      const response = await axios.post<CopilotSessionResponseModel>(
+      request: SessionInitRequestModel
+   ): Promise<SessionInitResponseModel> {
+      const response = await axios.post<SessionInitResponseModel>(
          "/copilot/init_session",
          request
       )
@@ -49,7 +49,7 @@ export default class LlmProxyService {
    }
 
    async runSql(
-      request: CopilotRunSqlRequestModel,
+      request: RunSqlRequestModel,
       doneCallback: () => void
    ): Promise<AbortableAsyncIterator<LlmChatResponse>> {
       const abortController = new AbortController()

@@ -34,9 +34,11 @@ from kontext_copilot.data.schemas._llm import (
 )
 
 from kontext_copilot.data.schemas._copilot import (
-    CopilotSessionRequestModel,
-    CopilotSessionResponseModel,
-    CopilotRunSqlRequestModel,
+    SessionInitRequestModel,
+    SessionInitResponseModel,
+    RunSqlRequestModel,
+    CreateSessionModel,
+    SessionModel,
 )
 
 from kontext_copilot.data.schemas._common import ErrorResponseModel, ChatRoles
@@ -64,11 +66,13 @@ __all__ = [
     "LlmModel",
     "LlmModelDetail",
     "LlmModelListResponse",
-    "CopilotSessionRequestModel",
-    "CopilotSessionResponseModel",
-    "CopilotRunSqlRequestModel",
+    "SessionInitRequestModel",
+    "SessionInitResponseModel",
+    "RunSqlRequestModel",
     "Message",
     "MessageModel",
     "ErrorResponseModel",
     "ChatRoles",
+    "CreateSessionModel",
+    "SessionModel",
 ]

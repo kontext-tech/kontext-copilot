@@ -14,22 +14,6 @@ class DataSourceModel(CamelAliasBaseModel):
     conn_str: str
     conn_str_encrypted: bool
 
-    @classmethod
-    def from_db_model(cls, source: DataSource) -> "DataSourceModel":
-        """Build schema based of db model provided."""
-
-        return cls(
-            id=source.id,
-            name=source.name,
-            description=source.description,
-            type=source.type,
-            conn_str=source.conn_str,
-            conn_str_encrypted=source.conn_str_encrypted,
-        )
-
-    class Config:
-        from_attributes = True
-
 
 # Create model excludes auto-generated fields like 'id'
 class DataSourceCreateModel(CamelAliasBaseModel):

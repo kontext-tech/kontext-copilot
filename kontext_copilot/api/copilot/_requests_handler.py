@@ -4,9 +4,9 @@ from fastapi import APIRouter, Body
 from fastapi.responses import StreamingResponse
 from kontext_copilot.copilot import Planner
 from kontext_copilot.data.schemas import (
-    CopilotSessionRequestModel,
-    CopilotSessionResponseModel,
-    CopilotRunSqlRequestModel,
+    SessionInitRequestModel,
+    SessionInitResponseModel,
+    RunSqlRequestModel,
     MessageModel,
     Message,
     ChatRoles,
@@ -25,6 +25,7 @@ logger = get_logger()
 
 
 def _get_planner(
+    model: str,
     data_source_id: int,
     tables: Optional[list[str]] = None,
     schema: Optional[str] = None,
@@ -34,6 +35,7 @@ def _get_planner(
     """
     planner = Planner()
     planner.init_session(
+        model=model,
         data_source_id=data_source_id,
         tables=tables,
         schema=schema,
@@ -41,15 +43,16 @@ def _get_planner(
     return planner
 
 
-@router.post("/init_session", response_model=CopilotSessionResponseModel)
+@router.post("/init_session", response_model=SessionInitResponseModel)
 def init_session(
-    request: CopilotSessionRequestModel = Body(None),
-) -> CopilotSessionResponseModel:
+    request: SessionInitRequestModel = Body(None),
+) -> SessionInitResponseModel:
     """
-    Get system prompt
+    Init session with system prompt
     """
     logger.debug("Request: %s", request)
     planner = _get_planner(
+        model=request.model,
         data_source_id=request.data_source_id,
         tables=request.tables,
         schema=request.schema_name,
@@ -59,16 +62,20 @@ def init_session(
 
     logger.debug("System prompt: %s", prompt)
 
-    return CopilotSessionResponseModel(prompt=prompt)
+    return SessionInitResponseModel(
+        system_prompt=prompt, session_id=planner.get_session_model().id
+    )
 
 
 @router.post("/run-sql")
-def run_sql(request: CopilotRunSqlRequestModel = Body(None)):
+def run_sql(request: RunSqlRequestModel = Body(None)):
     """
     Run SQL
     """
     planner = _get_planner(
-        data_source_id=request.data_source_id, schema=request.schema_name
+        model="copilot",
+        data_source_id=request.data_source_id,
+        schema=request.schema_name,
     )
     response = planner.run_sql(
         sql=request.sql,

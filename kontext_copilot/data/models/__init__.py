@@ -3,6 +3,15 @@ from kontext_copilot.data.models._db_models import (
     Setting,
     DataSource,
     DataSourceType,
+    Session,
+    SessionMessage,
 )
 
-__all__ = ["Base", "Setting", "DataSource", "DataSourceType"]
+__all__ = [
+    "Base",
+    "Setting",
+    "DataSource",
+    "DataSourceType",
+    "Session",
+    "SessionMessage",
+]
