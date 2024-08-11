@@ -45,6 +45,7 @@ class Session(Base):
     __tablename__ = "sessions"
     id = Column(Integer, primary_key=True, autoincrement=True)
     data_source_id = Column(Integer)
+    model = Column(String)
     tables = Column(String)
     schema = Column(String)
     title = Column(String)
