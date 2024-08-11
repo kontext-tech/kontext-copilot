@@ -7,8 +7,8 @@
       size="sm"
    >
       <template #button-content>
-         <template v-if="selectedSchema">
-            {{ selectedSchema }}
+         <template v-if="model.schema">
+            {{ model.schema }}
          </template>
          <template v-else> Select schema </template>
          <Icon name="material-symbols:arrow-drop-down" />
@@ -29,8 +29,8 @@
       size="sm"
    >
       <template #button-content>
-         <template v-if="selectedTables.length > 0">
-            {{ selectedTables.length }} tables selected
+         <template v-if="model.tables.length > 0">
+            {{ model.tables.length }} tables selected
          </template>
          <template v-else> Select tables </template>
          <Icon name="material-symbols:arrow-drop-down" />
@@ -60,29 +60,32 @@
 
 <script setup lang="ts">
 import type { DataProviderInfoWrapModel } from "~/types/Schemas"
+import type { SchemaSelectorModel } from "~/types/UIProps"
 
-const selectedSchema = ref<string | null>(null)
+const model = defineModel<SchemaSelectorModel>({
+   default: { schema: null, tables: [] }
+})
 
 const handleSelectSchema = (schema: string | null) => {
    if (schema) {
-      selectedSchema.value = schema
-      emits("schema-changed", schema)
+      model.value.schema = schema
+      // Reset selected tables
+      model.value.tables = []
    }
 }
 
-const selectedTables = ref<string[]>([])
 const tables = computed(() => {
    if (props.dataProviderInfo.provider) {
       const schema = props.dataProviderInfo.provider.supportsSchema
          ? props.dataProviderInfo.provider.metadata.find(
-              (m) => m.schemaName === selectedSchema.value
+              (m) => m.schemaName === model.value.schema
            )
          : props.dataProviderInfo.provider.metadata[0]
       return (
          schema?.tables.map((table) => ({
             key: table,
             label: table,
-            selected: selectedTables.value.includes(table)
+            selected: model.value.tables.includes(table)
          })) ?? []
       )
    }
@@ -90,13 +93,12 @@ const tables = computed(() => {
 })
 
 const handleSelectTable = (table: string) => {
-   const index = selectedTables.value.indexOf(table)
+   const index = model.value.tables.indexOf(table)
    if (index !== -1) {
-      selectedTables.value.splice(index, 1)
+      model.value.tables.splice(index, 1)
    } else {
-      selectedTables.value.push(table)
+      model.value.tables.push(table)
    }
-   emits("tables-changed", selectedTables.value)
 }
 const selectAll = ref(false)
 const selectAllLabel = computed(() =>
@@ -105,25 +107,17 @@ const selectAllLabel = computed(() =>
 
 const handleSelectAllTables = () => {
    if (!selectAll.value) {
-      selectedTables.value = []
+      model.value.tables = []
       tables.value?.forEach((t) => (t.selected = false))
    } else {
       if (tables.value) {
-         selectedTables.value = tables.value.map((t) => t.key)
+         model.value.tables = tables.value.map((t) => t.key)
          tables.value.forEach((t) => (t.selected = true))
       }
    }
-   emits("tables-changed", selectedTables.value)
 }
 
 const props = defineProps<{
    dataProviderInfo: DataProviderInfoWrapModel
 }>()
-
-defineExpose({
-   selectedSchema,
-   selectedTables
-})
-
-const emits = defineEmits(["schema-changed", "tables-changed"])
 </script>

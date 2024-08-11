@@ -30,3 +30,8 @@ export interface LlmSettingsToolbarProps {
    streamingDefault?: boolean
    jsonDefault?: boolean
 }
+
+export interface SchemaSelectorModel {
+   schema?: string
+   tables: string[]
+}

@@ -9,9 +9,8 @@
          <DataProviderSchemaSelector
             v-if="dataProviderInfo"
             ref="schemaSelector"
+            v-model="schemaSelectorModel"
             :data-provider-info="dataProviderInfo"
-            @schema-changed="handleSchemaChange"
-            @tables-changed="handleTablesChange"
          />
          <LlmSettingsToolbar
             v-if="dataSourceSelctor?.selectedDataSource"
@@ -60,8 +59,8 @@
             </template>
             <ChatMainWindow
                :data-provider-info="dataProviderInfo"
-               :schema="selectedSchema"
-               :tables="selectedTables"
+               :schema="schemaSelectorModel.schema"
+               :tables="schemaSelectorModel.tables"
                :model="selectedModelName"
                :data-source-id="selectedDataSourceId"
             />
@@ -77,8 +76,8 @@
             </template>
             <ChatQueryWindow
                :data-provider-info="dataProviderInfo"
-               :selected-schema="selectedSchema"
-               :selected-tables="selectedTables"
+               :selected-schema="schemaSelectorModel.schema"
+               :selected-tables="schemaSelectorModel.tables"
             />
          </BTab>
       </BTabs>
@@ -91,6 +90,7 @@ import DataSourceSelector from "~/components/data-source/selector.vue"
 import type { DataProviderInfoWrapModel } from "~/types/Schemas"
 import DataProviderSchemaSelector from "~/components/data-provider/schema-selector.vue"
 import LlmSettingsToolbar from "~/components/llm/settings-toolbar.vue"
+import type { SchemaSelectorModel } from "~/types/UIProps"
 
 const dataSourceSelctor = ref<InstanceType<typeof DataSourceSelector> | null>(
    null
@@ -102,8 +102,10 @@ const dataProviderInfo = reactive<DataProviderInfoWrapModel>({
    isLoading: false,
    provider: null
 })
-const selectedSchema = ref<string>()
-const selectedTables = ref<string[]>([])
+const schemaSelectorModel = ref<SchemaSelectorModel>({
+   schema: undefined,
+   tables: []
+})
 const llmToolbar = ref<InstanceType<typeof LlmSettingsToolbar> | null>(null)
 const selectedModelName = computed(() => llmToolbar.value?.model)
 
@@ -115,6 +117,8 @@ const handleDataSourceSelected = async (dataSourceId: number) => {
       .getDataProviderInfo(dataSourceId)
       .then((data) => {
          dataProviderInfo.provider = data
+         schemaSelectorModel.value.tables = []
+         schemaSelectorModel.value.schema = undefined
       })
       .catch((err) => {
          console.error(err)
@@ -122,14 +126,6 @@ const handleDataSourceSelected = async (dataSourceId: number) => {
       .finally(() => {
          dataProviderInfo.isLoading = false
       })
-}
-
-const handleSchemaChange = (schema?: string) => {
-   selectedSchema.value = schema
-}
-
-const handleTablesChange = (tables: string[]) => {
-   selectedTables.value = tables
 }
 
 const refresh = (dataSourceId: number) => {
