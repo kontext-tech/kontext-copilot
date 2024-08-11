@@ -41,17 +41,24 @@ class SessionUpdateModel(CamelAliasBaseModel):
 
     @field_validator("tables", mode="before")
     def split_tables(cls, value):
-        if isinstance(value, str):
+        # Check if it is empty string
+        if isinstance(value, str) and len(value.strip()) > 0:
             return value.split(",")
-        return value
+        elif isinstance(value, str):
+            return []
+        else:
+            return value
 
     def model_dump(
         self,
         **kwargs,
     ):
         data = super().model_dump(**kwargs)
-        if isinstance(data["tables"], list):
+        if isinstance(data["tables"], list) and len(data["tables"]) > 0:
             data["tables"] = ",".join(data["tables"])
+        elif isinstance(data["tables"], list):
+            data["tables"] = None
+
         return data
 
 
