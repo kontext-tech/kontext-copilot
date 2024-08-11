@@ -7,7 +7,7 @@
             class="flex-grow-1 flex-shrink-1 overflow-y-auto"
          >
             <template
-               v-for="(message, i) in state.history"
+               v-for="(message, i) in llmClient.state.history"
                :key="`${i}-${message.role}`"
             >
                <ChatMessageCard
@@ -19,8 +19,8 @@
                />
             </template>
             <ChatMessageCard
-               v-if="state.generating"
-               :message="state.currentResponse"
+               v-if="llmClient.state.generating"
+               :message="llmClient.state.currentResponse"
                :username="settings.generalUsername"
                @abort-clicked="handleAbortClicked"
             />
@@ -40,7 +40,7 @@
                   class="form-control"
                   type="text"
                   placeholder="Ask a question..."
-                  :disabled="state.generating"
+                  :disabled="llmClient.state.generating"
                   @keydown.enter.prevent="sendMessage"
                />
                <button
@@ -62,16 +62,17 @@ import { type LlmChatCallback } from "~/services/CopilotClientService"
 import { ChatRoles } from "~/types/Schemas"
 import type { ChatToDataCommonProps } from "~/types/UIProps"
 
+const sessionTitle = defineModel<string>("sessionTitle")
+
 const userInput = ref<string>("")
 const chatMain = ref<HTMLElement | null>(null)
 const chatInput = ref<HTMLTextAreaElement | null>(null)
 
 const settings = getSettings()
 const llmClient = getLlmClientService()
-const state = llmClient.state
 
 const sendButtonDisabled = computed(
-   () => userInput.value.trim().length === 0 || state.generating
+   () => userInput.value.trim().length === 0 || llmClient.state.generating
 )
 
 usePageTitle()
@@ -124,7 +125,7 @@ watch(
       () => props.tables,
       () => props.dataProviderInfo.provider?.id
    ],
-   () => {
+   async () => {
       if (
          props.model &&
          props.dataProviderInfo.provider &&
@@ -133,12 +134,12 @@ watch(
          let reinit = true
          // If the data source and model are the same, reinitialize the session
          if (
-            state.session?.dataSourceId === props.dataSourceId &&
-            state.session?.model === props.model
+            llmClient.state.session?.dataSourceId === props.dataSourceId &&
+            llmClient.state.session?.model === props.model
          ) {
             reinit = false
          }
-         llmClient.init_session(
+         await llmClient.init_session(
             {
                model: props.model,
                dataSourceId: props.dataSourceId,
@@ -148,6 +149,8 @@ watch(
             callback,
             reinit
          )
+         if (llmClient.state.session)
+            sessionTitle.value = llmClient.state.session.title
       }
    },
    { deep: true }

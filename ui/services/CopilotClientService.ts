@@ -213,6 +213,9 @@ export default class CopilotClientService {
          schemaName
       }
       if (!reinit) request.sessionId = this.state.session?.sessionId
+      else {
+         this.state.history = []
+      }
       const response = await this.llmService.init_session(request)
       this.state.session = response
 

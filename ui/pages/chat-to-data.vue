@@ -53,11 +53,12 @@
                <span class="d-flex align-items-center">
                   <Icon name="material-symbols:chat-outline" /><span
                      class="ms-1"
-                     >Chat to data</span
+                     >{{ sessionTitle }}</span
                   >
                </span>
             </template>
             <ChatMainWindow
+               v-model:session-title="sessionTitle"
                :data-provider-info="dataProviderInfo"
                :schema="schemaSelectorModel.schema"
                :tables="schemaSelectorModel.tables"
@@ -106,6 +107,8 @@ const schemaSelectorModel = ref<SchemaSelectorModel>({
    schema: undefined,
    tables: []
 })
+const sessionTitle = ref<string>("Chat to Data")
+
 const llmToolbar = ref<InstanceType<typeof LlmSettingsToolbar> | null>(null)
 const selectedModelName = computed(() => llmToolbar.value?.model)
 
