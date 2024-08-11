@@ -23,7 +23,7 @@ export type LlmChatCallback = (
 // const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 
 /* A service to handle all chats, generation, etc. */
-export default class LlmClientService {
+export default class CopilotClientService {
    static readonly DEFAULT_RESPONSE: LlmChatMessage = {
       content: "",
       role: ChatRoles.ASSISTANT,
@@ -36,7 +36,7 @@ export default class LlmClientService {
       generating: false,
       history: [],
       error: null,
-      currentResponse: { ...LlmClientService.DEFAULT_RESPONSE },
+      currentResponse: { ...CopilotClientService.DEFAULT_RESPONSE },
       abort: false,
       messageIndex: 0
    })
@@ -177,7 +177,7 @@ export default class LlmClientService {
    }
 
    private resetCurrentResponse() {
-      this.state.currentResponse = { ...LlmClientService.DEFAULT_RESPONSE }
+      this.state.currentResponse = { ...CopilotClientService.DEFAULT_RESPONSE }
    }
 
    private getHistory() {

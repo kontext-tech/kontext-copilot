@@ -72,7 +72,7 @@
 import LlmSettingsToolbar from "~/components/llm/settings-toolbar.vue"
 import ChatMessageCard from "~/components/chat/message-card.vue"
 import DefaultLayout from "~/layouts/default-layout.vue"
-import { type LlmChatCallback } from "~/services/LlmClientService"
+import { type LlmChatCallback } from "~/services/CopilotClientService"
 import { ChatRoles } from "~/types/Schemas"
 import { LlmModelRequiredException } from "~/types/Errors"
 

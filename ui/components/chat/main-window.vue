@@ -58,7 +58,7 @@
 </template>
 
 <script setup lang="ts">
-import { type LlmChatCallback } from "~/services/LlmClientService"
+import { type LlmChatCallback } from "~/services/CopilotClientService"
 import { ChatRoles } from "~/types/Schemas"
 import type { ChatToDataCommonProps } from "~/types/UIProps"
 
