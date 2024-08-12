@@ -82,3 +82,50 @@ class CreateSessionModel(CamelAliasBaseModel):
         if isinstance(data["tables"], list):
             data["tables"] = ",".join(data["tables"])
         return data
+
+
+class SessionMessageModel(CamelAliasBaseModel):
+    id: int
+    session_id: int
+    content: Optional[str] = None
+    role: Optional[str] = None
+    model: Optional[str] = None
+    parent_message_id: Optional[int]
+    done: Optional[bool] = False
+    copilot_generated: Optional[bool] = False
+    is_system_prompt: Optional[bool] = False
+    is_error: Optional[bool] = False
+    is_streaming: Optional[bool] = False
+    generating: Optional[bool] = False
+    actions: Optional[str] = None
+    created_at: Optional[datetime] = datetime.now()
+
+
+class CreateSessionMessageModel(CamelAliasBaseModel):
+    session_id: int
+    content: Optional[str] = None
+    role: Optional[str] = None
+    model: Optional[str] = None
+    parent_message_id: Optional[int] = None
+    done: Optional[bool] = False
+    copilot_generated: Optional[bool] = False
+    is_system_prompt: Optional[bool] = False
+    is_error: Optional[bool] = False
+    is_streaming: Optional[bool] = False
+    generating: Optional[bool] = False
+    actions: Optional[str] = None
+
+
+class UpdateSessionMessageModel(CamelAliasBaseModel):
+    session_id: Optional[int] = None
+    content: Optional[str] = None
+    role: Optional[str] = None
+    model: Optional[str] = None
+    parent_message_id: Optional[int] = None
+    done: Optional[bool] = False
+    copilot_generated: Optional[bool] = False
+    is_system_prompt: Optional[bool] = False
+    is_error: Optional[bool] = False
+    is_streaming: Optional[bool] = False
+    generating: Optional[bool] = False
+    actions: Optional[str] = None

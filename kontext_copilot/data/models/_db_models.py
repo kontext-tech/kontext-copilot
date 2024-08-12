@@ -1,5 +1,6 @@
 from datetime import datetime
 from enum import Enum
+from typing import List
 from sqlalchemy import (
     Boolean,
     Column,
@@ -9,9 +10,12 @@ from sqlalchemy import (
     String,
     Enum as SQLEnum,
 )
+from sqlalchemy.orm import Mapped, mapped_column, DeclarativeBase, relationship
 from sqlalchemy.ext.declarative import declarative_base
 
-Base = declarative_base()
+
+class Base(DeclarativeBase):
+    pass
 
 
 class Setting(Base):
@@ -52,6 +56,9 @@ class Session(Base):
     system_prompt = Column(String)
     created_at = Column(DateTime, default=datetime.now())
     ended_at = Column(DateTime)
+    messages: Mapped[List["SessionMessage"]] = relationship(
+        "SessionMessage", back_populates="session"
+    )
 
 
 class SessionMessage(Base):
@@ -74,3 +81,4 @@ class SessionMessage(Base):
     generating = Column(Boolean, default=False)
     actions = Column(String)
     created_at = Column(DateTime, default=datetime.now())
+    session: Mapped["Session"] = relationship(back_populates="messages")

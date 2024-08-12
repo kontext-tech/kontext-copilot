@@ -1,10 +1,13 @@
-from typing import Iterator, Optional
+from typing import Optional
+
 from kontext_copilot.copilot._prompt_factory import PromptFactory as pf
 from kontext_copilot.copilot._session import CopilotSession
+from kontext_copilot.copilot.tools._run_sql_tool import RunSqlTool
+from kontext_copilot.data.schemas import RunSqlRequestModel
 from kontext_copilot.services import (
+    DataProviderService,
     get_data_sources_service,
     get_db_engine,
-    DataProviderService,
 )
 from kontext_copilot.utils import get_logger
 
@@ -51,46 +54,13 @@ class Planner:
             )
             raise e
 
-    def run_sql(self, sql: str, max_records: int = 10) -> Iterator[str]:
+    def run_sql(self, request: RunSqlRequestModel):
         """
         Run SQL
         """
         self._check_session()
-        self._logger.debug("Running SQL: %s", sql)
-        yield "***SQL:***\n"
-        yield f"```sql\n{sql}\n```\n"
-
-        provider = self._get_provider(self.session.data_source_id)
-        yield "\n***Results:***\n\n"
-        try:
-            result = provider.run_sql(sql)
-            total_records = len(result)
-
-            if total_records == 0:
-                yield "0 records returned.\n"
-            else:
-                keys = result[0].keys()
-                if total_records > max_records:
-                    result = result[:max_records]
-                    yield f"(showing first **{max_records}** records out of **{total_records}**).\n"
-
-                yield "|"
-                for col in keys:
-                    yield f"{col}|"
-                yield "\n"
-                yield "|"
-                for _ in keys:
-                    yield "---|"
-                yield "\n"
-                for row in result:
-                    yield "|"
-                    for col in row.values():
-                        yield f"{col}|"
-                    yield "\n"
-        except Exception as e:
-            self._logger.error(f"Error running SQL: {e}")
-            yield "\n**Error running SQL:**\n"
-            yield f"```\n{e}\n```\n"
+        tool = RunSqlTool(self.session)
+        return tool.execute(request=request)
 
     def get_system_prompt(self):
         """

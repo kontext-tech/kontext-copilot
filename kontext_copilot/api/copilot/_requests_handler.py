@@ -1,15 +1,17 @@
 from datetime import datetime
 from typing import Optional
+
 from fastapi import APIRouter, Body
 from fastapi.responses import StreamingResponse
+
 from kontext_copilot.copilot import Planner
 from kontext_copilot.data.schemas import (
+    ChatRoles,
+    Message,
+    MessageModel,
+    RunSqlRequestModel,
     SessionInitRequestModel,
     SessionInitResponseModel,
-    RunSqlRequestModel,
-    MessageModel,
-    Message,
-    ChatRoles,
 )
 from kontext_copilot.utils import get_logger
 
@@ -88,27 +90,6 @@ def run_sql(request: RunSqlRequestModel = Body(None)):
         schema=request.schema_name,
         session_id=request.session_id,
     )
-    response = planner.run_sql(
-        sql=request.sql,
-        max_records=request.max_records,
+    return StreamingResponse(
+        planner.run_sql(request=request), media_type="application/x-ndjson"
     )
-
-    def generate_response():
-        for res in response:
-            message = MessageModel(
-                message=Message(role=ChatRoles.ASSISTANT, content=res),
-                model="copilot",
-                created_at=datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
-                done=False,
-            )
-            yield message.model_dump_json() + "\n"
-
-        # Return a message to indicate the SQL execution is done
-        yield MessageModel(
-            message=Message(role=ChatRoles.SYSTEM, content=""),
-            model="copilot",
-            created_at=datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
-            done=True,
-        ).model_dump_json() + "\n"
-
-    return StreamingResponse(generate_response(), media_type="application/x-ndjson")

@@ -40,6 +40,9 @@ from kontext_copilot.data.schemas._copilot import (
     CreateSessionModel,
     SessionModel,
     SessionUpdateModel,
+    SessionMessageModel,
+    CreateSessionMessageModel,
+    UpdateSessionMessageModel,
 )
 
 from kontext_copilot.data.schemas._common import ErrorResponseModel, ChatRoles
@@ -77,4 +80,7 @@ __all__ = [
     "CreateSessionModel",
     "SessionModel",
     "SessionUpdateModel",
+    "SessionMessageModel",
+    "CreateSessionMessageModel",
+    "UpdateSessionMessageModel",
 ]

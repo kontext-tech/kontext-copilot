@@ -3,11 +3,14 @@ from fastapi import Depends
 from sqlalchemy import Engine
 from sqlalchemy.orm import sessionmaker
 
-from kontext_copilot.data.models._db_models import Session
+from kontext_copilot.data.models import Session, SessionMessage
 from kontext_copilot.data.schemas import (
     CreateSessionModel,
     SessionModel,
     SessionUpdateModel,
+    SessionMessageModel,
+    CreateSessionMessageModel,
+    UpdateSessionMessageModel,
 )
 from kontext_copilot.services import get_db_engine
 
@@ -86,6 +89,114 @@ class SessionService:
         session.refresh(session_db)
         # Convert database model to Pydantic model
         return SessionModel.from_db_model(session_db)
+
+    def add_session_message(
+        self, session_id: int, message: CreateSessionMessageModel
+    ) -> SessionMessageModel:
+        """
+        Adds a new message to a Session.
+
+        :param session_id: The ID of the Session to add the message to.
+        :param message: The CreateSessionMessageModel instance containing the data for the new message.
+        :return: The created SessionMessageModel instance.
+        """
+        session = self.sessionmaker()
+        # Retrieve the Session from the database
+        session_db = (
+            session.query(Session).filter(Session.id == session_id).one_or_none()
+        )
+        if session_db is None:
+            raise ValueError(f"Session not found: {session_id}")
+        # Convert CreateSessionMessageModel to SessionMessage, assuming model_dump() correctly prepares data for creation
+        new_message_db = SessionMessage(**message.model_dump())
+        # Add the new message to the session and commit changes
+        session.add(new_message_db)
+        session.commit()
+        # Refresh the instance from the database to ensure it's up-to-date
+        session.refresh(new_message_db)
+        # Convert database model to Pydantic model
+        return SessionMessageModel.from_db_model(new_message_db)
+
+    def update_session_message(
+        self,
+        session_id: int,
+        message_id: int,
+        message_update: UpdateSessionMessageModel,
+    ) -> SessionMessageModel:
+        """
+        Updates an existing message in a Session.
+
+        :param session_id: The ID of the Session containing the message.
+        :param message_id: The ID of the message to update.
+        :param message_update: The UpdateSessionMessageModel instance containing the new data for the message.
+        :return: The updated SessionMessageModel instance.
+        """
+        session = self.sessionmaker()
+        # Retrieve the Session from the database
+        session_db = (
+            session.query(Session).filter(Session.id == session_id).one_or_none()
+        )
+        if session_db is None:
+            raise ValueError(f"Session not found: {session_id}")
+        # Retrieve the message from the database
+        message_db = (
+            session.query(SessionMessage)
+            .filter(SessionMessage.id == message_id)
+            .filter(SessionMessage.session_id == session_id)
+            .one_or_none()
+        )
+        if message_db is None:
+            raise ValueError(f"Message not found: {message_id}")
+        # Update the message with the new data
+        for field, value in message_update.model_dump(exclude_unset=True).items():
+            setattr(message_db, field, value)
+        # Commit changes
+        session.commit()
+        # Refresh the instance from the database to ensure it's up-to-date
+        session.refresh(message_db)
+        # Convert database model to Pydantic model
+        return SessionMessageModel.from_db_model(message_db)
+
+    def append_message_part(
+        self,
+        session_id: int,
+        message_id: int,
+        message_part: Union[str, bytes],
+        done: bool = False,
+    ) -> SessionMessageModel:
+        """
+        Appends a new part to an existing message in a Session.
+
+        :param session_id: The ID of the Session containing the message.
+        :param message_id: The ID of the message to update.
+        :param message_part: The new part to append to the message.
+        :return: The updated SessionMessageModel instance.
+        """
+        session = self.sessionmaker()
+        # Retrieve the Session from the database
+        session_db = (
+            session.query(Session).filter(Session.id == session_id).one_or_none()
+        )
+        if session_db is None:
+            raise ValueError(f"Session not found: {session_id}")
+        # Retrieve the message from the database
+        message_db = (
+            session.query(SessionMessage)
+            .filter(SessionMessage.id == message_id)
+            .filter(SessionMessage.session_id == session_id)
+            .one_or_none()
+        )
+        if message_db is None:
+            raise ValueError(f"Message not found: {message_id}")
+        # Append the new part to the message
+        message_db.content += message_part
+        message_db.done = done
+        # Commit changes
+        session.commit()
+        # Refresh the instance from the database to ensure it's up-to-date
+        session.refresh(message_db)
+        # Convert database model to Pydantic model
+        return SessionMessageModel.from_db_model(message_db)
 
 
 def get_session_service(
