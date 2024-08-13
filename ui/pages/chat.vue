@@ -19,18 +19,18 @@
                class="flex-grow-1 flex-shrink-1 overflow-y-auto px-4"
             >
                <template
-                  v-for="(message, i) in state.history"
-                  :key="`${i}-${message.role}`"
+                  v-for="(response, i) in state.history"
+                  :key="`${i}-${response.role}`"
                >
-                  <ChatMessageCard
-                     :message="message"
+                  <ChatResponseCard
+                     :response="response"
                      :username="settings.generalUsername"
                      @delete-clicked="handleDeleteClicked"
                   />
                </template>
-               <ChatMessageCard
+               <ChatResponseCard
                   v-if="state.generating"
-                  :message="state.currentResponse"
+                  :response="state.currentResponse"
                   :username="settings.generalUsername"
                   @abort-clicked="handleAbortClicked"
                />
@@ -70,9 +70,8 @@
 
 <script setup lang="ts">
 import LlmSettingsToolbar from "~/components/llm/settings-toolbar.vue"
-import ChatMessageCard from "~/components/chat/message-card.vue"
 import DefaultLayout from "~/layouts/default-layout.vue"
-import { type LlmChatCallback } from "~/services/CopilotClientService"
+import type { LlmChatCallback } from "~/services/CopilotClientService"
 import { ChatRoles } from "~/types/Schemas"
 import { LlmModelRequiredException } from "~/types/Errors"
 
@@ -126,6 +125,6 @@ const handleAbortClicked = () => {
 }
 
 const handleDeleteClicked = (messageId: number) => {
-   llmClient.deleteMessage(messageId)
+   llmClient.deleteResponse(messageId)
 }
 </script>

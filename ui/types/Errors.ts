@@ -46,3 +46,10 @@ export class NoDoneOrScucessResposneException extends Error {
       this.name = "NoDoneOrScucessResposneException"
    }
 }
+
+export class InvalidJsonException extends Error {
+   constructor(json: string, error: Error) {
+      super(`Invalid JSON: ${json}. Error: ${error.message}`)
+      this.name = "InvalidJsonException"
+   }
+}

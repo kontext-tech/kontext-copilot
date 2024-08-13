@@ -5,8 +5,8 @@ from kontext_copilot.copilot._session import CopilotSession
 from kontext_copilot.copilot.tools._base_tool import BaseTool
 from kontext_copilot.data.schemas import (
     ChatRoles,
-    Message,
-    MessageModel,
+    LlmChatMessage,
+    LlmChatResponse,
     RunSqlRequestModel,
 )
 
@@ -21,6 +21,12 @@ class RunSqlTool(BaseTool):
         """
         sql = request.sql
         max_records = request.max_records
+        self.message = self.add_message(
+            message="",
+            role=ChatRoles.SYSTEM,
+            is_streaming=True,
+            copilot_generated=True,
+        )
         response = self._run_sql(sql, max_records)
         return self._generate_response(response)
 
@@ -29,6 +35,8 @@ class RunSqlTool(BaseTool):
         Run SQL
         """
         self._logger.debug("Running SQL: %s", sql)
+        # Create a new message
+
         yield "***SQL:***\n"
         yield f"```sql\n{sql}\n```\n"
 
@@ -65,18 +73,29 @@ class RunSqlTool(BaseTool):
 
     def _generate_response(self, response: Iterator[str]):
         for res in response:
-            message = MessageModel(
-                message=Message(role=ChatRoles.ASSISTANT, content=res),
+            message = LlmChatResponse(
+                id=self.message.id,
+                message=LlmChatMessage(role=ChatRoles.SYSTEM, content=res),
                 model="copilot",
                 created_at=datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
                 done=False,
+                copilot_generated=True,
+                generating=True,
+                session_id=self.session.session_id,
             )
-            yield message.model_dump_json() + "\n"
+            self.append_message_part(self.message.id, res)
+            yield message.model_dump_json(by_alias=True) + "\n"
+            self.append_new_line(self.message.id)
 
         # Return a message to indicate the SQL execution is done
-        yield MessageModel(
-            message=Message(role=ChatRoles.SYSTEM, content=""),
+        yield LlmChatResponse(
+            id=self.message.id,
+            message=LlmChatMessage(role=ChatRoles.SYSTEM, content=""),
             model="copilot",
             created_at=datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
+            copilot_generated=True,
             done=True,
-        ).model_dump_json() + "\n"
+            generating=False,
+            session_id=self.session.session_id,
+        ).model_dump_json(by_alias=True) + "\n"
+        self.append_new_line(self.message.id, done=True)

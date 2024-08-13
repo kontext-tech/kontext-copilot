@@ -7,8 +7,8 @@ from fastapi.responses import StreamingResponse
 from kontext_copilot.copilot import Planner
 from kontext_copilot.data.schemas import (
     ChatRoles,
-    Message,
-    MessageModel,
+    LlmChatMessage,
+    LlmChatResponse,
     RunSqlRequestModel,
     SessionInitRequestModel,
     SessionInitResponseModel,

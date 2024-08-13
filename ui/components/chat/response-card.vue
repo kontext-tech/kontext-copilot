@@ -2,23 +2,23 @@
    <div class="py-1 d-flex align-items-top mx-1">
       <div class="flex-shink-0 chat-icon">
          <Icon
-            v-if="message.role !== ChatRoles.SYSTEM"
-            :name="getRoleIcon(message.role)"
+            v-if="response.message.role !== ChatRoles.SYSTEM"
+            :name="getRoleIcon(response.message.role)"
             size="24"
-            :class="getRoleClass(message.role)"
+            :class="getRoleClass(response.message.role)"
          />
       </div>
 
       <div class="flex-grow-0 flex-wrap d-flex flex-column">
          <div class="px-1 d-flex align-items-center">
-            <strong v-if="message.role === ChatRoles.USER">{{
+            <strong v-if="response.message.role === ChatRoles.USER">{{
                username
             }}</strong>
-            <strong v-else-if="message.role === ChatRoles.ASSISTANT">{{
-               getRoleName(message.role)
+            <strong v-else-if="response.message.role === ChatRoles.ASSISTANT">{{
+               getRoleName(response.message.role)
             }}</strong>
             <BSpinner
-               v-if="message.generating"
+               v-if="response.generating"
                variant="success"
                small
                class="ms-1"
@@ -29,12 +29,12 @@
          </div>
          <div
             class="p-3 rounded bg-body-tertiary my-1 message-card"
-            :class="{ 'bg-danger-subtle': message.isError }"
+            :class="{ 'bg-danger-subtle': response.isError }"
             v-html="htmlMessage"
          />
-         <div v-if="message.generating">
+         <div v-if="response.generating">
             <BButton
-               v-if="message.isStreaming"
+               v-if="response.isStreaming"
                v-b-tooltip.click.top
                variant="link"
                size="sm"
@@ -48,7 +48,8 @@
          <div v-else>
             <BButton
                v-if="
-                  message.isError !== true && message.role !== ChatRoles.SYSTEM
+                  response.isError !== true &&
+                  response.message.role !== ChatRoles.SYSTEM
                "
                v-b-tooltip.click.top
                variant="link"
@@ -59,15 +60,17 @@
                ><Icon name="material-symbols:content-copy-outline" />
             </BButton>
             <template
-               v-if="message.sqlStatements && message.sqlStatements.length > 0"
+               v-if="
+                  response.sqlStatements && response.sqlStatements.length > 0
+               "
             >
                <BButton
-                  v-for="(sql, i) in message.sqlStatements"
+                  v-for="(sql, i) in response.sqlStatements"
                   :key="`sql-${i}`"
                   variant="outline-primary"
                   size="sm"
                   title="Run SQL"
-                  @click="runSql(sql, i, message.id)"
+                  @click="runSql(sql, i, response.id)"
                   ><Icon name="material-symbols:play-arrow-outline" />
                   <span v-if="i === 0">Run SQL</span>
                   <span v-else>Run SQL {{ i }}</span>
@@ -75,7 +78,7 @@
             </template>
 
             <BButton
-               v-if="message.isError"
+               v-if="response.isError"
                v-b-tooltip.click.top
                variant="link"
                size="sm"
@@ -90,13 +93,13 @@
 </template>
 
 <script setup lang="ts">
-import type { ChatMessageCardProps } from "~/types/UIProps"
+import type { ChatResponseCardProps } from "~/types/UIProps"
 import markdownit from "markdown-it"
 import { useClipboard } from "@vueuse/core"
 import { ChatRoles } from "~/types/Schemas"
 import tableClassPlugin from "~/utils/MarkdownitTableClass"
 
-const props = defineProps<ChatMessageCardProps>()
+const props = defineProps<ChatResponseCardProps>()
 
 const md = new markdownit()
 md.use(tableClassPlugin, {
@@ -106,15 +109,15 @@ md.use(tableClassPlugin, {
 })
 
 const htmlMessage = computed(() => {
-   if (props.message.generating && props.message.content === "")
+   if (props.response.generating && props.response.message.content === "")
       return "<em>Thinking...</em>"
-   return md.render(props.message.content)
+   return md.render(props.response.message.content)
 })
 
 const { copy } = useClipboard()
 
 const copyMessage = async () => {
-   copy(props.message.content)
+   copy(props.response.message.content)
 }
 
 const abort = () => {
@@ -122,7 +125,7 @@ const abort = () => {
 }
 
 const deleteMsg = () => {
-   emits("delete-clicked", props.message.id)
+   emits("delete-clicked", props.response.id)
 }
 
 const runSql = (sql: string, index: number, messageId?: number) => {

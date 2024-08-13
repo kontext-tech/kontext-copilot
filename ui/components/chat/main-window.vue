@@ -7,20 +7,20 @@
             class="flex-grow-1 flex-shrink-1 overflow-y-auto"
          >
             <template
-               v-for="(message, i) in llmClient.state.history"
-               :key="`${i}-${message.role}`"
+               v-for="(response, i) in llmClient.state.history"
+               :key="`${i}-${response.message.role}`"
             >
-               <ChatMessageCard
-                  v-if="message.isSystemPrompt === undefined"
-                  :message="message"
+               <ChatResponseCard
+                  v-if="response.isSystemPrompt === undefined"
+                  :response="response"
                   :username="settings.generalUsername"
                   @delete-clicked="handleDeleteClicked"
                   @run-sql-clicked="handlRunSqlClicked"
                />
             </template>
-            <ChatMessageCard
-               v-if="llmClient.state.generating"
-               :message="llmClient.state.currentResponse"
+            <ChatResponseCard
+               v-if="llmClient.state.currentResponse.generating"
+               :response="llmClient.state.currentResponse"
                :username="settings.generalUsername"
                @abort-clicked="handleAbortClicked"
             />
@@ -40,7 +40,7 @@
                   class="form-control"
                   type="text"
                   placeholder="Ask a question..."
-                  :disabled="llmClient.state.generating"
+                  :disabled="llmClient.state.currentResponse.generating"
                   @keydown.enter.prevent="sendMessage"
                />
                <button
@@ -58,7 +58,7 @@
 </template>
 
 <script setup lang="ts">
-import { type LlmChatCallback } from "~/services/CopilotClientService"
+import type { LlmChatCallback } from "~/services/CopilotClientService"
 import { ChatRoles } from "~/types/Schemas"
 import type { ChatToDataCommonProps } from "~/types/UIProps"
 
@@ -72,7 +72,9 @@ const settings = getSettings()
 const llmClient = getLlmClientService()
 
 const sendButtonDisabled = computed(
-   () => userInput.value.trim().length === 0 || llmClient.state.generating
+   () =>
+      userInput.value.trim().length === 0 ||
+      llmClient.state.currentResponse.generating
 )
 
 usePageTitle()
@@ -108,7 +110,7 @@ const handleAbortClicked = () => {
 }
 
 const handleDeleteClicked = (messageId: number) => {
-   llmClient.deleteMessage(messageId)
+   llmClient.deleteResponse(messageId)
 }
 
 const handlRunSqlClicked = async (sql: string) => {

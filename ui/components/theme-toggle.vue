@@ -31,7 +31,7 @@
 </template>
 
 <script setup lang="ts">
-import { type ThemeConfigItem, type ThemeName } from "~/types/Schemas"
+import type { ThemeConfigItem, ThemeName } from "~/types/Schemas"
 
 const btnId = "btn-theme-toogle-" + useId()
 const colorMode = useColorMode({ selector: "html", storageKey: "theme" })

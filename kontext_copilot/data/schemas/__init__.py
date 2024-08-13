@@ -1,51 +1,47 @@
-from kontext_copilot.data.schemas._setting import (
-    SettingModel,
-    SettingCreateModel,
-    SettingUpdateModel,
-    GeneralSettingsModel,
-    LlmSettingsModel,
-    SettingsModel,
+from kontext_copilot.data.schemas._common import ChatRoles, ErrorResponseModel
+from kontext_copilot.data.schemas._copilot import (
+    CreateSessionMessageModel,
+    CreateSessionModel,
+    RunSqlRequestModel,
+    SessionInitRequestModel,
+    SessionInitResponseModel,
+    SessionMessageModel,
+    SessionModel,
+    SessionUpdateModel,
+    UpdateSessionMessageModel,
 )
-from kontext_copilot.data.schemas._prompt import (
-    PromptInfoModel,
-    PromptModel,
-    PromptListModel,
-)
-
 from kontext_copilot.data.schemas._data import (
-    DataSourceModel,
-    DataSourceCreateModel,
-    DataSourceUpdateModel,
-    DataSourceType,
-    DataProviderInfoModel,
-    SchemaTablesModel,
     ColumnInfoModel,
-    SqlStatementModel,
-    RunSqlResultModel,
+    DataProviderInfoModel,
+    DataSourceCreateModel,
+    DataSourceModel,
+    DataSourceType,
+    DataSourceUpdateModel,
     RunSqlPostBodyModel,
+    RunSqlResultModel,
+    SchemaTablesModel,
+    SqlStatementModel,
 )
-
 from kontext_copilot.data.schemas._llm import (
+    LlmChatMessage,
+    LlmChatResponse,
     LlmModel,
     LlmModelDetail,
     LlmModelListResponse,
-    Message,
-    MessageModel,
 )
-
-from kontext_copilot.data.schemas._copilot import (
-    SessionInitRequestModel,
-    SessionInitResponseModel,
-    RunSqlRequestModel,
-    CreateSessionModel,
-    SessionModel,
-    SessionUpdateModel,
-    SessionMessageModel,
-    CreateSessionMessageModel,
-    UpdateSessionMessageModel,
+from kontext_copilot.data.schemas._prompt import (
+    PromptInfoModel,
+    PromptListModel,
+    PromptModel,
 )
-
-from kontext_copilot.data.schemas._common import ErrorResponseModel, ChatRoles
+from kontext_copilot.data.schemas._setting import (
+    GeneralSettingsModel,
+    LlmSettingsModel,
+    SettingCreateModel,
+    SettingModel,
+    SettingsModel,
+    SettingUpdateModel,
+)
 
 __all__ = [
     "SettingModel",
@@ -73,8 +69,8 @@ __all__ = [
     "SessionInitRequestModel",
     "SessionInitResponseModel",
     "RunSqlRequestModel",
-    "Message",
-    "MessageModel",
+    "LlmChatMessage",
+    "LlmChatResponse",
     "ErrorResponseModel",
     "ChatRoles",
     "CreateSessionModel",

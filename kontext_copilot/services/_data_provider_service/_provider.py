@@ -1,13 +1,15 @@
 from abc import ABC
 from typing import List, Optional
+
 from sqlalchemy import Engine, Inspector, MetaData, Table, create_engine, text
 from sqlalchemy.engine.reflection import Inspector
 from sqlalchemy.schema import CreateTable
+
 from kontext_copilot.data.models import DataSourceType
 from kontext_copilot.data.schemas import (
+    ColumnInfoModel,
     DataSourceModel,
     SchemaTablesModel,
-    ColumnInfoModel,
 )
 
 

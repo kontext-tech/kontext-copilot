@@ -1,4 +1,7 @@
-import { NoDoneOrScucessResposneException } from "~/types/Errors"
+import {
+   InvalidJsonException,
+   NoDoneOrScucessResposneException
+} from "~/types/Errors"
 import type { ErrorResponseModel } from "~/types/Schemas"
 
 export const isEmptyOrNull = (str: string | null): boolean => {
@@ -78,7 +81,10 @@ export const parseJSON = async function* <T = unknown>(
          try {
             yield JSON.parse(part)
          } catch (error) {
-            console.warn("invalid json: ", part)
+            throw new InvalidJsonException(
+               part,
+               error instanceof Error ? error : new Error("Unknown error")
+            )
          }
       }
    }

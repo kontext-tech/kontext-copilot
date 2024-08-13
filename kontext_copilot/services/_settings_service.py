@@ -1,9 +1,10 @@
 from fastapi import Depends
 from sqlalchemy import Engine
 from sqlalchemy.orm import sessionmaker
+
 from kontext_copilot.data.models import Setting
 from kontext_copilot.data.schemas import SettingsModel
-from kontext_copilot.services._db_service import get_db_engine
+from kontext_copilot.services._utils import get_engine
 
 
 class SettingsService:
@@ -24,7 +25,7 @@ class SettingsService:
 
     def __init__(self, engine):
         self.engine = engine
-        self.sessionmaker = sessionmaker(bind=self.engine)
+        self.session_maker = sessionmaker(bind=self.engine)
 
     def get_settings(self):
         """
@@ -33,12 +34,9 @@ class SettingsService:
         Returns:
             dict: A dictionary containing all settings where the key is the setting key and the value is the setting value.
         """
-        session = self.sessionmaker()
-        try:
+        with self.session_maker() as session:
             settings = session.query(Setting).all()
             return {setting.key: setting.value for setting in settings}
-        finally:
-            session.close()
 
     def get_settings_obj(self) -> SettingsModel:
         """
@@ -73,12 +71,9 @@ class SettingsService:
         Returns:
             str: The value of the setting if found, None otherwise.
         """
-        session = self.sessionmaker()
-        try:
+        with self.session_maker() as session:
             setting = session.query(Setting).filter_by(key=key).first()
             return setting.value if setting else None
-        finally:
-            session.close()
 
     def set_setting(self, key, value):
         """
@@ -91,21 +86,20 @@ class SettingsService:
         Returns:
             None
         """
-        session = self.sessionmaker()
+        with self.session_maker() as session:
 
-        settings = self.get_settings_obj()
-        typed_value = value
-        # Check data type in settingsModel and convert string to the correct type
-        if hasattr(settings, key):
-            # get type of the attribute
-            attr_type = type(getattr(settings, key))
-            # convert value to the correct type
-            if attr_type == int:
-                typed_value = int(value)
-            elif attr_type == float:
-                typed_value = float(value)
+            settings = self.get_settings_obj()
+            typed_value = value
+            # Check data type in settingsModel and convert string to the correct type
+            if hasattr(settings, key):
+                # get type of the attribute
+                attr_type = type(getattr(settings, key))
+                # convert value to the correct type
+                if attr_type == int:
+                    typed_value = int(value)
+                elif attr_type == float:
+                    typed_value = float(value)
 
-        try:
             setting = session.query(Setting).filter_by(key=key).first()
             if setting:
                 setting.value = typed_value
@@ -113,8 +107,6 @@ class SettingsService:
                 new_setting = Setting(key=key, value=typed_value)
                 session.add(new_setting)
             session.commit()
-        finally:
-            session.close()
 
     def delete_setting(self, key):
         """
@@ -126,17 +118,14 @@ class SettingsService:
         Returns:
             None
         """
-        session = self.sessionmaker()
-        try:
+        with self.session_maker() as session:
             setting = session.query(Setting).filter_by(key=key).first()
             if setting:
                 session.delete(setting)
                 session.commit()
-        finally:
-            session.close()
 
 
-def get_settings_service(engine: Engine = Depends(get_db_engine)) -> SettingsService:
+def get_settings_service(engine: Engine = Depends(get_engine)) -> SettingsService:
     """
     Returns a SettingsService instance with the provided engine.
 

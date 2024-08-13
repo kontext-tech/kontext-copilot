@@ -1,11 +1,11 @@
-import type { Message } from "ollama/browser"
 import type LlmProxyService from "./LlmProxyService"
 import {
    ChatRoles,
    type LlmChatMessage,
    type SessionInitRequestModel,
    type LlmClientState,
-   type SettingsModel
+   type SettingsModel,
+   type LlmChatResponse
 } from "~/types/Schemas"
 import {
    DataProviderServiceRequiredException,
@@ -13,6 +13,7 @@ import {
 } from "~/types/Errors"
 import type { Reactive } from "vue"
 import type { DataProviderService } from "./ApiServices"
+import _ from "lodash"
 
 export type LlmChatCallback = (
    part: string,
@@ -24,21 +25,22 @@ export type LlmChatCallback = (
 
 /* A service to handle all chats, generation, etc. */
 export default class CopilotClientService {
-   static readonly DEFAULT_RESPONSE: LlmChatMessage = {
-      content: "",
-      role: ChatRoles.ASSISTANT,
-      generating: false
+   static readonly DEFAULT_RESPONSE: LlmChatResponse = {
+      id: undefined,
+      message: {
+         content: "",
+         role: ChatRoles.ASSISTANT
+      }
    }
    llmService: LlmProxyService
    dataProviderService: DataProviderService
    settings: Ref<SettingsModel>
    state: Reactive<LlmClientState> = reactive({
-      generating: false,
       history: [],
       error: null,
       currentResponse: { ...CopilotClientService.DEFAULT_RESPONSE },
       abort: false,
-      messageIndex: 0
+      messageIndex: Number.MAX_SAFE_INTEGER
    })
 
    constructor(
@@ -65,41 +67,139 @@ export default class CopilotClientService {
 
    addUserMessage(message: string) {
       this.state.history.push({
-         content: message,
-         role: ChatRoles.USER,
-         id: this.state.messageIndex++
-      })
+         id: this.state.messageIndex--,
+         message: {
+            content: message,
+            role: ChatRoles.USER
+         } as LlmChatMessage
+      } as LlmChatResponse)
    }
 
-   addAssistantMessage(message: string, checkSql: boolean = true) {
-      const msg = {
-         content: message,
-         role: ChatRoles.ASSISTANT,
-         id: this.state.messageIndex++
-      } as LlmChatMessage
+   addAssistantMessage(message: string, checkSql: boolean = true, id?: number) {
+      const response = {
+         id: id ?? this.state.messageIndex--,
+         message: {
+            content: message,
+            role: ChatRoles.ASSISTANT
+         } as LlmChatMessage
+      } as LlmChatResponse
 
       /* Extract SQL statements from the message */
       if (checkSql) {
          const sqlStatements = this.extractSqlFromMessage(message)
-         if (sqlStatements.length > 0) msg.sqlStatements = sqlStatements
+         if (sqlStatements.length > 0) response.sqlStatements = sqlStatements
       }
-      this.state.history.push(msg)
+      this.state.history.push(response)
    }
 
    addSystemMessage(
       message: string,
       isError?: boolean,
-      isSystemPrompt?: boolean
+      isSystemPrompt?: boolean,
+      id?: number
    ) {
-      const msg = {
-         content: message,
-         role: ChatRoles.SYSTEM,
+      const response = {
+         id: id ?? this.state.messageIndex++,
+         message: {
+            content: message,
+            role: ChatRoles.SYSTEM
+         } as LlmChatMessage,
          isError,
-         isSystemPrompt,
-         id: this.state.messageIndex++
+         isSystemPrompt
+      } as LlmChatResponse
+      this.state.history.push(response)
+      return response
+   }
+
+   addResponse(response: LlmChatResponse) {
+      this.state.history.push(response)
+   }
+
+   private extractSqlFromMessage(message: string): string[] {
+      // Regular expression to match code blocks in Markdown, optionally marked with "sql"
+      const codeBlockRegex = /```(?:sql)?\s*([\s\S]*?)\s*```/gi
+
+      let match
+      const codeBlocks: string[] = []
+
+      // Find all matches
+      while ((match = codeBlockRegex.exec(message)) !== null) {
+         // Extract the code from the match
+         codeBlocks.push(match[1].trim())
       }
-      this.state.history.push(msg)
-      return msg
+
+      return codeBlocks
+   }
+
+   private startGenerating(streaming: boolean = false) {
+      this.resetCurrentResponse()
+      this.state.currentResponse.generating = true
+      if (streaming) this.state.currentResponse.isStreaming = streaming
+   }
+
+   private resetCurrentResponse() {
+      this.state.currentResponse = _.cloneDeep(
+         CopilotClientService.DEFAULT_RESPONSE
+      )
+   }
+
+   private getHistory() {
+      /* Only send system prompt  */
+      /* Remap message to only include content and role */
+      return this.state.history
+         .filter(
+            (response) =>
+               response.isError !== true &&
+               (response.message.role !== ChatRoles.SYSTEM ||
+                  response.isSystemPrompt === true)
+         )
+         .map((response) => {
+            return response.message
+         })
+   }
+
+   async initCopilotSession(
+      { model, dataSourceId, tables, schemaName }: SessionInitRequestModel,
+      callback?: LlmChatCallback,
+      reinit: boolean = false
+   ) {
+      this.startGenerating()
+      /* Construct a request object using params */
+      const request: SessionInitRequestModel = {
+         model,
+         dataSourceId,
+         tables,
+         schemaName
+      }
+      if (!reinit) request.sessionId = this.state.session?.sessionId
+      else {
+         this.state.history = []
+      }
+      const response = await this.llmService.initSession(request)
+      this.state.session = response
+
+      /*Check is system prompt with isSystemPrompt true already exists in history */
+      const index = this.state.history.findIndex(
+         (message) => message.isSystemPrompt === true
+      )
+      /* If exists, update the content */
+      if (index !== -1) {
+         this.state.history[index].message.content = response.systemPrompt
+         this.state.history[index].message.role = ChatRoles.SYSTEM
+         const content = `Tables selected: ${tables && tables.length > 0 ? tables.join(", ") : "all"}; schema selected: ${schemaName ?? "default"}`
+         if (callback) callback(content, content, true)
+         /* Add another system message about updated tables */
+         this.addSystemMessage(content)
+         this.resetCurrentResponse()
+         return response
+      } else {
+         /* Add system prompt to history */
+         this.addSystemMessage(response.systemPrompt, false, true)
+         if (callback)
+            callback(response.systemPrompt, response.systemPrompt, true)
+         this.resetCurrentResponse()
+         return response
+      }
    }
 
    async runCopilotSql(
@@ -123,123 +223,40 @@ export default class CopilotClientService {
          )
          this.state.currentResponse.isStreaming = true
          for await (const part of response) {
-            if (this.state.abort && !part.done) {
+            if (this.state.abort && !part) {
                response.abort()
                this.state.abort = false
-               this.state.generating = false
-               this.addAssistantMessage(
-                  this.state.currentResponse.content ?? ""
-               )
+               this.state.currentResponse.generating = false
+               this.state.currentResponse.isStreaming = false
+               this.addResponse(this.state.currentResponse)
             }
-            this.state.currentResponse.content += part.message.content
+            this.state.currentResponse.message.content += part.message.content
+            this.state.currentResponse.message.role = part.message.role
+            this.state.currentResponse.done = part.done
+            this.state.currentResponse.id = part.id
+
             if (callback)
                callback(
                   part.message.content,
-                  this.state.currentResponse.content,
-                  part.done
+                  this.state.currentResponse.message.content,
+                  part.done ?? false
                )
             if (part.done) {
-               this.state.generating = false
-               this.addSystemMessage(this.state.currentResponse.content ?? "")
+               console.log("done")
+               this.state.currentResponse.generating = false
+               this.state.currentResponse.isStreaming = false
+               this.addResponse(this.state.currentResponse)
             }
          }
          return {
-            content: this.state.currentResponse.content ?? "",
+            content: this.state.currentResponse.message.content ?? "",
             role: ChatRoles.SYSTEM
          }
       } catch (e) {
          this.state.error = e instanceof Error ? e.message : String(e)
-         this.state.generating = false
-         this.state.currentResponse.content = ""
+         this.state.currentResponse.generating = false
+         this.state.currentResponse.message.content = ""
          return this.addSystemMessage(this.state.error, true)
-      }
-   }
-
-   private extractSqlFromMessage(message: string): string[] {
-      // Regular expression to match code blocks in Markdown, optionally marked with "sql"
-      const codeBlockRegex = /```(?:sql)?\s*([\s\S]*?)\s*```/gi
-
-      let match
-      const codeBlocks: string[] = []
-
-      // Find all matches
-      while ((match = codeBlockRegex.exec(message)) !== null) {
-         // Extract the code from the match
-         codeBlocks.push(match[1].trim())
-      }
-
-      return codeBlocks
-   }
-
-   private startGenerating() {
-      this.resetCurrentResponse()
-      this.state.generating = true
-      this.state.currentResponse.generating = true
-   }
-
-   private resetCurrentResponse() {
-      this.state.currentResponse = { ...CopilotClientService.DEFAULT_RESPONSE }
-   }
-
-   private getHistory() {
-      /* Only send system prompt  */
-      /* Remap message to only include content and role */
-      return this.state.history
-         .filter(
-            (message) =>
-               message.isError !== true &&
-               (message.role !== ChatRoles.SYSTEM ||
-                  message.isSystemPrompt === true)
-         )
-         .map((message) => {
-            return {
-               content: message.content,
-               role: message.role
-            }
-         })
-   }
-
-   async initCopilotSession(
-      { model, dataSourceId, tables, schemaName }: SessionInitRequestModel,
-      callback?: LlmChatCallback,
-      reinit: boolean = false
-   ) {
-      this.startGenerating()
-      this.state.generating = true
-      /* Construct a request object using params */
-      const request: SessionInitRequestModel = {
-         model,
-         dataSourceId,
-         tables,
-         schemaName
-      }
-      if (!reinit) request.sessionId = this.state.session?.sessionId
-      else {
-         this.state.history = []
-      }
-      const response = await this.llmService.initSession(request)
-      this.state.session = response
-
-      /*Check is system prompt with isSystemPrompt true already exists in history */
-      const index = this.state.history.findIndex(
-         (message) => message.isSystemPrompt === true
-      )
-      /* If exists, update the content */
-      if (index !== -1) {
-         this.state.history[index].content = response.systemPrompt
-         const content = `Tables selected: ${tables && tables.length > 0 ? tables.join(", ") : "all"}; schema selected: ${schemaName ?? "default"}`
-         if (callback) callback(content, content, true)
-         this.state.generating = false
-         /* Add another system message about updated tables */
-         this.addSystemMessage(content)
-         return response
-      } else {
-         /* Add system prompt to history */
-         this.addSystemMessage(response.systemPrompt, false, true)
-         if (callback)
-            callback(response.systemPrompt, response.systemPrompt, true)
-         this.state.generating = false
-         return response
       }
    }
 
@@ -260,20 +277,20 @@ export default class CopilotClientService {
             options: this.getLlmOptions()
          })
          if (typeof response === "string") response = JSON.parse(response)
-         this.state.currentResponse.content = response.message.content
+         this.state.currentResponse.message.content = response.message.content
          if (callback)
             callback(response.message.content, response.message.content, true)
-         this.state.generating = false
+         this.state.currentResponse.generating = false
          this.addAssistantMessage(response.message.content)
          return {
-            content: this.state.currentResponse.content ?? "",
+            content: this.state.currentResponse.message.content ?? "",
             role: ChatRoles.ASSISTANT
          }
       } catch (e) {
          this.state.error = e instanceof Error ? e.message : String(e)
-         this.state.generating = false
-         this.state.currentResponse.content = ""
-         return this.addSystemMessage(this.state.error, true)
+         this.state.currentResponse.generating = false
+         this.state.currentResponse.message.content = ""
+         return this.addSystemMessage(this.state.error, true).message
       }
    }
 
@@ -281,7 +298,7 @@ export default class CopilotClientService {
       input: string,
       model: string,
       callback: LlmChatCallback
-   ): Promise<Message> {
+   ): Promise<LlmChatMessage> {
       this.startGenerating()
       this.addUserMessage(input)
       if (callback) callback("", null, false)
@@ -299,33 +316,34 @@ export default class CopilotClientService {
             if (this.state.abort && !part.done) {
                response.abort()
                this.state.abort = false
-               this.state.generating = false
+               this.state.currentResponse.generating = false
                this.addAssistantMessage(
-                  this.state.currentResponse.content ?? ""
+                  this.state.currentResponse.message.content ?? ""
                )
             }
-            this.state.currentResponse.content += part.message.content
+            this.state.currentResponse.message.content += part.message.content
             callback(
                part.message.content,
-               this.state.currentResponse.content,
+               this.state.currentResponse.message.content,
                part.done
             )
             if (part.done) {
-               this.state.generating = false
+               this.state.currentResponse.isStreaming = false
+               this.state.currentResponse.generating = false
                this.addAssistantMessage(
-                  this.state.currentResponse.content ?? ""
+                  this.state.currentResponse.message.content ?? ""
                )
             }
          }
          return {
-            content: this.state.currentResponse.content ?? "",
+            content: this.state.currentResponse.message.content ?? "",
             role: ChatRoles.ASSISTANT
          }
       } catch (e) {
          this.state.error = e instanceof Error ? e.message : String(e)
-         this.state.generating = false
-         this.state.currentResponse.content = ""
-         return this.addSystemMessage(this.state.error, true)
+         this.state.currentResponse.generating = false
+         this.state.currentResponse.message.content = ""
+         return this.addSystemMessage(this.state.error, true).message
       }
    }
 
@@ -359,22 +377,22 @@ export default class CopilotClientService {
             if (this.state.abort && !part.done) {
                response.abort()
                this.state.abort = false
-               this.state.generating = false
+               this.state.currentResponse.generating = false
                this.addAssistantMessage(
-                  this.state.currentResponse.content ?? ""
+                  this.state.currentResponse.message.content ?? ""
                )
             }
-            this.state.currentResponse.content += part.response
+            this.state.currentResponse.message.content += part.response
             if (callback)
                callback(
                   part.response,
-                  this.state.currentResponse.content,
+                  this.state.currentResponse.message.content,
                   part.done
                )
             if (part.done) {
-               this.state.generating = false
+               this.state.currentResponse.generating = false
                this.addAssistantMessage(
-                  this.state.currentResponse.content ?? ""
+                  this.state.currentResponse.message.content ?? ""
                )
             }
          }
@@ -388,9 +406,9 @@ export default class CopilotClientService {
             options: this.getLlmOptions()
          })
          if (typeof res === "string") res = JSON.parse(res)
-         this.state.currentResponse.content = res.response
-         this.state.generating = false
-         this.addAssistantMessage(this.state.currentResponse.content)
+         this.state.currentResponse.message.content = res.response
+         this.state.currentResponse.generating = false
+         this.addAssistantMessage(this.state.currentResponse.message.content)
       }
    }
 
@@ -403,23 +421,23 @@ export default class CopilotClientService {
             options: this.getLlmOptions()
          })
          .then((response) => {
-            this.state.currentResponse.content = JSON.stringify(
+            this.state.currentResponse.message.content = JSON.stringify(
                response.embedding
             )
          })
          .finally(() => {
-            this.state.generating = false
+            this.state.currentResponse.generating = false
          })
-      return this.state.currentResponse.content
+      return this.state.currentResponse.message.content
    }
 
    abort() {
       this.state.abort = true
    }
 
-   deleteMessage(messageId: number) {
+   deleteResponse(id: number) {
       const index = this.state.history.findIndex(
-         (message) => message.id === messageId
+         (response) => response.id === id
       )
       if (index !== -1) {
          this.state.history.splice(index, 1)

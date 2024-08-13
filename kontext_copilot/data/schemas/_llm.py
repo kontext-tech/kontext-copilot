@@ -25,13 +25,18 @@ class LlmModelListResponse(CamelAliasBaseModel):
     models: List[LlmModel]
 
 
-class Message(CamelAliasBaseModel):
+class LlmChatMessage(CamelAliasBaseModel):
     role: str
     content: str
 
 
-class MessageModel(CamelAliasBaseModel):
+class LlmChatResponse(CamelAliasBaseModel):
+    id: Optional[int] = None
     model: str
     created_at: str
-    message: Message
+    message: LlmChatMessage
     done: bool
+    generating: Optional[bool] = False
+    session_id: Optional[int] = None
+    copilot_generated: bool = False
+    is_system_prompt: Optional[bool] = False

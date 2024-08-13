@@ -7,7 +7,7 @@ from kontext_copilot.data.schemas import RunSqlRequestModel
 from kontext_copilot.services import (
     DataProviderService,
     get_data_sources_service,
-    get_db_engine,
+    get_engine,
 )
 from kontext_copilot.utils import get_logger
 
@@ -15,7 +15,7 @@ from kontext_copilot.utils import get_logger
 class Planner:
     def __init__(self):
         self._logger = get_logger()
-        self._engine = get_db_engine()
+        self._engine = get_engine()
         self._ds_service = get_data_sources_service(self._engine)
 
     def init_session(

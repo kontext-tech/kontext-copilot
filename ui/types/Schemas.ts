@@ -1,5 +1,3 @@
-import type { ChatResponse, Message } from "ollama/browser"
-
 export enum ChatRoles {
    USER = "user",
    ASSISTANT = "assistant",
@@ -43,19 +41,30 @@ export interface LlmModelListResponse {
    models: LlmModelResponse[]
 }
 
-export interface LlmChatMessage extends Message {
-   id?: number
+export interface LlmChatMessage {
    content: string
    role: ChatRoles
+}
+
+export interface LlmChatResponse {
+   id?: number
+   sessionId?: number
+   message: LlmChatMessage
    generating?: boolean
    isStreaming?: boolean
    isError?: boolean
    isSystemPrompt?: boolean
+   copilotGenerated?: boolean
    sqlStatements?: string[]
-}
-
-export interface LlmChatResponse extends ChatResponse {
-   message: LlmChatMessage
+   done?: boolean
+   model?: string
+   doneReason?: string
+   totalDuration?: number
+   loadDuration?: number
+   promptEvalCount?: number
+   promptEvalDuration?: number
+   evalCount?: number
+   evalDuration?: number
 }
 
 export interface LlmToolbarOptions {
@@ -65,10 +74,9 @@ export interface LlmToolbarOptions {
 }
 
 export interface LlmClientState {
-   history: LlmChatMessage[]
-   generating: boolean
+   history: LlmChatResponse[]
    error: string | null
-   currentResponse: LlmChatMessage
+   currentResponse: LlmChatResponse
    abort: boolean
    messageIndex: number
    session?: SessionInitResponseModel
