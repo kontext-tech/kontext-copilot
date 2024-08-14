@@ -53,3 +53,10 @@ export class InvalidJsonException extends Error {
       this.name = "InvalidJsonException"
    }
 }
+
+export class SessionNotFoundException extends Error {
+   constructor() {
+      super(`Session not found`)
+      this.name = "SessionNotFoundException"
+   }
+}

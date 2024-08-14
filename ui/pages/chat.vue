@@ -19,19 +19,25 @@
                class="flex-grow-1 flex-shrink-1 overflow-y-auto px-4"
             >
                <template
-                  v-for="(response, i) in state.history"
-                  :key="`${i}-${response.role}`"
+                  v-for="(message, i) in copilotClient.state.messages"
+                  :key="`${i}-${message.role}`"
                >
-                  <ChatResponseCard
-                     :response="response"
+                  <ChatMessageCard
+                     :message="message"
                      :username="settings.generalUsername"
                      @delete-clicked="handleDeleteClicked"
+                     @abort-clicked="handleAbortClicked"
                   />
                </template>
-               <ChatResponseCard
-                  v-if="state.generating"
-                  :response="state.currentResponse"
+               <ChatMessageCard
+                  v-if="
+                     copilotClient.state.currentMessage &&
+                     copilotClient.state.generating
+                  "
+                  :key="`current-${copilotClient.state.currentMessage.id}`"
+                  :message="copilotClient.state.currentMessage"
                   :username="settings.generalUsername"
+                  @delete-clicked="handleDeleteClicked"
                   @abort-clicked="handleAbortClicked"
                />
             </div>
@@ -50,7 +56,7 @@
                      class="form-control"
                      type="text"
                      placeholder="Type a message..."
-                     :disabled="state.generating"
+                     :disabled="copilotClient.state.generating"
                      @keydown.enter.prevent="sendMessage"
                   />
                   <button
@@ -71,7 +77,7 @@
 <script setup lang="ts">
 import LlmSettingsToolbar from "~/components/llm/settings-toolbar.vue"
 import DefaultLayout from "~/layouts/default-layout.vue"
-import type { LlmChatCallback } from "~/services/CopilotClientService"
+import type { CopilotChatCallback } from "~/services/CopilotClientService"
 import { ChatRoles } from "~/types/Schemas"
 import { LlmModelRequiredException } from "~/types/Errors"
 
@@ -81,11 +87,10 @@ const chatInput = ref<HTMLTextAreaElement | null>(null)
 const llmToolbar = ref<InstanceType<typeof LlmSettingsToolbar> | null>(null)
 
 const settings = getSettings()
-const llmClient = getLlmClientService()
-const state = llmClient.state
+const copilotClient = getCopilotClientService()
 
 const sendButtonDisabled = computed(
-   () => userInput.value.trim().length === 0 || state.generating
+   () => userInput.value.trim().length === 0 || copilotClient.state.generating
 )
 
 usePageTitle()
@@ -101,8 +106,8 @@ const scrollToBottom = async () => {
    }
 }
 
-const callback: LlmChatCallback = (
-   part: string,
+const callback: CopilotChatCallback = (
+   part: string | null,
    message: string | null,
    done: boolean
 ) => {
@@ -113,18 +118,22 @@ const callback: LlmChatCallback = (
 const sendMessage = async () => {
    if (!llmToolbar.value?.model) throw new LlmModelRequiredException()
    if (llmToolbar.value.streaming)
-      llmClient.chatStreaming(userInput.value, llmToolbar.value.model, callback)
+      copilotClient.chatStreaming(
+         userInput.value,
+         llmToolbar.value.model,
+         callback
+      )
    else {
-      llmClient.chat(userInput.value, llmToolbar.value.model, callback)
+      copilotClient.chat(userInput.value, llmToolbar.value.model, callback)
    }
    userInput.value = ""
 }
 
 const handleAbortClicked = () => {
-   llmClient.abort()
+   copilotClient.abort()
 }
 
 const handleDeleteClicked = (messageId: number) => {
-   llmClient.deleteResponse(messageId)
+   copilotClient.deleteSessionMessage(messageId)
 }
 </script>

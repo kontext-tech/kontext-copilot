@@ -86,7 +86,7 @@
             <div class="col-md">
                <label for="userInput" class="form-label">Response </label>
                <textarea
-                  v-model="state.currentResponse.content"
+                  v-model="state.generatedContent"
                   class="form-control main-textarea"
                   type="text"
                   rows="8"
@@ -111,7 +111,7 @@ const systemPromptInput = ref<string>()
 const promptInput = ref<string>("")
 const userInput = ref<string>()
 
-const llmClient = getLlmClientService()
+const llmClient = getCopilotClientService()
 const state = llmClient.state
 const promptService = getPromptService()
 

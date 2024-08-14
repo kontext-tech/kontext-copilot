@@ -1,46 +1,37 @@
 import type LlmProxyService from "./LlmProxyService"
+import type { Message } from "ollama/browser"
 import {
    ChatRoles,
-   type LlmChatMessage,
+   type CopilotSessionMessage,
    type SessionInitRequestModel,
-   type LlmClientState,
+   type CopilotState,
    type SettingsModel,
-   type LlmChatResponse
+   type LlmChatMessage
 } from "~/types/Schemas"
 import {
    DataProviderServiceRequiredException,
-   LlmProxyServiceRequiredException
+   LlmProxyServiceRequiredException,
+   SessionNotFoundException
 } from "~/types/Errors"
 import type { Reactive } from "vue"
 import type { DataProviderService } from "./ApiServices"
 import _ from "lodash"
 
-export type LlmChatCallback = (
+export type CopilotChatCallback = (
    part: string,
-   message: string | null,
+   message: string,
    done: boolean
 ) => void
 
-// const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
-
 /* A service to handle all chats, generation, etc. */
 export default class CopilotClientService {
-   static readonly DEFAULT_RESPONSE: LlmChatResponse = {
-      id: undefined,
-      message: {
-         content: "",
-         role: ChatRoles.ASSISTANT
-      }
-   }
    llmService: LlmProxyService
    dataProviderService: DataProviderService
    settings: Ref<SettingsModel>
-   state: Reactive<LlmClientState> = reactive({
-      history: [],
-      error: null,
-      currentResponse: { ...CopilotClientService.DEFAULT_RESPONSE },
-      abort: false,
-      messageIndex: Number.MAX_SAFE_INTEGER
+   messageIndex: number = Number.MAX_SAFE_INTEGER
+   state: Reactive<CopilotState> = reactive({
+      messages: [],
+      abort: false
    })
 
    constructor(
@@ -65,105 +56,115 @@ export default class CopilotClientService {
       }
    }
 
-   addUserMessage(message: string) {
-      this.state.history.push({
-         id: this.state.messageIndex--,
-         message: {
-            content: message,
-            role: ChatRoles.USER
-         } as LlmChatMessage
-      } as LlmChatResponse)
+   private getLocalMessageId() {
+      return this.messageIndex--
    }
 
-   addAssistantMessage(message: string, checkSql: boolean = true, id?: number) {
-      const response = {
-         id: id ?? this.state.messageIndex--,
-         message: {
-            content: message,
-            role: ChatRoles.ASSISTANT
-         } as LlmChatMessage
-      } as LlmChatResponse
-
-      /* Extract SQL statements from the message */
-      if (checkSql) {
-         const sqlStatements = this.extractSqlFromMessage(message)
-         if (sqlStatements.length > 0) response.sqlStatements = sqlStatements
-      }
-      this.state.history.push(response)
+   private addMessage(message: CopilotSessionMessage) {
+      this.state.messages.push(message)
    }
 
-   addSystemMessage(
-      message: string,
+   createUserMessage(content: string, push?: boolean): CopilotSessionMessage {
+      const message = {
+         id: this.getLocalMessageId(),
+         content,
+         role: ChatRoles.USER,
+         sessionId: this.state.session?.sessionId
+      } as CopilotSessionMessage
+
+      if (push) this.addMessage(message)
+      return message
+   }
+
+   createAssistantMessage(
+      content: string,
+      id?: number,
+      push?: boolean
+   ): CopilotSessionMessage {
+      const message = {
+         id: id ?? this.getLocalMessageId(),
+         content,
+         role: ChatRoles.ASSISTANT,
+         sessionId: this.state.session?.sessionId
+      } as CopilotSessionMessage
+      if (push) this.addMessage(message)
+      return message
+   }
+
+   createSystemMessage(
+      content: string,
       isError?: boolean,
       isSystemPrompt?: boolean,
-      id?: number
+      id?: number,
+      push?: boolean
    ) {
-      const response = {
-         id: id ?? this.state.messageIndex++,
-         message: {
-            content: message,
-            role: ChatRoles.SYSTEM
-         } as LlmChatMessage,
+      const message = {
+         id: id ?? this.getLocalMessageId(),
+         content: content,
+         role: ChatRoles.SYSTEM,
          isError,
-         isSystemPrompt
-      } as LlmChatResponse
-      this.state.history.push(response)
-      return response
+         isSystemPrompt,
+         sessionId: this.state.session?.sessionId
+      } as CopilotSessionMessage
+      if (push) this.addMessage(message)
+      return message
    }
 
-   addResponse(response: LlmChatResponse) {
-      this.state.history.push(response)
-   }
-
-   private extractSqlFromMessage(message: string): string[] {
-      // Regular expression to match code blocks in Markdown, optionally marked with "sql"
-      const codeBlockRegex = /```(?:sql)?\s*([\s\S]*?)\s*```/gi
-
-      let match
-      const codeBlocks: string[] = []
-
-      // Find all matches
-      while ((match = codeBlockRegex.exec(message)) !== null) {
-         // Extract the code from the match
-         codeBlocks.push(match[1].trim())
+   private startGenerating(isStreaming?: boolean) {
+      if (this.state.currentMessage) {
+         this.state.currentMessage.generating = true
+         if (isStreaming) this.state.currentMessage.isStreaming = isStreaming
       }
-
-      return codeBlocks
+      this.state.generating = true
    }
 
-   private startGenerating(streaming: boolean = false) {
-      this.resetCurrentResponse()
-      this.state.currentResponse.generating = true
-      if (streaming) this.state.currentResponse.isStreaming = streaming
+   private stopGenerating() {
+      if (this.state.currentMessage)
+         this.state.currentMessage.generating = false
+      this.state.generating = false
    }
 
-   private resetCurrentResponse() {
-      this.state.currentResponse = _.cloneDeep(
-         CopilotClientService.DEFAULT_RESPONSE
-      )
+   private updateMessage(part: string, id?: number, done?: boolean) {
+      if (this.state.currentMessage) {
+         if (part) this.state.currentMessage.content += part
+         if (done) this.state.currentMessage.done = done
+         if (id) this.state.currentMessage.id = id
+      }
    }
 
    private getHistory() {
-      /* Only send system prompt  */
+      /* Only send system prompt, user and assistant messages  */
       /* Remap message to only include content and role */
-      return this.state.history
+      return this.state.messages
          .filter(
-            (response) =>
-               response.isError !== true &&
-               (response.message.role !== ChatRoles.SYSTEM ||
-                  response.isSystemPrompt === true)
+            (message) =>
+               message.isError !== true &&
+               (message.role !== ChatRoles.SYSTEM ||
+                  message.isSystemPrompt === true)
          )
-         .map((response) => {
-            return response.message
+         .map((message) => {
+            return {
+               role: message.role,
+               content: message.content
+            } as Message
          })
+   }
+
+   private clearHistory() {
+      this.state.messages = []
+   }
+
+   private checkSession() {
+      if (!this.state.session) {
+         throw new SessionNotFoundException()
+      }
    }
 
    async initCopilotSession(
       { model, dataSourceId, tables, schemaName }: SessionInitRequestModel,
-      callback?: LlmChatCallback,
+      callback?: CopilotChatCallback,
       reinit: boolean = false
-   ) {
-      this.startGenerating()
+   ): Promise<void> {
       /* Construct a request object using params */
       const request: SessionInitRequestModel = {
          model,
@@ -173,43 +174,50 @@ export default class CopilotClientService {
       }
       if (!reinit) request.sessionId = this.state.session?.sessionId
       else {
-         this.state.history = []
+         this.clearHistory()
       }
-      const response = await this.llmService.initSession(request)
-      this.state.session = response
 
       /*Check is system prompt with isSystemPrompt true already exists in history */
-      const index = this.state.history.findIndex(
+      const index = this.state.messages.findIndex(
          (message) => message.isSystemPrompt === true
       )
-      /* If exists, update the content */
-      if (index !== -1) {
-         this.state.history[index].message.content = response.systemPrompt
-         this.state.history[index].message.role = ChatRoles.SYSTEM
-         const content = `Tables selected: ${tables && tables.length > 0 ? tables.join(", ") : "all"}; schema selected: ${schemaName ?? "default"}`
-         if (callback) callback(content, content, true)
-         /* Add another system message about updated tables */
-         this.addSystemMessage(content)
-         this.resetCurrentResponse()
-         return response
-      } else {
-         /* Add system prompt to history */
-         this.addSystemMessage(response.systemPrompt, false, true)
-         if (callback)
-            callback(response.systemPrompt, response.systemPrompt, true)
-         this.resetCurrentResponse()
-         return response
-      }
+
+      this.state.currentMessage =
+         index !== -1
+            ? this.state.messages[index]
+            : this.createSystemMessage("", false, true)
+
+      this.startGenerating()
+
+      const response = await this.llmService.initSession(request)
+      this.state.session = response
+      this.state.currentMessage.content = response.systemPrompt
+      this.stopGenerating()
+
+      if (callback)
+         callback(
+            this.state.currentMessage.content,
+            this.state.currentMessage.content,
+            true
+         )
+      this.addMessage(this.state.currentMessage)
+
+      /*Create another system message about the tables and schema info */
+      const content = `Tables selected: ${tables && tables.length > 0 ? tables.join(", ") : "all"}; schema selected: ${schemaName ?? "default"}`
+      this.createSystemMessage(content, false, false, undefined, true)
+      if (callback) callback(content, content, true)
    }
 
    async runCopilotSql(
       dataSourceId: number,
       sql: string,
       schema?: string,
-      callback?: LlmChatCallback
+      callback?: CopilotChatCallback
    ) {
-      this.startGenerating()
-      if (callback) callback("", null, false)
+      this.checkSession()
+      if (callback) callback("", "", false)
+
+      this.state.currentMessage = this.createSystemMessage("", false, false)
 
       try {
          const response = await this.llmService.runSql(
@@ -221,53 +229,47 @@ export default class CopilotClientService {
             },
             () => {}
          )
-         this.state.currentResponse.isStreaming = true
+         this.startGenerating(true)
          for await (const part of response) {
+            this.updateMessage(part.message.content, part.id, part.done)
             if (this.state.abort && !part) {
                response.abort()
                this.state.abort = false
-               this.state.currentResponse.generating = false
-               this.state.currentResponse.isStreaming = false
-               this.addResponse(this.state.currentResponse)
+               this.stopGenerating()
+               break // Abort the loop
             }
-            this.state.currentResponse.message.content += part.message.content
-            this.state.currentResponse.message.role = part.message.role
-            this.state.currentResponse.done = part.done
-            this.state.currentResponse.id = part.id
 
             if (callback)
                callback(
                   part.message.content,
-                  this.state.currentResponse.message.content,
+                  this.state.currentMessage.content,
                   part.done ?? false
                )
             if (part.done) {
-               console.log("done")
-               this.state.currentResponse.generating = false
-               this.state.currentResponse.isStreaming = false
-               this.addResponse(this.state.currentResponse)
+               this.stopGenerating()
             }
          }
-         return {
-            content: this.state.currentResponse.message.content ?? "",
-            role: ChatRoles.SYSTEM
-         }
       } catch (e) {
-         this.state.error = e instanceof Error ? e.message : String(e)
-         this.state.currentResponse.generating = false
-         this.state.currentResponse.message.content = ""
-         return this.addSystemMessage(this.state.error, true)
+         this.state.currentMessage.content =
+            e instanceof Error ? e.message : String(e)
+         this.state.currentMessage.isError = true
+         this.stopGenerating()
       }
+      this.addMessage(this.state.currentMessage)
+      return this.state.currentMessage
    }
 
    async chat(
       input: string,
       model: string,
-      callback?: LlmChatCallback
+      callback?: CopilotChatCallback
    ): Promise<LlmChatMessage> {
-      this.startGenerating()
-      this.addUserMessage(input)
-      if (callback) callback("", null, false)
+      // Create user message
+      this.createUserMessage(input, true)
+      if (callback) callback("", "", false)
+
+      // Create assistant message
+      this.state.currentMessage = this.createAssistantMessage("")
 
       try {
          let response = await this.llmService.service.chat({
@@ -276,79 +278,91 @@ export default class CopilotClientService {
             stream: false,
             options: this.getLlmOptions()
          })
+         this.startGenerating()
          if (typeof response === "string") response = JSON.parse(response)
-         this.state.currentResponse.message.content = response.message.content
+         this.state.currentMessage.content = response.message.content
+
          if (callback)
             callback(response.message.content, response.message.content, true)
-         this.state.currentResponse.generating = false
-         this.addAssistantMessage(response.message.content)
-         return {
-            content: this.state.currentResponse.message.content ?? "",
-            role: ChatRoles.ASSISTANT
-         }
       } catch (e) {
-         this.state.error = e instanceof Error ? e.message : String(e)
-         this.state.currentResponse.generating = false
-         this.state.currentResponse.message.content = ""
-         return this.addSystemMessage(this.state.error, true).message
+         this.state.currentMessage.content =
+            e instanceof Error ? e.message : String(e)
+         this.state.currentMessage.isError = true
       }
+      this.stopGenerating()
+      this.addMessage(this.state.currentMessage)
+      return this.state.currentMessage
    }
 
    async chatStreaming(
       input: string,
       model: string,
-      callback: LlmChatCallback
+      callback: CopilotChatCallback
    ): Promise<LlmChatMessage> {
-      this.startGenerating()
-      this.addUserMessage(input)
-      if (callback) callback("", null, false)
+      // Create user message
+      this.createUserMessage(input, true)
+      if (callback) callback("", "", false)
 
-      const response = await this.llmService.service.chat({
-         model: model,
-         messages: this.getHistory(),
-         stream: true,
-         options: this.getLlmOptions()
-      })
+      // Create assistant message
+      this.state.currentMessage = this.createAssistantMessage("")
 
-      this.state.currentResponse.isStreaming = true
       try {
+         const response = await this.llmService.service.chat({
+            model: model,
+            messages: this.getHistory(),
+            stream: true,
+            options: this.getLlmOptions()
+         })
+         this.startGenerating(true)
+
          for await (const part of response) {
+            this.updateMessage(part.message.content, undefined, part.done)
+
             if (this.state.abort && !part.done) {
                response.abort()
                this.state.abort = false
-               this.state.currentResponse.generating = false
-               this.addAssistantMessage(
-                  this.state.currentResponse.message.content ?? ""
-               )
+               this.stopGenerating()
+               break
             }
-            this.state.currentResponse.message.content += part.message.content
-            callback(
-               part.message.content,
-               this.state.currentResponse.message.content,
-               part.done
-            )
+            if (callback)
+               callback(
+                  part.message.content,
+                  this.state.currentMessage.content,
+                  part.done ?? false
+               )
             if (part.done) {
-               this.state.currentResponse.isStreaming = false
-               this.state.currentResponse.generating = false
-               this.addAssistantMessage(
-                  this.state.currentResponse.message.content ?? ""
-               )
+               this.stopGenerating()
             }
-         }
-         return {
-            content: this.state.currentResponse.message.content ?? "",
-            role: ChatRoles.ASSISTANT
          }
       } catch (e) {
-         this.state.error = e instanceof Error ? e.message : String(e)
-         this.state.currentResponse.generating = false
-         this.state.currentResponse.message.content = ""
-         return this.addSystemMessage(this.state.error, true).message
+         this.state.currentMessage.content =
+            e instanceof Error ? e.message : String(e)
+         this.state.currentMessage.isError = true
+         this.stopGenerating()
       }
+      this.addMessage(this.state.currentMessage)
+      return this.state.currentMessage
    }
 
-   private replaceValues(promt: string, userInput: string) {
-      return promt.replace(/\{\{\$input\}\}/g, userInput)
+   async embeddings(prompt: string, model: string): Promise<string> {
+      this.state.generatedContent = ""
+      this.startGenerating()
+      this.llmService.service
+         .embeddings({
+            model: model,
+            prompt: prompt,
+            options: this.getLlmOptions()
+         })
+         .then((response) => {
+            this.state.generatedContent = JSON.stringify(response.embedding)
+            this.stopGenerating()
+            return this.state.generatedContent
+         })
+      return this.state.generatedContent
+   }
+
+   private replaceValues(prompt: string, userInput: string) {
+      return prompt.replace(/\{\{\$input\}\}/g, userInput)
    }
 
    async generate(
@@ -357,11 +371,12 @@ export default class CopilotClientService {
       model: string,
       format: "json" | "",
       stream: boolean,
-      callback?: LlmChatCallback,
+      callback?: CopilotChatCallback,
       systemPrompt?: string
    ) {
       const promptText =
          prompt !== "" ? this.replaceValues(prompt, userInput) : userInput
+      this.state.generatedContent = ""
       this.startGenerating()
       if (stream) {
          const response = await this.llmService.service.generate({
@@ -372,28 +387,18 @@ export default class CopilotClientService {
             stream: true,
             options: this.getLlmOptions()
          })
-         this.state.currentResponse.isStreaming = true
          for await (const part of response) {
+            this.state.generatedContent += part.response
             if (this.state.abort && !part.done) {
                response.abort()
                this.state.abort = false
-               this.state.currentResponse.generating = false
-               this.addAssistantMessage(
-                  this.state.currentResponse.message.content ?? ""
-               )
+               this.stopGenerating()
+               break
             }
-            this.state.currentResponse.message.content += part.response
             if (callback)
-               callback(
-                  part.response,
-                  this.state.currentResponse.message.content,
-                  part.done
-               )
+               callback(part.response, this.state.generatedContent, part.done)
             if (part.done) {
-               this.state.currentResponse.generating = false
-               this.addAssistantMessage(
-                  this.state.currentResponse.message.content ?? ""
-               )
+               this.stopGenerating()
             }
          }
       } else {
@@ -406,41 +411,22 @@ export default class CopilotClientService {
             options: this.getLlmOptions()
          })
          if (typeof res === "string") res = JSON.parse(res)
-         this.state.currentResponse.message.content = res.response
-         this.state.currentResponse.generating = false
-         this.addAssistantMessage(this.state.currentResponse.message.content)
+         this.state.generatedContent = res.response
+         this.stopGenerating()
       }
-   }
-
-   async embeddings(prompt: string, model: string): Promise<string> {
-      this.startGenerating()
-      this.llmService.service
-         .embeddings({
-            model: model,
-            prompt: prompt,
-            options: this.getLlmOptions()
-         })
-         .then((response) => {
-            this.state.currentResponse.message.content = JSON.stringify(
-               response.embedding
-            )
-         })
-         .finally(() => {
-            this.state.currentResponse.generating = false
-         })
-      return this.state.currentResponse.message.content
+      return this.state.generatedContent
    }
 
    abort() {
       this.state.abort = true
    }
 
-   deleteResponse(id: number) {
-      const index = this.state.history.findIndex(
-         (response) => response.id === id
+   deleteSessionMessage(id: number) {
+      const index = this.state.messages.findIndex(
+         (message) => message.id === id
       )
       if (index !== -1) {
-         this.state.history.splice(index, 1)
+         this.state.messages.splice(index, 1)
       }
    }
 }

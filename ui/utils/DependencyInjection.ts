@@ -57,7 +57,7 @@ const getPromptService = (): PromptService => {
    return getService<PromptService>("PROMPT_SERVICE")
 }
 
-const getLlmClientService = (): CopilotClientService => {
+const getCopilotClientService = (): CopilotClientService => {
    const settings = getSettings()
    const llmProxyService = getLlmProxyService()
    const dataProviderService = getDataProviderService()
@@ -74,7 +74,7 @@ export {
    addService,
    getSettings,
    getLlmProxyService,
-   getLlmClientService,
+   getCopilotClientService,
    getDataSourceService,
    getDataProviderService,
    getPromptService

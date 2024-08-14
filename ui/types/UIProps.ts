@@ -1,4 +1,7 @@
-import type { DataProviderInfoWrapModel, LlmChatResponse } from "./Schemas"
+import type {
+   CopilotSessionMessage,
+   DataProviderInfoWrapModel
+} from "./Schemas"
 
 export interface NavItemProps {
    id: string
@@ -9,8 +12,8 @@ export interface NavItemProps {
    flat?: boolean
 }
 
-export interface ChatResponseCardProps {
-   response: LlmChatResponse
+export interface ChatMessageCardProps {
+   message: CopilotSessionMessage
    username: string
    allowAbort?: boolean
 }

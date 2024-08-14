@@ -35,7 +35,7 @@
                   >Generated embeddings
                </label>
                <textarea
-                  v-model="state.currentResponse.content"
+                  v-model="state.generatedContent"
                   class="form-control main-textarea"
                   type="text"
                   rows="16"
@@ -56,7 +56,7 @@ const llmToolbar = ref<InstanceType<typeof LlmSettingsToolbar> | null>(null)
 
 const promptInput = ref<string>("")
 
-const llmClient = getLlmClientService()
+const llmClient = getCopilotClientService()
 const state = llmClient.state
 
 const disableGenerate = computed(

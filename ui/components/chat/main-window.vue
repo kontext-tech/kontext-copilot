@@ -7,21 +7,27 @@
             class="flex-grow-1 flex-shrink-1 overflow-y-auto"
          >
             <template
-               v-for="(response, i) in llmClient.state.history"
-               :key="`${i}-${response.message.role}`"
+               v-for="(message, i) in copilotClient.state.messages"
+               :key="`${i}-${message.role}`"
             >
-               <ChatResponseCard
-                  v-if="response.isSystemPrompt === undefined"
-                  :response="response"
+               <ChatMessageCard
+                  v-if="message.isSystemPrompt === undefined"
+                  :message="message"
                   :username="settings.generalUsername"
                   @delete-clicked="handleDeleteClicked"
                   @run-sql-clicked="handlRunSqlClicked"
+                  @abort-clicked="handleAbortClicked"
                />
             </template>
-            <ChatResponseCard
-               v-if="llmClient.state.currentResponse.generating"
-               :response="llmClient.state.currentResponse"
+            <ChatMessageCard
+               v-if="
+                  copilotClient.state.currentMessage &&
+                  copilotClient.state.generating
+               "
+               :key="`current-${copilotClient.state.currentMessage.id}`"
+               :message="copilotClient.state.currentMessage"
                :username="settings.generalUsername"
+               @delete-clicked="handleDeleteClicked"
                @abort-clicked="handleAbortClicked"
             />
          </div>
@@ -40,7 +46,7 @@
                   class="form-control"
                   type="text"
                   placeholder="Ask a question..."
-                  :disabled="llmClient.state.currentResponse.generating"
+                  :disabled="copilotClient.state.generating"
                   @keydown.enter.prevent="sendMessage"
                />
                <button
@@ -58,7 +64,7 @@
 </template>
 
 <script setup lang="ts">
-import type { LlmChatCallback } from "~/services/CopilotClientService"
+import type { CopilotChatCallback } from "~/services/CopilotClientService"
 import { ChatRoles } from "~/types/Schemas"
 import type { ChatToDataCommonProps } from "~/types/UIProps"
 
@@ -69,12 +75,10 @@ const chatMain = ref<HTMLElement | null>(null)
 const chatInput = ref<HTMLTextAreaElement | null>(null)
 
 const settings = getSettings()
-const llmClient = getLlmClientService()
+const copilotClient = getCopilotClientService()
 
 const sendButtonDisabled = computed(
-   () =>
-      userInput.value.trim().length === 0 ||
-      llmClient.state.currentResponse.generating
+   () => userInput.value.trim().length === 0 || copilotClient.state.generating
 )
 
 usePageTitle()
@@ -90,8 +94,8 @@ const scrollToBottom = async () => {
    }
 }
 
-const callback: LlmChatCallback = (
-   part: string,
+const callback: CopilotChatCallback = (
+   part: string | null,
    message: string | null,
    done: boolean
 ) => {
@@ -101,21 +105,21 @@ const callback: LlmChatCallback = (
 
 const sendMessage = async () => {
    if (!props.model) return
-   llmClient.chatStreaming(userInput.value, props.model, callback)
+   copilotClient.chatStreaming(userInput.value, props.model, callback)
    userInput.value = ""
 }
 
 const handleAbortClicked = () => {
-   llmClient.abort()
+   copilotClient.abort()
 }
 
 const handleDeleteClicked = (messageId: number) => {
-   llmClient.deleteResponse(messageId)
+   copilotClient.deleteSessionMessage(messageId)
 }
 
 const handlRunSqlClicked = async (sql: string) => {
    if (!props.dataSourceId) return
-   llmClient.runCopilotSql(props.dataSourceId, sql, props.schema, callback)
+   copilotClient.runCopilotSql(props.dataSourceId, sql, props.schema, callback)
 }
 
 const props = defineProps<ChatToDataCommonProps>()
@@ -136,12 +140,12 @@ watch(
          let reinit = true
          // If the data source and model are the same, reinitialize the session
          if (
-            llmClient.state.session?.dataSourceId === props.dataSourceId &&
-            llmClient.state.session?.model === props.model
+            copilotClient.state.session?.dataSourceId === props.dataSourceId &&
+            copilotClient.state.session?.model === props.model
          ) {
             reinit = false
          }
-         await llmClient.initCopilotSession(
+         await copilotClient.initCopilotSession(
             {
                model: props.model,
                dataSourceId: props.dataSourceId,
@@ -151,8 +155,8 @@ watch(
             callback,
             reinit
          )
-         if (llmClient.state.session)
-            sessionTitle.value = llmClient.state.session.title
+         if (copilotClient.state.session)
+            sessionTitle.value = copilotClient.state.session.title
       }
    },
    { deep: true }

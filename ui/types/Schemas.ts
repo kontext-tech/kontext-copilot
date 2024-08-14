@@ -46,6 +46,27 @@ export interface LlmChatMessage {
    role: ChatRoles
 }
 
+export interface CopilotSessionMessage extends LlmChatMessage {
+   id?: number
+   sessionId?: number
+   model?: string
+   generating?: boolean
+   isStreaming?: boolean
+   isError?: boolean
+   isSystemPrompt?: boolean
+   copilotGenerated?: boolean
+
+   sqlStatements?: string[]
+   done?: boolean
+   doneReason?: string
+   totalDuration?: number
+   loadDuration?: number
+   promptEvalCount?: number
+   promptEvalDuration?: number
+   evalCount?: number
+   evalDuration?: number
+}
+
 export interface LlmChatResponse {
    id?: number
    sessionId?: number
@@ -73,13 +94,14 @@ export interface LlmToolbarOptions {
    model?: string
 }
 
-export interface LlmClientState {
-   history: LlmChatResponse[]
-   error: string | null
-   currentResponse: LlmChatResponse
+export interface CopilotState {
+   messages: CopilotSessionMessage[]
+   currentMessage?: CopilotSessionMessage
    abort: boolean
-   messageIndex: number
    session?: SessionInitResponseModel
+   // For overall status incl. embeddings and other generation
+   generating?: boolean
+   generatedContent?: string
 }
 
 export interface SettingsModel {
