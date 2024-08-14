@@ -272,13 +272,13 @@ export default class CopilotClientService {
       this.state.currentMessage = this.createAssistantMessage("")
 
       try {
+         this.startGenerating()
          let response = await this.llmService.service.chat({
             model: model,
             messages: this.getHistory(),
             stream: false,
             options: this.getLlmOptions()
          })
-         this.startGenerating()
          if (typeof response === "string") response = JSON.parse(response)
          this.state.currentMessage.content = response.message.content
 
@@ -307,13 +307,13 @@ export default class CopilotClientService {
       this.state.currentMessage = this.createAssistantMessage("")
 
       try {
+         this.startGenerating(true)
          const response = await this.llmService.service.chat({
             model: model,
             messages: this.getHistory(),
             stream: true,
             options: this.getLlmOptions()
          })
-         this.startGenerating(true)
 
          for await (const part of response) {
             this.updateMessage(part.message.content, undefined, part.done)
