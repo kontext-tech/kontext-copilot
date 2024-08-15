@@ -40,7 +40,7 @@ class LlmChatTool(BaseTool):
             ]
 
         self.message = self.add_message(
-            message="",
+            content="",
             role=ChatRoles.ASSISTANT,
             is_streaming=request.stream or False,
             copilot_generated=False,
@@ -65,9 +65,10 @@ class LlmChatTool(BaseTool):
                     res = _to_pydantic_model(response)
                     res.id = self.message.id
                     res.session_id = self.session.session_id
-                    self.append_message_part(self.message.id, res.content, res.done)
+                    self.message.content += res.content
                     yield res.model_dump_json(by_alias=True) + "\n"
-                    self.append_new_line(self.message.id, True)
+                    self.message.content += "\n"
+                self.commit_message(self.message)
 
             return generate_response()
 

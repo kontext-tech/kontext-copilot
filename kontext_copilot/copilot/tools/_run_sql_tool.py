@@ -22,7 +22,7 @@ class RunSqlTool(BaseTool):
         sql = request.sql
         max_records = request.max_records
         self.message = self.add_message(
-            message="",
+            content="",
             role=ChatRoles.SYSTEM,
             is_streaming=True,
             copilot_generated=True,
@@ -84,9 +84,9 @@ class RunSqlTool(BaseTool):
                 generating=True,
                 session_id=self.session.session_id,
             )
-            self.append_message_part(self.message.id, res)
+            self.message.content += res
             yield message.model_dump_json(by_alias=True) + "\n"
-            self.append_new_line(self.message.id)
+            self.message.content += "\n"
 
         # Return a message to indicate the SQL execution is done
         yield SessionMessageModel(
@@ -100,4 +100,5 @@ class RunSqlTool(BaseTool):
             generating=False,
             session_id=self.session.session_id,
         ).model_dump_json(by_alias=True) + "\n"
+        self.commit_message(self.message)
         self.append_new_line(self.message.id, done=True)
