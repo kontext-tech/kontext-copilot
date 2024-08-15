@@ -2,8 +2,9 @@ from typing import Optional
 
 from kontext_copilot.copilot._prompt_factory import PromptFactory as pf
 from kontext_copilot.copilot._session import CopilotSession
+from kontext_copilot.copilot.tools._llm_chat_tool import LlmChatTool
 from kontext_copilot.copilot.tools._run_sql_tool import RunSqlTool
-from kontext_copilot.data.schemas import RunSqlRequestModel
+from kontext_copilot.data.schemas import ChatRequestModel, RunSqlRequestModel
 from kontext_copilot.services import (
     DataProviderService,
     get_data_sources_service,
@@ -21,9 +22,9 @@ class Planner:
     def init_session(
         self,
         model: str,
-        data_source_id: int,
-        tables: Optional[list[str]],
-        schema: Optional[str],
+        data_source_id: Optional[int] = None,
+        tables: Optional[list[str]] = None,
+        schema: Optional[str] = None,
         session_id: Optional[int] = None,
     ) -> CopilotSession:
         """
@@ -61,6 +62,14 @@ class Planner:
         self._check_session()
         tool = RunSqlTool(self.session)
         return tool.execute(request=request)
+
+    def chat(self, llm_host: str, request: ChatRequestModel):
+        """
+        Chat
+        """
+        self._check_session()
+        tool = LlmChatTool(self.session)
+        return tool.execute(llm_host=llm_host, request=request)
 
     def get_system_prompt(self):
         """

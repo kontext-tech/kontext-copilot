@@ -23,6 +23,7 @@
                   :key="`${i}-${message.role}`"
                >
                   <ChatMessageCard
+                     v-if="message.isSystemPrompt === undefined"
                      :message="message"
                      :username="settings.generalUsername"
                      @delete-clicked="handleDeleteClicked"
@@ -128,6 +129,18 @@ const sendMessage = async () => {
    }
    userInput.value = ""
 }
+
+watch(
+   () => llmToolbar.value?.model,
+   () => {
+      if (llmToolbar.value?.model)
+         copilotClient.initCopilotSession(
+            { model: llmToolbar.value.model },
+            callback,
+            true
+         )
+   }
+)
 
 const handleAbortClicked = () => {
    copilotClient.abort()

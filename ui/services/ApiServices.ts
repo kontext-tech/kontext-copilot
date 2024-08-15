@@ -19,7 +19,7 @@ export class SettingService {
       axios.defaults.baseURL = getBaseUrl(apiBaseUrl)
    }
 
-   async getSettings(): Promise<Settings> {
+   async getSettings(): Promise<SettingsModel> {
       const response = await axios.get("/settings/")
       return response.data
    }

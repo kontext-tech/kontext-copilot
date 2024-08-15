@@ -1,3 +1,5 @@
+import type { Options } from "ollama/browser"
+
 export enum ChatRoles {
    USER = "user",
    ASSISTANT = "assistant",
@@ -58,27 +60,6 @@ export interface CopilotSessionMessage extends LlmChatMessage {
 
    sqlStatements?: string[]
    done?: boolean
-   doneReason?: string
-   totalDuration?: number
-   loadDuration?: number
-   promptEvalCount?: number
-   promptEvalDuration?: number
-   evalCount?: number
-   evalDuration?: number
-}
-
-export interface LlmChatResponse {
-   id?: number
-   sessionId?: number
-   message: LlmChatMessage
-   generating?: boolean
-   isStreaming?: boolean
-   isError?: boolean
-   isSystemPrompt?: boolean
-   copilotGenerated?: boolean
-   sqlStatements?: string[]
-   done?: boolean
-   model?: string
    doneReason?: string
    totalDuration?: number
    loadDuration?: number
@@ -220,7 +201,7 @@ export type SqlType = keyof SqlStatementType
 
 export interface SessionInitRequestModel {
    model: string
-   dataSourceId: number
+   dataSourceId?: number
    tables?: string[]
    schemaName?: string
    sessionId?: number
@@ -242,6 +223,16 @@ export interface RunSqlRequestModel {
    schemaName?: string
    maxRecords?: number
    sessionId?: number
+}
+
+export interface ChatRequestModel {
+   model: string
+   messages?: LlmChatMessage[]
+   stream?: boolean
+   format: "" | "json"
+   options?: Options
+   keep_alive?: number | string
+   session_id?: number
 }
 
 export interface ErrorResponseModel {

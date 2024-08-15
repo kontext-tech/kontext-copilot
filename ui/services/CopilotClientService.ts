@@ -1,5 +1,5 @@
 import type LlmProxyService from "./LlmProxyService"
-import type { Message } from "ollama/browser"
+import type { Options } from "ollama/browser"
 import {
    ChatRoles,
    type CopilotSessionMessage,
@@ -53,7 +53,7 @@ export default class CopilotClientService {
          top_k: this.settings.value.llmTopK,
          top_p: this.settings.value.llmTopP,
          seed: this.settings.value.llmSeed
-      }
+      } as Options
    }
 
    private getLocalMessageId() {
@@ -146,7 +146,7 @@ export default class CopilotClientService {
             return {
                role: message.role,
                content: message.content
-            } as Message
+            } as LlmChatMessage
          })
    }
 
@@ -202,10 +202,12 @@ export default class CopilotClientService {
          )
       this.addMessage(this.state.currentMessage)
 
-      /*Create another system message about the tables and schema info */
-      const content = `Tables selected: ${tables && tables.length > 0 ? tables.join(", ") : "all"}; schema selected: ${schemaName ?? "default"}`
-      this.createSystemMessage(content, false, false, undefined, true)
-      if (callback) callback(content, content, true)
+      if (dataSourceId) {
+         /*Create another system message about the tables and schema info */
+         const content = `Tables selected: ${tables && tables.length > 0 ? tables.join(", ") : "all"}; schema selected: ${schemaName ?? "default"}`
+         this.createSystemMessage(content, false, false, undefined, true)
+         if (callback) callback(content, content, true)
+      }
    }
 
    async runCopilotSql(
@@ -231,7 +233,7 @@ export default class CopilotClientService {
          )
          this.startGenerating(true)
          for await (const part of response) {
-            this.updateMessage(part.message.content, part.id, part.done)
+            this.updateMessage(part.content, part.id, part.done)
             if (this.state.abort && !part) {
                response.abort()
                this.state.abort = false
@@ -241,7 +243,7 @@ export default class CopilotClientService {
 
             if (callback)
                callback(
-                  part.message.content,
+                  part.content,
                   this.state.currentMessage.content,
                   part.done ?? false
                )
@@ -273,17 +275,17 @@ export default class CopilotClientService {
 
       try {
          this.startGenerating()
-         let response = await this.llmService.service.chat({
+         const response = await this.llmService.chat({
             model: model,
             messages: this.getHistory(),
             stream: false,
-            options: this.getLlmOptions()
+            format: "",
+            options: this.getLlmOptions(),
+            session_id: this.state.session?.sessionId
          })
-         if (typeof response === "string") response = JSON.parse(response)
-         this.state.currentMessage.content = response.message.content
+         this.state.currentMessage.content = response.content
 
-         if (callback)
-            callback(response.message.content, response.message.content, true)
+         if (callback) callback(response.content, response.content, true)
       } catch (e) {
          this.state.currentMessage.content =
             e instanceof Error ? e.message : String(e)
@@ -308,15 +310,20 @@ export default class CopilotClientService {
 
       try {
          this.startGenerating(true)
-         const response = await this.llmService.service.chat({
-            model: model,
-            messages: this.getHistory(),
-            stream: true,
-            options: this.getLlmOptions()
-         })
+         const response = await this.llmService.chatStreaming(
+            {
+               model: model,
+               messages: this.getHistory(),
+               stream: true,
+               format: "",
+               options: this.getLlmOptions(),
+               session_id: this.state.session?.sessionId
+            },
+            () => {}
+         )
 
          for await (const part of response) {
-            this.updateMessage(part.message.content, undefined, part.done)
+            this.updateMessage(part.content, undefined, part.done)
 
             if (this.state.abort && !part.done) {
                response.abort()
@@ -326,7 +333,7 @@ export default class CopilotClientService {
             }
             if (callback)
                callback(
-                  part.message.content,
+                  part.content,
                   this.state.currentMessage.content,
                   part.done ?? false
                )

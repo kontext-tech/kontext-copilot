@@ -1,11 +1,12 @@
 import json
 import os
-from typing import List
-from sqlalchemy import Table
 from functools import lru_cache
+from typing import List
+
+from sqlalchemy import Table
 
 from kontext_copilot.copilot._types import PromptBuilder, PromptNode, PromptTypes
-from kontext_copilot.data.schemas import PromptModel, PromptListModel, DataSourceModel
+from kontext_copilot.data.schemas import DataSourceModel, PromptListModel, PromptModel
 from kontext_copilot.utils import get_logger
 
 # prompt template file path
@@ -26,6 +27,15 @@ class PromptFactory:
     """
     Factory class for creating prompts.
     """
+
+    @staticmethod
+    def create_default_system_prompt(**kwargs) -> PromptNode:
+        logger.info("Creating default system prompt")
+        prompt_model = PromptFactory.get_prompt_template_by_id("system-prompt-default")
+        return PromptNode(
+            prompt_type=PromptTypes.SYSTEM_PROMPT,
+            prompt_model=prompt_model,
+        )
 
     @staticmethod
     def create_system_prompt(

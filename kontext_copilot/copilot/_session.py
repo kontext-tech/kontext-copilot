@@ -21,9 +21,9 @@ class CopilotSession:
     def __init__(
         self,
         model: str,
-        data_source_id: int,
-        tables: Optional[list[str]],
-        schema: Optional[str],
+        data_source_id: Optional[int] = None,
+        tables: Optional[list[str]] = None,
+        schema: Optional[str] = None,
         session_id: Optional[int] = None,
     ):
         self.model = model
@@ -40,17 +40,20 @@ class CopilotSession:
         self._logger = get_logger()
         self._engine = get_engine()
         self._ds_service = get_data_sources_service(self._engine)
-        self.data_source = self._ds_service.get_data_source(self.data_source_id)
         self.session_service = get_session_service(self._engine)
-        if self.data_source is None:
-            raise ValueError(f"Data source not found: {self.data_source_id}")
-        self.data_provider = DataProviderService.get_data_provider(self.data_source)
+
+        if self.data_source_id:
+            self.data_source = self._ds_service.get_data_source(self.data_source_id)
+            self.data_provider = DataProviderService.get_data_provider(self.data_source)
+        else:
+            self.data_source = None
+            self.data_provider = None
 
         self.tables = []
 
-        if not self.table_names:
+        if not self.table_names and self.data_source_id:
             self.tables = self.data_provider.get_all_tables_info(self.schema)
-        else:
+        elif self.table_names:
             for table in self.table_names:
                 table_info = self.data_provider.get_table_info(table, self.schema)
                 self.tables.append(table_info)
@@ -85,6 +88,12 @@ class CopilotSession:
         else:
             self._logger.info("Creating new session")
             created_at = datetime.now()
+
+            if self.data_source:
+                title = f"{self.data_source.name}-{self.schema if self.schema else 'default'}-{int(created_at.timestamp())}"
+            else:
+                title = f"General chat - {int(created_at.timestamp())}"
+
             session_create = CreateSessionModel(
                 model=self.model,
                 data_source_id=self.data_source_id,
@@ -92,7 +101,7 @@ class CopilotSession:
                 schema_name=self.schema,
                 system_prompt=self.system_prompt.get_prompt_str(),
                 created_at=created_at,
-                title=f"{self.data_source.name}-{self.schema if self.schema else 'default'}-{int(created_at.timestamp())}",
+                title=title,
             )
             self.session_model = self.session_service.create_session(session_create)
             self._logger.info("Session created: %s", self.session_model.id)
@@ -101,6 +110,7 @@ class CopilotSession:
         """
         Get the session parameters
         """
+
         return {
             "database_name": self.data_source.name,
             "database_type": self.data_source.type.name,
@@ -118,9 +128,12 @@ class CopilotSession:
         Generate a system prompt for the current session
         """
         if not self.system_prompt or force:
-            self.system_prompt = pf.create_system_prompt(
-                self.data_source, self.tables, **self.get_params()
-            )
+            if self.data_source_id:
+                self.system_prompt = pf.create_system_prompt(
+                    self.data_source, self.tables, **self.get_params()
+                )
+            else:
+                self.system_prompt = pf.create_default_system_prompt()
 
     def get_system_prompt(self) -> PromptNode:
         """

@@ -1,8 +1,11 @@
 from datetime import datetime
-from typing import Optional
+from typing import Literal, Optional, Union
 
 from pydantic import field_validator
+
 from kontext_copilot.data.schemas._common import CamelAliasBaseModel
+from kontext_copilot.data.schemas._llm import LlmChatMessage
+from kontext_copilot.ollama._types import Options
 
 
 class RunSqlRequestModel(CamelAliasBaseModel):
@@ -15,7 +18,7 @@ class RunSqlRequestModel(CamelAliasBaseModel):
 
 class SessionInitRequestModel(CamelAliasBaseModel):
     model: str
-    data_source_id: int
+    data_source_id: Optional[int] = None
     tables: Optional[list[str]] = None
     schema_name: Optional[str] = None
     session_id: Optional[int] = None
@@ -28,11 +31,11 @@ class SessionInitResponseModel(CamelAliasBaseModel):
     schema_name: Optional[str] = None
     tables: Optional[list[str]] = None
     model: Optional[str] = None
-    data_source_id: int
+    data_source_id: Optional[int] = None
 
 
 class SessionUpdateModel(CamelAliasBaseModel):
-    data_source_id: int
+    data_source_id: Optional[int] = None
     tables: Optional[list[str]] = None
     schema_name: Optional[str] = None
     model: Optional[str] = None
@@ -70,7 +73,7 @@ class SessionModel(SessionUpdateModel):
 
 class CreateSessionModel(CamelAliasBaseModel):
     model: str
-    data_source_id: int
+    data_source_id: Optional[int] = None
     tables: Optional[list[str]] = None
     schema_name: Optional[str] = None
     system_prompt: Optional[str] = None
@@ -84,13 +87,13 @@ class CreateSessionModel(CamelAliasBaseModel):
         return data
 
 
-class SessionMessageModel(CamelAliasBaseModel):
-    id: int
-    session_id: int
+class SessionMessageModel(LlmChatMessage):
+    id: Optional[int] = None
+    session_id: Optional[int] = None
     content: Optional[str] = None
     role: Optional[str] = None
     model: Optional[str] = None
-    parent_message_id: Optional[int]
+    parent_message_id: Optional[int] = None
     done: Optional[bool] = False
     copilot_generated: Optional[bool] = False
     is_system_prompt: Optional[bool] = False
@@ -129,3 +132,13 @@ class UpdateSessionMessageModel(CamelAliasBaseModel):
     is_streaming: Optional[bool] = False
     generating: Optional[bool] = False
     actions: Optional[str] = None
+
+
+class ChatRequestModel(CamelAliasBaseModel):
+    model: str
+    messages: Optional[list[LlmChatMessage]] = None
+    stream: Optional[bool] = False
+    format: Literal["", "json"] = ""
+    options: Optional[Options] = None
+    keep_alive: Optional[Union[float, str]] = None
+    session_id: Optional[int] = None

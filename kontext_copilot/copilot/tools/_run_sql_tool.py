@@ -6,8 +6,8 @@ from kontext_copilot.copilot.tools._base_tool import BaseTool
 from kontext_copilot.data.schemas import (
     ChatRoles,
     LlmChatMessage,
-    LlmChatResponse,
     RunSqlRequestModel,
+    SessionMessageModel,
 )
 
 
@@ -73,9 +73,10 @@ class RunSqlTool(BaseTool):
 
     def _generate_response(self, response: Iterator[str]):
         for res in response:
-            message = LlmChatResponse(
+            message = SessionMessageModel(
                 id=self.message.id,
-                message=LlmChatMessage(role=ChatRoles.SYSTEM, content=res),
+                role=ChatRoles.SYSTEM,
+                content=res,
                 model="copilot",
                 created_at=datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
                 done=False,
@@ -88,9 +89,10 @@ class RunSqlTool(BaseTool):
             self.append_new_line(self.message.id)
 
         # Return a message to indicate the SQL execution is done
-        yield LlmChatResponse(
+        yield SessionMessageModel(
             id=self.message.id,
-            message=LlmChatMessage(role=ChatRoles.SYSTEM, content=""),
+            role=ChatRoles.SYSTEM,
+            content="",
             model="copilot",
             created_at=datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
             copilot_generated=True,

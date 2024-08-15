@@ -1,18 +1,17 @@
-from datetime import datetime
-from typing import Optional
+import json
+from typing import Generator, Optional
 
-from fastapi import APIRouter, Body
+from fastapi import APIRouter, Body, Depends, Response
 from fastapi.responses import StreamingResponse
 
 from kontext_copilot.copilot import Planner
 from kontext_copilot.data.schemas import (
-    ChatRoles,
-    LlmChatMessage,
-    LlmChatResponse,
+    ChatRequestModel,
     RunSqlRequestModel,
     SessionInitRequestModel,
     SessionInitResponseModel,
 )
+from kontext_copilot.services import SettingsService, get_settings_service
 from kontext_copilot.utils import get_logger
 
 router = APIRouter(
@@ -28,7 +27,7 @@ logger = get_logger()
 
 def _get_planner(
     model: str,
-    data_source_id: int,
+    data_source_id: Optional[int] = None,
     tables: Optional[list[str]] = None,
     schema: Optional[str] = None,
     session_id: Optional[int] = None,
@@ -38,8 +37,8 @@ def _get_planner(
     """
     planner = Planner()
     planner.init_session(
-        model=model,
-        data_source_id=data_source_id,
+        model,
+        data_source_id,
         tables=tables,
         schema=schema,
         session_id=session_id,
@@ -93,3 +92,27 @@ def run_sql(request: RunSqlRequestModel = Body(None)):
     return StreamingResponse(
         planner.run_sql(request=request), media_type="application/x-ndjson"
     )
+
+
+@router.post("/chat")
+async def chat(
+    request: ChatRequestModel, settings: SettingsService = Depends(get_settings_service)
+):
+    """
+    Run SQL
+    """
+    logger.info("Chat API invoked: %s", request)
+
+    planner = _get_planner(
+        model=request.model,
+        session_id=request.session_id,
+    )
+
+    chat_response = planner.chat(
+        settings.get_settings_obj().llm_ollama_endpoint, request=request
+    )
+
+    if isinstance(chat_response, Generator):
+        return StreamingResponse(chat_response, media_type="application/x-ndjson")
+    else:
+        return Response(chat_response)

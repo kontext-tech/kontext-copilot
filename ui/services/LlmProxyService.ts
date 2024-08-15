@@ -4,10 +4,11 @@ import { LlmEndointRequiredException } from "~/types/Errors"
 import type {
    SessionInitRequestModel,
    SessionInitResponseModel,
-   LlmChatResponse,
+   CopilotSessionMessage,
    RunSqlRequestModel,
    ErrorResponseModel,
-   LlmModelListResponse
+   LlmModelListResponse,
+   ChatRequestModel
 } from "~/types/Schemas"
 import { AbortableAsyncIterator } from "~/utils/CommonUtils"
 
@@ -48,10 +49,52 @@ export default class LlmProxyService {
       return response.data
    }
 
+   async chatStreaming(
+      request: ChatRequestModel,
+      doneCallback: () => void
+   ): Promise<AbortableAsyncIterator<CopilotSessionMessage>> {
+      const abortController = new AbortController()
+
+      const response = await fetch(
+         `${getBaseUrl(this.apiBaseUrl)}/copilot/chat`,
+         {
+            method: "POST",
+            headers: {
+               "Content-Type": "application/json"
+            },
+            body: JSON.stringify(request),
+            signal: abortController.signal
+         }
+      )
+
+      if (!response.body) {
+         throw new Error("No response body")
+      }
+
+      const itr = parseJSON<CopilotSessionMessage | ErrorResponseModel>(
+         response.body
+      )
+
+      const abortableAsyncIterator = new AbortableAsyncIterator(
+         abortController,
+         itr,
+         doneCallback
+      )
+      return abortableAsyncIterator
+   }
+
+   async chat(request: ChatRequestModel): Promise<CopilotSessionMessage> {
+      const response = await axios.post<CopilotSessionMessage>(
+         "/copilot/chat",
+         request
+      )
+      return response.data
+   }
+
    async runSql(
       request: RunSqlRequestModel,
       doneCallback: () => void
-   ): Promise<AbortableAsyncIterator<LlmChatResponse>> {
+   ): Promise<AbortableAsyncIterator<CopilotSessionMessage>> {
       const abortController = new AbortController()
 
       const response = await fetch(
@@ -70,7 +113,9 @@ export default class LlmProxyService {
          throw new Error("No response body")
       }
 
-      const itr = parseJSON<LlmChatResponse | ErrorResponseModel>(response.body)
+      const itr = parseJSON<CopilotSessionMessage | ErrorResponseModel>(
+         response.body
+      )
 
       const abortableAsyncIterator = new AbortableAsyncIterator(
          abortController,
