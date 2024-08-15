@@ -2,8 +2,7 @@ from datetime import datetime
 from typing import Optional
 
 from kontext_copilot.copilot._prompt_factory import PromptFactory as pf
-from kontext_copilot.copilot._types import PromptNode
-from kontext_copilot.data.schemas import CreateSessionModel
+from kontext_copilot.data.schemas import CreateSessionModel, PromptNode
 from kontext_copilot.services import (
     DataProviderService,
     get_data_sources_service,

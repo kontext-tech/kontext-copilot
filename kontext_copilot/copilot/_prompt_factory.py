@@ -5,8 +5,14 @@ from typing import List
 
 from sqlalchemy import Table
 
-from kontext_copilot.copilot._types import PromptBuilder, PromptNode, PromptTypes
-from kontext_copilot.data.schemas import DataSourceModel, PromptListModel, PromptModel
+from kontext_copilot.data.schemas import (
+    DataSourceModel,
+    PromptBuilder,
+    PromptListModel,
+    PromptModel,
+    PromptNode,
+    PromptTypes,
+)
 from kontext_copilot.utils import get_logger
 
 # prompt template file path

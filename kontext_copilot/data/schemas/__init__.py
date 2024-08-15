@@ -30,9 +30,14 @@ from kontext_copilot.data.schemas._llm import (
     LlmModelListResponse,
 )
 from kontext_copilot.data.schemas._prompt import (
+    PromptBuilder,
+    PromptDocument,
     PromptInfoModel,
     PromptListModel,
     PromptModel,
+    PromptNode,
+    PromptTypes,
+    QuestionTypes,
 )
 from kontext_copilot.data.schemas._setting import (
     GeneralSettingsModel,
@@ -79,4 +84,9 @@ __all__ = [
     "CreateSessionMessageModel",
     "UpdateSessionMessageModel",
     "ChatRequestModel",
+    "PromptBuilder",
+    "PromptDocument",
+    "PromptNode",
+    "PromptTypes",
+    "QuestionTypes",
 ]
