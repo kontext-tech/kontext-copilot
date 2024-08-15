@@ -1,21 +1,16 @@
 """FastAPI app with Nuxt.js frontend"""
 
-from contextlib import asynccontextmanager
 import os
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI, Request
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
-from fastapi.middleware.cors import CORSMiddleware
-from kontext_copilot.api import (
-    llm,
-    settings,
-    prompts,
-    data_sources,
-    data_providers,
-    copilot,
-)
+
+from kontext_copilot.api import copilot, data_providers, data_sources, prompts, settings
 from kontext_copilot.data.schemas import ErrorResponseModel
-from kontext_copilot.utils import HOST, IS_LOCAL, CLIENT_APP_DIR, PORT, get_logger
+from kontext_copilot.utils import CLIENT_APP_DIR, HOST, IS_LOCAL, PORT, get_logger
 
 
 @asynccontextmanager
@@ -57,7 +52,6 @@ async def hello():
 
 
 # Include the router in the FastAPI app
-app.include_router(llm.llm_router)
 app.include_router(settings.settings_router)
 app.include_router(prompts.prompts_router)
 app.include_router(data_sources.data_sources_router)

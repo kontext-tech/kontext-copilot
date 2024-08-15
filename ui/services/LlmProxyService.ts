@@ -1,5 +1,4 @@
 import axios from "axios"
-import { Ollama } from "ollama/browser"
 import { LlmEndointRequiredException } from "~/types/Errors"
 import type {
    SessionInitRequestModel,
@@ -8,7 +7,11 @@ import type {
    RunSqlRequestModel,
    ErrorResponseModel,
    LlmModelListResponse,
-   ChatRequestModel
+   ChatRequestModel,
+   EmbeddingsRequestModel,
+   EmbeddingsResponseModel,
+   GenerateRequestModel,
+   GenerateResponseModel
 } from "~/types/Schemas"
 import { AbortableAsyncIterator } from "~/utils/CommonUtils"
 
@@ -16,14 +19,12 @@ axios.defaults.headers.post["Content-Type"] = "application/json"
 
 export default class LlmProxyService {
    endpoint: string
-   service: Ollama
    models?: LlmModelListResponse
    apiBaseUrl: string
 
    constructor(endpoint: string, apiBaseUrl: string) {
       if (endpoint === undefined) throw new LlmEndointRequiredException()
       this.endpoint = endpoint
-      this.service = new Ollama({ host: this.endpoint })
       this.apiBaseUrl = apiBaseUrl
       axios.defaults.baseURL = getBaseUrl(apiBaseUrl)
    }
@@ -31,9 +32,7 @@ export default class LlmProxyService {
    async getModels(): Promise<LlmModelListResponse> {
       if (this.models === undefined) {
          /* Request without baseURL */
-         const response = await axios.get<LlmModelListResponse>(
-            `${this.apiBaseUrl}/llms/api/tags`
-         )
+         const response = await axios.get<LlmModelListResponse>(`/copilot/tags`)
          this.models = response.data
       }
       return this.models
@@ -44,6 +43,64 @@ export default class LlmProxyService {
    ): Promise<SessionInitResponseModel> {
       const response = await axios.post<SessionInitResponseModel>(
          "/copilot/init_session",
+         request
+      )
+      return response.data
+   }
+
+   async embeddings(
+      request: EmbeddingsRequestModel
+   ): Promise<EmbeddingsResponseModel> {
+      const response = await axios.post<EmbeddingsResponseModel>(
+         "/copilot/embeddings",
+         request
+      )
+      return response.data
+   }
+
+   async generateStreaming(
+      request: GenerateRequestModel & {
+         stream: true
+      },
+      doneCallback: () => void
+   ): Promise<AbortableAsyncIterator<GenerateResponseModel>> {
+      const abortController = new AbortController()
+
+      const response = await fetch(
+         `${getBaseUrl(this.apiBaseUrl)}/copilot/generate`,
+         {
+            method: "POST",
+            headers: {
+               "Content-Type": "application/json"
+            },
+            body: JSON.stringify(request),
+            signal: abortController.signal
+         }
+      )
+
+      if (!response.body) {
+         throw new Error("No response body")
+      }
+
+      const itr = parseJSON<GenerateResponseModel | ErrorResponseModel>(
+         response.body
+      )
+
+      const abortableAsyncIterator = new AbortableAsyncIterator(
+         abortController,
+         itr,
+         doneCallback
+      )
+      return abortableAsyncIterator
+   }
+
+   async generate(
+      request: GenerateRequestModel & {
+         stream?: false
+      }
+   ): Promise<GenerateResponseModel> {
+      const response = await axios.post<GenerateResponseModel>(
+         "/copilot/generate",
          request
       )
       return response.data

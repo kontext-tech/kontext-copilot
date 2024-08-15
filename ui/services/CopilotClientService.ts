@@ -1,12 +1,12 @@
 import type LlmProxyService from "./LlmProxyService"
-import type { Options } from "ollama/browser"
 import {
    ChatRoles,
    type CopilotSessionMessage,
    type SessionInitRequestModel,
    type CopilotState,
    type SettingsModel,
-   type LlmChatMessage
+   type LlmChatMessage,
+   type LLmOptions
 } from "~/types/Schemas"
 import {
    DataProviderServiceRequiredException,
@@ -53,7 +53,7 @@ export default class CopilotClientService {
          top_k: this.settings.value.llmTopK,
          top_p: this.settings.value.llmTopP,
          seed: this.settings.value.llmSeed
-      } as Options
+      } as LLmOptions
    }
 
    private getLocalMessageId() {
@@ -281,7 +281,7 @@ export default class CopilotClientService {
             stream: false,
             format: "",
             options: this.getLlmOptions(),
-            session_id: this.state.session?.sessionId
+            sessionId: this.state.session?.sessionId
          })
          this.state.currentMessage.content = response.content
 
@@ -317,7 +317,7 @@ export default class CopilotClientService {
                stream: true,
                format: "",
                options: this.getLlmOptions(),
-               session_id: this.state.session?.sessionId
+               sessionId: this.state.session?.sessionId
             },
             () => {}
          )
@@ -354,7 +354,7 @@ export default class CopilotClientService {
    async embeddings(prompt: string, model: string): Promise<string> {
       this.state.generatedContent = ""
       this.startGenerating()
-      this.llmService.service
+      this.llmService
          .embeddings({
             model: model,
             prompt: prompt,
@@ -386,14 +386,17 @@ export default class CopilotClientService {
       this.state.generatedContent = ""
       this.startGenerating()
       if (stream) {
-         const response = await this.llmService.service.generate({
-            model: model,
-            prompt: promptText,
-            system: systemPrompt,
-            format: format,
-            stream: true,
-            options: this.getLlmOptions()
-         })
+         const response = await this.llmService.generateStreaming(
+            {
+               model: model,
+               prompt: promptText,
+               system: systemPrompt,
+               format: format,
+               stream: true,
+               options: this.getLlmOptions()
+            },
+            () => {}
+         )
          for await (const part of response) {
             this.state.generatedContent += part.response
             if (this.state.abort && !part.done) {
@@ -409,7 +412,7 @@ export default class CopilotClientService {
             }
          }
       } else {
-         let res = await this.llmService.service.generate({
+         let res = await this.llmService.generate({
             model: model,
             prompt: promptText,
             system: systemPrompt,
