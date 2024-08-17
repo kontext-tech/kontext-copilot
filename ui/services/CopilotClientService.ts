@@ -209,7 +209,7 @@ export default class CopilotClientService {
          )
       this.addMessage(this.state.currentMessage)
 
-      if (dataSourceId) {
+      if (dataSourceId && !reinit) {
          /*Create another system message about the tables and schema info */
          const content = `Tables selected: ${tables && tables.length > 0 ? tables.join(", ") : "all"}; schema selected: ${schemaName ?? "default"}`
          this.createSystemMessage(content, false, false, undefined, true)
