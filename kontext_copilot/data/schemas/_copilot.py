@@ -184,3 +184,44 @@ class ChatRequestModel(CamelAliasBaseModel):
 class CodeBlockModel(CamelAliasBaseModel):
     language: Optional[str] = None
     code: str
+
+
+class EmbeddingsRequestModel(CamelAliasBaseModel):
+    model: str
+    prompt: str
+    keep_alive: Optional[Union[str, int]] = None
+    options: Optional[Options] = None
+
+
+class EmbeddingsResponseModel(CamelAliasBaseModel):
+    embedding: List[float]
+
+
+class GenerateRequestModel(CamelAliasBaseModel):
+    model: str
+    prompt: str
+    suffix: Optional[str] = None
+    system: Optional[str] = None
+    template: Optional[str] = None
+    context: Optional[List[int]] = None
+    stream: Optional[bool] = None
+    raw: Optional[bool] = None
+    format: Optional[str] = None
+    images: Optional[Union[List[bytes], List[str]]] = None
+    keep_alive: Optional[Union[str, int]] = None
+    options: Optional[Options] = None
+
+
+class GenerateResponseModel(CamelAliasBaseModel):
+    model: str
+    created_at: datetime
+    response: str
+    done: bool
+    done_reason: Optional[str] = None
+    context: Optional[List[int]] = None
+    total_duration: Optional[float] = None
+    load_duration: Optional[float] = None
+    prompt_eval_count: Optional[int] = None
+    prompt_eval_duration: Optional[float] = None
+    eval_count: Optional[int] = None
+    eval_duration: Optional[float] = None

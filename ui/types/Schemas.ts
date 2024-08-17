@@ -236,7 +236,7 @@ export interface ChatRequestModel {
 export interface EmbeddingsRequestModel {
    model: string
    prompt: string
-   keep_alive?: string | number
+   keepAlive?: string | number
    options?: Partial<LLmOptions>
 }
 
@@ -255,7 +255,7 @@ export interface GenerateRequestModel {
    raw?: boolean
    format?: string
    images?: Uint8Array[] | string[]
-   keep_alive?: string | number
+   keepAlive?: string | number
    options?: Partial<LLmOptions>
 }
 
@@ -264,14 +264,14 @@ export interface GenerateResponseModel {
    created_at: Date
    response: string
    done: boolean
-   done_reason: string
-   context: number[]
-   total_duration: number
-   load_duration: number
-   prompt_eval_count: number
-   prompt_eval_duration: number
-   eval_count: number
-   eval_duration: number
+   doneReasons?: string
+   context?: number[]
+   totalDuration?: number
+   loadDuration?: number
+   promptEvalCount?: number
+   promptEvalDuration?: number
+   evalCount?: number
+   evalDuration?: number
 }
 
 export interface LLmOptions {

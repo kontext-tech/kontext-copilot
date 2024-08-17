@@ -8,10 +8,16 @@ from kontext_copilot import ollama
 from kontext_copilot.copilot import Planner
 from kontext_copilot.data.schemas import (
     ChatRequestModel,
+    GenerateRequestModel,
+    GenerateResponseModel,
     LlmModelListResponse,
     RunSqlRequestModel,
     SessionInitRequestModel,
     SessionInitResponseModel,
+)
+from kontext_copilot.data.schemas._copilot import (
+    EmbeddingsRequestModel,
+    EmbeddingsResponseModel,
 )
 from kontext_copilot.services import SettingsService, get_settings_service
 from kontext_copilot.utils import get_logger
@@ -141,34 +147,39 @@ def list_models(
 
 @router.post("/generate")
 async def generate(
-    request: Request, settings_service: SettingsService = Depends(get_settings_service)
+    request: GenerateRequestModel = Body(None),
+    settings_service: SettingsService = Depends(get_settings_service),
 ):
-    params = await request.json()
-    logger.debug("Generate API invoked: %s", params)
+    logger.debug("Generate API invoked: %s", request)
 
     client = _get_client(settings_service=settings_service)
-    response = client.generate(**params)
+    response = client.generate(**request.model_dump(exclude_unset=True))
 
     # Always return as streaming
     if isinstance(response, Iterator):
 
         def generate_response():
             for res in iter(response):
-                yield json.dumps(res) + "\n"
+                yield GenerateResponseModel(**res).model_dump_json(
+                    exclude_unset=True
+                ) + "\n"
 
         return StreamingResponse(generate_response(), media_type="application/x-ndjson")
 
     if response is not None:
-        return json.dumps(response)
+        return Response(
+            GenerateResponseModel(**response).model_dump_json(by_alias=True)
+        )
 
 
 @router.post("/embeddings")
 async def generate_embeddings(
-    request: Request, settings_service: SettingsService = Depends(get_settings_service)
+    request: EmbeddingsRequestModel = Body(None),
+    settings_service: SettingsService = Depends(get_settings_service),
 ):
-    params = await request.json()
-    logger.debug("Embeddings API invoked: %s", params)
+    logger.debug("Embeddings API invoked: %s", request)
 
     client = _get_client(settings_service=settings_service)
-    response = client.embeddings(**params)
-    return response
+    response = client.embeddings(**request.model_dump(exclude_unset=True))
+    reseponse_model = EmbeddingsResponseModel(**response)
+    return Response(reseponse_model.model_dump_json(by_alias=True))
