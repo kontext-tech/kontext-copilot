@@ -1,10 +1,50 @@
+import re
+
 from kontext_copilot.copilot._session import CopilotSession
 from kontext_copilot.copilot.tools._base_tool import BaseTool
+from kontext_copilot.data.schemas import (
+    ActionModel,
+    ActionTypes,
+    CodeBlockModel,
+    SessionMessageModel,
+)
 
 
 class ExtractSqlTool(BaseTool):
+    """Extract SQL from markdown content"""
+
     def __init__(self, session: CopilotSession) -> None:
         super().__init__("Extract SQL", session)
 
-    def execute(self, **kwargs):
-        pass
+    def execute(self, message: SessionMessageModel) -> None:
+        """Extract sql"""
+        self._logger.info("Extracting SQL from message: %s", message.content)
+        code_blocks = self._extract_code(message.content)
+        # Find all sql code blocks
+        sql_code_blocks = [
+            code_block for code_block in code_blocks if code_block.language == "sql"
+        ]
+        if len(sql_code_blocks) > 0:
+            action = ActionModel(
+                action=ActionTypes.RUN_SQL,
+                data={"sql": [cb.code for cb in sql_code_blocks]},
+            )
+            self._logger.info("Adding action: %s", action)
+            if message.actions is None:
+                message.actions = []
+            message.actions.append(action)
+
+    def _extract_code(self, markdown: str) -> list[CodeBlockModel]:
+        """Extract code blocks from markdown content"""
+
+        pattern = r"```\s*(?P<language>\w+)?(?P<code>.*?)```"
+
+        # find all the matches of language and code blocks and convert to dictionary
+        matches = re.finditer(pattern, markdown, re.DOTALL)
+
+        return [
+            CodeBlockModel(
+                language=match.group("language") or "unknown", code=match.group("code")
+            )
+            for match in matches
+        ]

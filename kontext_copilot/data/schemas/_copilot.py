@@ -1,11 +1,24 @@
+import json
 from datetime import datetime
-from typing import Literal, Optional, Union
+from enum import Enum
+from typing import Any, Dict, List, Literal, Optional, Union
 
 from pydantic import field_validator
 
 from kontext_copilot.data.schemas._common import CamelAliasBaseModel
 from kontext_copilot.data.schemas._llm import LlmChatMessage
 from kontext_copilot.ollama._types import Options
+
+
+class ActionTypes(str, Enum):
+    RUN_SQL = "run_sql"
+    SQL_TO_PYTHON = "sql_to_python"
+    SQL_TO_PYSPARK = "sql_to_pyspark"
+
+
+class ActionModel(CamelAliasBaseModel):
+    action: ActionTypes
+    data: Optional[Dict[str, Any]] = None
 
 
 class RunSqlRequestModel(CamelAliasBaseModel):
@@ -80,8 +93,11 @@ class CreateSessionModel(CamelAliasBaseModel):
     title: Optional[str] = None
     created_at: datetime
 
-    def model_dump(self):
-        data = super().model_dump()
+    def model_dump(
+        self,
+        **kwargs,
+    ):
+        data = super().model_dump(**kwargs)
         if isinstance(data["tables"], list):
             data["tables"] = ",".join(data["tables"])
         return data
@@ -100,8 +116,19 @@ class SessionMessageModel(LlmChatMessage):
     is_error: Optional[bool] = False
     is_streaming: Optional[bool] = False
     generating: Optional[bool] = False
-    actions: Optional[str] = None
+    actions: Optional[List[ActionModel]] = None
     created_at: Optional[datetime] = datetime.now()
+
+    # Convert actions from JSON str to list of ActionModel
+    @field_validator("actions", mode="before")
+    def convert_actions(cls, value):
+        if value is None:
+            return []
+        # if it is a string, convert to list of action model from JSON
+        if isinstance(value, str):
+            return [ActionModel(**action) for action in json.loads(value)]
+        else:
+            return value
 
 
 class CreateSessionMessageModel(CamelAliasBaseModel):
@@ -116,7 +143,7 @@ class CreateSessionMessageModel(CamelAliasBaseModel):
     is_error: Optional[bool] = False
     is_streaming: Optional[bool] = False
     generating: Optional[bool] = False
-    actions: Optional[str] = None
+    actions: Optional[List[ActionModel]] = None
 
 
 class UpdateSessionMessageModel(CamelAliasBaseModel):
@@ -131,7 +158,17 @@ class UpdateSessionMessageModel(CamelAliasBaseModel):
     is_error: Optional[bool] = False
     is_streaming: Optional[bool] = False
     generating: Optional[bool] = False
-    actions: Optional[str] = None
+    actions: Optional[List[ActionModel]] = None
+
+    def model_dump(
+        self,
+        **kwargs,
+    ):
+        data = super().model_dump(**kwargs)
+        if isinstance(data["actions"], list):
+            # Convert to json string
+            data["actions"] = json.dumps(data["actions"])
+        return data
 
 
 class ChatRequestModel(CamelAliasBaseModel):
@@ -142,3 +179,8 @@ class ChatRequestModel(CamelAliasBaseModel):
     options: Optional[Options] = None
     keep_alive: Optional[Union[float, str]] = None
     session_id: Optional[int] = None
+
+
+class CodeBlockModel(CamelAliasBaseModel):
+    language: Optional[str] = None
+    code: str

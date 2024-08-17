@@ -1,6 +1,9 @@
 from kontext_copilot.data.schemas._common import ChatRoles, ErrorResponseModel
 from kontext_copilot.data.schemas._copilot import (
+    ActionModel,
+    ActionTypes,
     ChatRequestModel,
+    CodeBlockModel,
     CreateSessionMessageModel,
     CreateSessionModel,
     RunSqlRequestModel,
@@ -89,4 +92,7 @@ __all__ = [
     "PromptNode",
     "PromptTypes",
     "QuestionTypes",
+    "CodeBlockModel",
+    "ActionModel",
+    "ActionTypes",
 ]

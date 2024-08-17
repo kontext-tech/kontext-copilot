@@ -3,8 +3,12 @@ from typing import Iterator
 from kontext_copilot import ollama
 from kontext_copilot.copilot._session import CopilotSession
 from kontext_copilot.copilot.tools._base_tool import BaseTool
-from kontext_copilot.data.schemas import ChatRequestModel, SessionMessageModel
-from kontext_copilot.data.schemas._common import ChatRoles
+from kontext_copilot.copilot.tools._extract_sql_tool import ExtractSqlTool
+from kontext_copilot.data.schemas import (
+    ChatRequestModel,
+    ChatRoles,
+    SessionMessageModel,
+)
 from kontext_copilot.ollama._types import Message
 
 
@@ -22,12 +26,12 @@ def _to_pydantic_model(response) -> SessionMessageModel:
 class LlmChatTool(BaseTool):
     def __init__(self, session: CopilotSession) -> None:
         super().__init__("LLM Chat", session)
+        self.extract_sql_tool = ExtractSqlTool(session)
 
     def execute(
         self,
         llm_host: str,
         request: ChatRequestModel,
-        **kwargs,
     ):
         client = ollama.Client(
             host=llm_host,
@@ -66,8 +70,12 @@ class LlmChatTool(BaseTool):
                     res.id = self.message.id
                     res.session_id = self.session.session_id
                     self.message.content += res.content
+                    # Extract sql at the end
+                    if res.done:
+                        self._extract_sql(self.message)
+                        res.actions = self.message.actions
                     yield res.model_dump_json(by_alias=True) + "\n"
-                    self.message.content += "\n"
+
                 self.commit_message(self.message)
 
             return generate_response()
@@ -77,4 +85,11 @@ class LlmChatTool(BaseTool):
             res.id = self.message.id
             res.session_id = self.session.session_id
             self.append_message_part(self.message.id, res.content, done=True)
+            # extract sql code blocks
+            self._extract_sql(self.message)
+            self.commit_message(self.message)
             return res.model_dump_json(by_alias=True)
+
+    def _extract_sql(self, message: SessionMessageModel):
+        if self.session.session_model.data_source_id is not None:
+            self.extract_sql_tool.execute(message)

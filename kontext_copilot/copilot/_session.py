@@ -22,13 +22,13 @@ class CopilotSession:
         model: str,
         data_source_id: Optional[int] = None,
         tables: Optional[list[str]] = None,
-        schema: Optional[str] = None,
+        schema_name: Optional[str] = None,
         session_id: Optional[int] = None,
     ):
         self.model = model
         self.data_source_id = data_source_id
         self.table_names = tables
-        self.schema = schema
+        self.schema_name = schema_name
         self.session_id = session_id
         self._initialise()
 
@@ -41,7 +41,7 @@ class CopilotSession:
         self._ds_service = get_data_sources_service(self._engine)
         self.session_service = get_session_service(self._engine)
 
-        if self.data_source_id:
+        if self.data_source_id is not None:
             self.data_source = self._ds_service.get_data_source(self.data_source_id)
             self.data_provider = DataProviderService.get_data_provider(self.data_source)
         else:
@@ -51,10 +51,10 @@ class CopilotSession:
         self.tables = []
 
         if not self.table_names and self.data_source_id:
-            self.tables = self.data_provider.get_all_tables_info(self.schema)
+            self.tables = self.data_provider.get_all_tables_info(self.schema_name)
         elif self.table_names:
             for table in self.table_names:
-                table_info = self.data_provider.get_table_info(table, self.schema)
+                table_info = self.data_provider.get_table_info(table, self.schema_name)
                 self.tables.append(table_info)
 
         self.system_prompt: PromptNode = None
@@ -76,20 +76,26 @@ class CopilotSession:
                 session_exists = True
 
         if session_exists:
-            self._logger.info("Updating existing session: %s", self.session_id)
-            self.session_model.system_prompt = self.system_prompt.get_prompt_str()
-            self.session_model.data_source_id = self.data_source_id
-            self.session_model.tables = self.table_names
-            self.session_model.schema_name = self.schema
-            self.session_model = self.session_service.update_session(
-                self.session_id, self.session_model
-            )
+            # For chat messages request, data_source_id is not provided
+            if self.data_source_id is not None:
+                self._logger.info("Updating existing session: %s", self.session_id)
+                self.session_model.system_prompt = self.system_prompt.get_prompt_str()
+                self.session_model.data_source_id = self.data_source_id
+                self.session_model.tables = self.table_names
+                self.session_model.schema_name = self.schema_name
+                self.session_model = self.session_service.update_session(
+                    self.session_id, self.session_model
+                )
+            else:
+                self.data_source_id = self.session_model.data_source_id
+                self.table_names = self.session_model.tables
+                self.schema_name = self.session_model.schema_name
         else:
             self._logger.info("Creating new session")
             created_at = datetime.now()
 
             if self.data_source:
-                title = f"{self.data_source.name}-{self.schema if self.schema else 'default'}-{int(created_at.timestamp())}"
+                title = f"{self.data_source.name}-{self.schema_name if self.schema_name else 'default'}-{int(created_at.timestamp())}"
             else:
                 title = f"General chat - {int(created_at.timestamp())}"
 
@@ -97,7 +103,7 @@ class CopilotSession:
                 model=self.model,
                 data_source_id=self.data_source_id,
                 tables=self.table_names,
-                schema_name=self.schema,
+                schema_name=self.schema_name,
                 system_prompt=self.system_prompt.get_prompt_str(),
                 created_at=created_at,
                 title=title,
@@ -113,7 +119,7 @@ class CopilotSession:
         return {
             "database_name": self.data_source.name,
             "database_type": self.data_source.type.name,
-            "schema": self.schema,
+            "schema": self.schema_name,
         }
 
     def get_tables(self):

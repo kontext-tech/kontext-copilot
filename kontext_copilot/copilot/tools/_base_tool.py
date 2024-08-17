@@ -84,7 +84,10 @@ class BaseTool:
             self.session.session_id,
             message_id=message.id,
             message_update=UpdateSessionMessageModel(
-                content=message.content, generating=False, done=True
+                content=message.content,
+                generating=False,
+                done=True,
+                actions=message.actions,
             ),
         )
 
