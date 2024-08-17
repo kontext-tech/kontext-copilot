@@ -5,7 +5,6 @@ from kontext_copilot.copilot._session import CopilotSession
 from kontext_copilot.copilot.tools._base_tool import BaseTool
 from kontext_copilot.data.schemas import (
     ChatRoles,
-    LlmChatMessage,
     RunSqlRequestModel,
     SessionMessageModel,
 )
@@ -26,6 +25,7 @@ class RunSqlTool(BaseTool):
             role=ChatRoles.SYSTEM,
             is_streaming=True,
             copilot_generated=True,
+            parent_message_id=request.parent_message_id,
         )
         response = self._run_sql(sql, max_records)
         return self._generate_response(response)
@@ -83,6 +83,7 @@ class RunSqlTool(BaseTool):
                 copilot_generated=True,
                 generating=True,
                 session_id=self.session.session_id,
+                parent_message_id=self.message.parent_message_id,
             )
             self.message.content += res
             yield message.model_dump_json(by_alias=True) + "\n"
@@ -99,6 +100,7 @@ class RunSqlTool(BaseTool):
             done=True,
             generating=False,
             session_id=self.session.session_id,
+            parent_message_id=self.message.parent_message_id,
         ).model_dump_json(by_alias=True) + "\n"
         self.commit_message(self.message)
         self.append_new_line(self.message.id, done=True)

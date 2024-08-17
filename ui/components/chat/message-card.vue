@@ -55,21 +55,12 @@
                @click="copyMessage"
                ><Icon name="material-symbols:content-copy-outline" />
             </BButton>
-            <template
-               v-if="message.sqlStatements && message.sqlStatements.length > 0"
-            >
-               <BButton
-                  v-for="(sql, i) in message.sqlStatements"
-                  :key="`sql-${i}`"
-                  variant="outline-primary"
-                  size="sm"
-                  title="Run SQL"
-                  @click="runSql(sql, i, message.id)"
-                  ><Icon name="material-symbols:play-arrow-outline" />
-                  <span v-if="i === 0">Run SQL</span>
-                  <span v-else>Run SQL {{ i }}</span>
-               </BButton>
-            </template>
+            <ChatActionBar
+               v-if="message.actions && message.actions.length > 0"
+               :actions="message.actions"
+               :message-id="message.id"
+               @run-sql="runSql"
+            ></ChatActionBar>
 
             <BButton
                v-if="message.isError"
@@ -122,8 +113,8 @@ const deleteMsg = () => {
    emits("delete-clicked", props.message.id)
 }
 
-const runSql = (sql: string, index: number, messageId?: number) => {
-   emits("run-sql-clicked", sql, index, messageId)
+const runSql = (sql: string, messageId?: number) => {
+   emits("run-sql-clicked", sql, messageId)
 }
 
 const emits = defineEmits([

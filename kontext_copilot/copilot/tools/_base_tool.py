@@ -1,4 +1,5 @@
 from abc import abstractmethod
+from typing import Optional
 
 from kontext_copilot.copilot._session import CopilotSession
 from kontext_copilot.data.schemas import (
@@ -36,6 +37,7 @@ class BaseTool:
         is_streaming: bool = False,
         copilot_generated: bool = True,
         generating: bool = True,
+        parent_message_id: Optional[int] = None,
     ) -> SessionMessageModel:
         """
         Add a new message to the session
@@ -48,6 +50,7 @@ class BaseTool:
             is_streaming,
             copilot_generated,
             generating,
+            parent_message_id,
         )
         message_model = CreateSessionMessageModel(
             session_id=self.session.session_id,
@@ -57,6 +60,7 @@ class BaseTool:
             is_streaming=is_streaming,
             copilot_generated=copilot_generated,
             generating=generating,
+            parent_message_id=parent_message_id,
         )
         return self.session.session_service.add_session_message(
             self.session.session_id, message_model

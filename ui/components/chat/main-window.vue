@@ -117,9 +117,15 @@ const handleDeleteClicked = (messageId: number) => {
    copilotClient.deleteSessionMessage(messageId)
 }
 
-const handlRunSqlClicked = async (sql: string) => {
+const handlRunSqlClicked = async (sql: string, messageId?: number) => {
    if (!props.dataSourceId) return
-   copilotClient.runCopilotSql(props.dataSourceId, sql, props.schema, callback)
+   copilotClient.runCopilotSql(
+      props.dataSourceId,
+      sql,
+      props.schema,
+      messageId,
+      callback
+   )
 }
 
 const props = defineProps<ChatToDataCommonProps>()

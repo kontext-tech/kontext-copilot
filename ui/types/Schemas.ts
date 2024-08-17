@@ -46,6 +46,17 @@ export interface LlmChatMessage {
    role: ChatRoles
 }
 
+export enum ActionTypes {
+   RUN_SQL = "run_sql",
+   SQL_TO_PYTHON = "sql_to_python",
+   SQL_TO_PYSPARK = "sql_to_pyspark"
+}
+
+export interface ActionModel {
+   action: ActionTypes
+   data?: { [key: string]: unknown }
+}
+
 export interface CopilotSessionMessage extends LlmChatMessage {
    id?: number
    sessionId?: number
@@ -55,8 +66,6 @@ export interface CopilotSessionMessage extends LlmChatMessage {
    isError?: boolean
    isSystemPrompt?: boolean
    copilotGenerated?: boolean
-
-   sqlStatements?: string[]
    done?: boolean
    doneReason?: string
    totalDuration?: number
@@ -65,6 +74,7 @@ export interface CopilotSessionMessage extends LlmChatMessage {
    promptEvalDuration?: number
    evalCount?: number
    evalDuration?: number
+   actions?: ActionModel[]
 }
 
 export interface LlmToolbarOptions {
@@ -221,6 +231,7 @@ export interface RunSqlRequestModel {
    schemaName?: string
    maxRecords?: number
    sessionId?: number
+   parentMessageId?: number
 }
 
 export interface ChatRequestModel {

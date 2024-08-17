@@ -6,7 +6,8 @@ import {
    type CopilotState,
    type SettingsModel,
    type LlmChatMessage,
-   type LLmOptions
+   type LLmOptions,
+   type ActionModel
 } from "~/types/Schemas"
 import {
    DataProviderServiceRequiredException,
@@ -124,11 +125,17 @@ export default class CopilotClientService {
       this.state.generating = false
    }
 
-   private updateMessage(part: string, id?: number, done?: boolean) {
+   private updateMessage(
+      part: string,
+      id?: number,
+      done?: boolean,
+      actions?: ActionModel[]
+   ) {
       if (this.state.currentMessage) {
          if (part) this.state.currentMessage.content += part
          if (done) this.state.currentMessage.done = done
          if (id) this.state.currentMessage.id = id
+         if (actions) this.state.currentMessage.actions = actions
       }
    }
 
@@ -214,6 +221,7 @@ export default class CopilotClientService {
       dataSourceId: number,
       sql: string,
       schema?: string,
+      parentMessageId?: number,
       callback?: CopilotChatCallback
    ) {
       this.checkSession()
@@ -227,13 +235,14 @@ export default class CopilotClientService {
                dataSourceId: dataSourceId,
                sql: sql,
                schemaName: schema,
-               sessionId: this.state.session?.sessionId
+               sessionId: this.state.session?.sessionId,
+               parentMessageId
             },
             () => {}
          )
          this.startGenerating(true)
          for await (const part of response) {
-            this.updateMessage(part.content, part.id, part.done)
+            this.updateMessage(part.content, part.id, part.done, part.actions)
             if (this.state.abort && !part) {
                response.abort()
                this.state.abort = false
@@ -283,7 +292,12 @@ export default class CopilotClientService {
             options: this.getLlmOptions(),
             sessionId: this.state.session?.sessionId
          })
-         this.state.currentMessage.content = response.content
+         this.updateMessage(
+            response.content,
+            response.id,
+            true,
+            response.actions
+         )
 
          if (callback) callback(response.content, response.content, true)
       } catch (e) {
@@ -323,7 +337,7 @@ export default class CopilotClientService {
          )
 
          for await (const part of response) {
-            this.updateMessage(part.content, undefined, part.done)
+            this.updateMessage(part.content, part.id, part.done, part.actions)
 
             if (this.state.abort && !part.done) {
                response.abort()

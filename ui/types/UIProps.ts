@@ -38,3 +38,9 @@ export interface SchemaSelectorModel {
    schema?: string
    tables: string[]
 }
+
+export interface RunSqlModalModel {
+   open: boolean
+   sql: string
+   maxRecords?: number
+}

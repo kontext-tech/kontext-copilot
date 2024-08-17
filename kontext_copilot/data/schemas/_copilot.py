@@ -27,6 +27,7 @@ class RunSqlRequestModel(CamelAliasBaseModel):
     schema_name: Optional[str] = None
     max_records: Optional[int] = 10
     session_id: Optional[int] = None
+    parent_message_id: Optional[int] = None
 
 
 class SessionInitRequestModel(CamelAliasBaseModel):
