@@ -91,6 +91,11 @@ textarea.main-textarea {
    pre {
       white-space: pre-wrap; /* Ensures text wraps */
       overflow-x: auto; /* Enables horizontal scrolling if needed */
+      word-wrap: break-word; /* Breaks long words onto the next line */
+      code {
+         white-space: pre-wrap;
+         word-break: break-all;
+      }
    }
 }
 
