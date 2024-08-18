@@ -29,12 +29,6 @@ export default defineAppConfig({
          flat: true,
          children: [
             {
-               id: "dataSources",
-               to: "/data-sources",
-               icon: "material-symbols:database-outline",
-               text: "Data sources"
-            },
-            {
                id: "chatToData",
                to: "/chat-to-data",
                icon: "material-symbols:chat-outline",
@@ -79,6 +73,12 @@ export default defineAppConfig({
       // { id: "dataSources", to: '/data-sources', icon: 'material-symbols:database-outline', text: 'Data sources' },
 
       // { id: "databoards", to: '/dashboards', icon: 'material-symbols:dashboard-customize-outline', text: 'Dashboards' },
+      {
+         id: "dataSources",
+         to: "/data-sources",
+         icon: "material-symbols:database-outline",
+         text: "Data sources"
+      },
       {
          id: "settings",
          to: "/settings",

@@ -1,22 +1,29 @@
 <template>
-   <template v-for="(action, i) in props.actions.actions" :key="`action-${i}`">
+   <template
+      v-for="(action, i) in props.actions.actions"
+      :key="`action-${props.messageId}-${i}`"
+   >
       <BButton
-         id="`action-{ i }`"
-         v-b-tooltip.click.top="{ title: 'Copied' }"
+         :id="`action-${props.messageId}-${i}`"
          variant="outline-primary"
          size="sm"
-         @click="runAction(action)"
+         @click="runAction(action, i)"
       >
          {{ actionText(action) }}
       </BButton>
-      <BTooltip
+      <BPopover
          v-if="action === ActionTypes.COPY_SQL"
-         ref="tooltipCopiedSql"
-         target="`action-{ i }`"
+         :click="true"
+         :close-on-hide="true"
+         :delay="{ show: 0, hide: 0 }"
+         :target="`action-${props.messageId}-${i}`"
+         :disabled="popovers.statues[i]"
          placement="top"
-         title="Copied"
+         title="Copied!"
+         tooltip
+         triggers="click"
       >
-      </BTooltip>
+      </BPopover>
    </template>
 
    <ChatRunSqlModal
@@ -27,12 +34,16 @@
 </template>
 
 <script setup lang="ts">
-import { ActionTypes, type ActionsModel } from "~/types/Schemas"
+import {
+   ActionsDataKeys,
+   ActionTypes,
+   type ActionsModel
+} from "~/types/Schemas"
 import type { RunSqlModalModel } from "~/types/UIProps"
 import { useClipboard } from "@vueuse/core"
 
 const props = defineProps<{ actions: ActionsModel; messageId?: number }>()
-const emits = defineEmits(["run-sql"])
+const emits = defineEmits(["run-sql", "user-input"])
 const { copy } = useClipboard()
 
 const runSqlModal = reactive<RunSqlModalModel>({
@@ -40,47 +51,80 @@ const runSqlModal = reactive<RunSqlModalModel>({
    sql: ""
 })
 
+const popovers = reactive({
+   statues: props.actions.actions.map(() => false)
+})
+
 const sqlStatements = ref<string[]>([])
 
-const actionText = (action: ActionTypes) => {
-   switch (action) {
-      case ActionTypes.RUN_SQL:
-         return "Run SQL"
-      case ActionTypes.COPY_SQL:
-         return "Copy SQL"
-      default:
-         return action
-   }
-}
+const actionText = (action: ActionTypes) => getActionName(action)
 
-const runAction = (action: ActionTypes) => {
+const runAction = (action: ActionTypes, index: number) => {
    switch (action) {
       case ActionTypes.RUN_SQL:
          executeRunSqlAction()
          break
       case ActionTypes.COPY_SQL:
-         executeCopySqlAction()
+         executeCopySqlAction(index)
+         break
+      case ActionTypes.SQL_TO_PYTHON:
+         executeSqlToPythonAction()
+         break
+      case ActionTypes.SQL_TO_PYSPARK:
+         executeSqlToPysparkAction()
          break
    }
 }
 
-const executeCopySqlAction = () => {
+const executeSqlToPythonAction = () => {
    if (
       props.actions.data &&
-      props.actions.data.sqlText &&
-      typeof props.actions.data.sqlText === "string"
+      props.actions.data[ActionsDataKeys.SQL_TO_PYTHON_PROMPT] &&
+      typeof props.actions.data[ActionsDataKeys.SQL_TO_PYTHON_PROMPT] ===
+         "string"
    ) {
-      copy(props.actions.data.sqlText)
+      emits(
+         "user-input",
+         props.actions.data[ActionsDataKeys.SQL_TO_PYTHON_PROMPT]
+      )
+   }
+}
+
+const executeSqlToPysparkAction = () => {
+   if (
+      props.actions.data &&
+      props.actions.data[ActionsDataKeys.SQL_TO_PYSPARK_PROMPT] &&
+      typeof props.actions.data[ActionsDataKeys.SQL_TO_PYSPARK_PROMPT] ===
+         "string"
+   ) {
+      emits(
+         "user-input",
+         props.actions.data[ActionsDataKeys.SQL_TO_PYSPARK_PROMPT]
+      )
+   }
+}
+
+const executeCopySqlAction = (index: number) => {
+   if (
+      props.actions.data &&
+      props.actions.data[ActionsDataKeys.SQL_TEXT] &&
+      typeof props.actions.data[ActionsDataKeys.SQL_TEXT] === "string"
+   ) {
+      copy(props.actions.data[ActionsDataKeys.SQL_TEXT])
+      // Dynamically trigger the tooltip
+      popovers.statues[index] = true
    }
 }
 
 const executeRunSqlAction = () => {
    if (
       props.actions.data &&
-      props.actions.data.sql &&
-      Array.isArray(props.actions.data.sql)
+      props.actions.data[ActionsDataKeys.SQL_LIST] &&
+      Array.isArray(props.actions.data[ActionsDataKeys.SQL_LIST])
    ) {
-      sqlStatements.value = props.actions.data.sql.map((d) => String(d))
+      sqlStatements.value = props.actions.data[ActionsDataKeys.SQL_LIST].map(
+         (d) => String(d)
+      )
       runSqlModal.open = true
    }
 }

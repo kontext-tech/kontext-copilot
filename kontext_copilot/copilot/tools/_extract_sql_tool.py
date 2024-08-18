@@ -26,9 +26,9 @@ class ExtractSqlTool(BaseTool):
         ]
         if len(sql_code_blocks) > 0:
             message.init_actions()
-            self._logger.info("Adding action: %s", ActionTypes.RUN_SQL)
-            message.add_action(
-                ActionTypes.RUN_SQL,
+            self._logger.info("Adding actions: %s", ActionTypes.RUN_SQL)
+            message.add_actions(
+                [ActionTypes.RUN_SQL],
                 {ActionsDataKeys.SQL_LIST: [cb.code for cb in sql_code_blocks]},
             )
 

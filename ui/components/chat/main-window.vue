@@ -17,6 +17,7 @@
                   @delete-clicked="handleDeleteClicked"
                   @run-sql-clicked="handlRunSqlClicked"
                   @abort-clicked="handleAbortClicked"
+                  @user-input="handleUserInput"
                />
             </template>
             <ChatMessageCard
@@ -100,6 +101,11 @@ const handlRunSqlClicked = async (sql: string, messageId?: number) => {
       messageId,
       callback
    )
+}
+
+const handleUserInput = (input: string) => {
+   if (!props.model) return
+   copilotClient.chatStreaming(input, props.model, callback)
 }
 
 const props = defineProps<ChatToDataCommonProps>()

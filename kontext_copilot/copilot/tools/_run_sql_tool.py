@@ -93,7 +93,7 @@ class RunSqlTool(BaseTool):
             self.message.content += "\n"
 
         # add actions to copy sql
-        self.add_copy_action(self.message, self.sql)
+        self.add_sql_related_actions(self.message, self.sql)
 
         # Return a message to indicate the SQL execution is done
         yield SessionMessageModel(
@@ -112,10 +112,26 @@ class RunSqlTool(BaseTool):
         self.commit_message(self.message)
         self.append_new_line(self.message.id, done=True)
 
-    def add_copy_action(self, message: SessionMessageModel, sql: str):
+    def add_sql_related_actions(self, message: SessionMessageModel, sql: str):
         """
-        Add copy action to the message
+        Add copy and other actions related to SQL to the message
         """
         message.init_actions()
-        self._logger.info("Adding action: %s", ActionTypes.COPY_SQL)
-        message.add_action(ActionTypes.COPY_SQL, {ActionsDataKeys.SQL_TEXT: sql})
+        actions = [
+            ActionTypes.COPY_SQL,
+            ActionTypes.SQL_TO_PYTHON,
+            # ActionTypes.SQL_TO_PYSPARK,
+        ]
+        self._logger.info("Adding actions: %s", actions)
+        message.add_actions(
+            actions,
+            {
+                ActionsDataKeys.SQL_TEXT: sql,
+                ActionsDataKeys.SQL_TO_PYTHON_PROMPT: self.session.get_sql_to_python_prompt(
+                    sql=sql
+                ),
+                # ActionsDataKeys.SQL_TO_PYSPARK_PROMPT: self.session.get_sql_to_pyspark_prompt(
+                #     sql=sql
+                # ),
+            },
+        )

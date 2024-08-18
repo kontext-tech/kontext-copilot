@@ -58,6 +58,13 @@ export interface ActionsModel {
    data?: { [key: string]: unknown }
 }
 
+export enum ActionsDataKeys {
+   SQL_LIST = "sql",
+   SQL_TEXT = "sqlText",
+   SQL_TO_PYTHON_PROMPT = "sqlToPythonPrompt",
+   SQL_TO_PYSPARK_PROMPT = "sqlToPysparkPrompt"
+}
+
 export interface CopilotSessionMessage extends LlmChatMessage {
    id?: number
    sessionId?: number

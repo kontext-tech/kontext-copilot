@@ -25,6 +25,8 @@ class ActionsModel(CamelAliasBaseModel):
 class ActionsDataKeys(str, Enum):
     SQL_LIST = "sql"
     SQL_TEXT = "sqlText"
+    SQL_TO_PYTHON_PROMPT = "sqlToPythonPrompt"
+    SQL_TO_PYSPARK_PROMPT = "sqlToPysparkPrompt"
 
 
 class RunSqlRequestModel(CamelAliasBaseModel):
@@ -141,9 +143,14 @@ class SessionMessageModel(LlmChatMessage):
         if self.actions is None:
             self.actions = ActionsModel(actions=[], data={})
 
-    def add_action(self, action: ActionTypes, data: Optional[Dict[str, Any]] = None):
+    def add_actions(
+        self,
+        actions: List[ActionTypes],
+        data: Optional[Dict[str, Any]] = None,
+    ):
         self.init_actions()
-        self.actions.actions.append(action)
+        self.actions.actions.extend(actions)
+
         if data is not None:
             for key, value in data.items():
                 if key in self.actions.data:

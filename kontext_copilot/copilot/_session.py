@@ -148,3 +148,15 @@ class CopilotSession:
             self._generate_system_prompt()
 
         return self.system_prompt
+
+    def get_sql_to_python_prompt(self, sql: str) -> PromptNode:
+        """
+        Get the SQL to Python prompt
+        """
+        return "Convert the following SQL to Python code:\n```sql\n{}```".format(sql)
+
+    def get_sql_to_pyspark_prompt(self, sql: str) -> PromptNode:
+        """
+        Get the SQL to PySpark prompt
+        """
+        return "Convert the following SQL to PySpark code:\n```sql\n{}```".format(sql)

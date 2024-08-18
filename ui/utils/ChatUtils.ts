@@ -1,4 +1,4 @@
-import { ChatRoles } from "~/types/Schemas"
+import { ActionTypes, ChatRoles } from "~/types/Schemas"
 
 export const getRoleClass = (role: ChatRoles) => {
    switch (role) {
@@ -30,5 +30,20 @@ export const getRoleName = (role: ChatRoles) => {
          return "AI Assistant"
       default:
          return "System"
+   }
+}
+
+export const getActionName = (action: ActionTypes) => {
+   switch (action) {
+      case ActionTypes.RUN_SQL:
+         return "Run SQL"
+      case ActionTypes.COPY_SQL:
+         return "Copy SQL"
+      case ActionTypes.SQL_TO_PYTHON:
+         return "To Python"
+      case ActionTypes.SQL_TO_PYSPARK:
+         return "To PySpark"
+      default:
+         return action
    }
 }

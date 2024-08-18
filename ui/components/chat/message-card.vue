@@ -42,7 +42,7 @@
                <Icon name="material-symbols:stop-circle-outline" />
             </BButton>
          </div>
-         <div v-else>
+         <div v-else class="d-flex gap-1">
             <BButton
                v-if="
                   message.isError !== true && message.role !== ChatRoles.SYSTEM
@@ -64,6 +64,9 @@
                :actions="message.actions"
                :message-id="message.id"
                @run-sql="runSql"
+               @user-input="
+                  (userInput: string) => emits('user-input', userInput)
+               "
             ></ChatActionBar>
 
             <BButton
@@ -124,6 +127,7 @@ const runSql = (sql: string, messageId?: number) => {
 const emits = defineEmits([
    "abort-clicked",
    "delete-clicked",
-   "run-sql-clicked"
+   "run-sql-clicked",
+   "user-input"
 ])
 </script>
