@@ -42,34 +42,13 @@
                   @abort-clicked="handleAbortClicked"
                />
             </div>
-            <div class="flex-shrink-0 p-4 d-flex align-items-center mx-1">
-               <span class="chat-icon">
-                  <Icon
-                     :name="getRoleIcon(ChatRoles.USER)"
-                     size="24"
-                     :class="getRoleClass(ChatRoles.USER)"
-                  />
-               </span>
-               <div class="input-group">
-                  <input
-                     ref="chatInput"
-                     v-model="userInput"
-                     class="form-control"
-                     type="text"
-                     placeholder="Type a message..."
-                     :disabled="copilotClient.state.generating"
-                     @keydown.enter.prevent="sendMessage"
-                  />
-                  <button
-                     class="btn btn-primary"
-                     type="button"
-                     :disabled="sendButtonDisabled"
-                     @click="sendMessage"
-                  >
-                     <Icon name="material-symbols:send" size="20" />
-                  </button>
-               </div>
-            </div>
+            <ChatInputBox
+               ref="chatInputBox"
+               v-model="input"
+               :generating="copilotClient.state.generating"
+               class="p-4"
+               @send-message="sendMessage"
+            ></ChatInputBox>
          </div>
       </div>
    </DefaultLayout>
@@ -79,20 +58,18 @@
 import LlmSettingsToolbar from "~/components/llm/settings-toolbar.vue"
 import DefaultLayout from "~/layouts/default-layout.vue"
 import type { CopilotChatCallback } from "~/services/CopilotClientService"
-import { ChatRoles } from "~/types/Schemas"
 import { LlmModelRequiredException } from "~/types/Errors"
+import ChatInputBox from "~/components/chat/input-box.vue"
 
-const userInput = ref<string>("")
 const chatMain = ref<HTMLElement | null>(null)
-const chatInput = ref<HTMLTextAreaElement | null>(null)
+const chatInputBox = ref<InstanceType<typeof ChatInputBox> | null>(null)
+
+const input = ref<string>("")
+
 const llmToolbar = ref<InstanceType<typeof LlmSettingsToolbar> | null>(null)
 
 const settings = getSettings()
 const copilotClient = getCopilotClientService()
-
-const sendButtonDisabled = computed(
-   () => userInput.value.trim().length === 0 || copilotClient.state.generating
-)
 
 usePageTitle()
 
@@ -102,9 +79,7 @@ const scrollToBottom = async () => {
    if (chatMain.value) {
       chatMain.value.scrollTop = chatMain.value.scrollHeight
    }
-   if (chatInput.value) {
-      chatInput.value.focus()
-   }
+   chatInputBox.value?.chatInput?.focus()
 }
 
 const callback: CopilotChatCallback = (
@@ -113,21 +88,17 @@ const callback: CopilotChatCallback = (
    done: boolean
 ) => {
    scrollToBottom()
-   if (done) userInput.value = ""
+   if (done) input.value = ""
 }
 
 const sendMessage = async () => {
    if (!llmToolbar.value?.model) throw new LlmModelRequiredException()
    if (llmToolbar.value.streaming)
-      copilotClient.chatStreaming(
-         userInput.value,
-         llmToolbar.value.model,
-         callback
-      )
+      copilotClient.chatStreaming(input.value, llmToolbar.value.model, callback)
    else {
-      copilotClient.chat(userInput.value, llmToolbar.value.model, callback)
+      copilotClient.chat(input.value, llmToolbar.value.model, callback)
    }
-   userInput.value = ""
+   input.value = ""
 }
 
 watch(

@@ -31,55 +31,31 @@
                @abort-clicked="handleAbortClicked"
             />
          </div>
-         <div class="flex-shrink-0 py-4 d-flex align-items-center mx-1">
-            <span class="chat-icon">
-               <Icon
-                  :name="getRoleIcon(ChatRoles.USER)"
-                  size="24"
-                  :class="getRoleClass(ChatRoles.USER)"
-               />
-            </span>
-            <div class="input-group">
-               <input
-                  ref="chatInput"
-                  v-model="userInput"
-                  class="form-control"
-                  type="text"
-                  placeholder="Ask a question..."
-                  :disabled="copilotClient.state.generating"
-                  @keydown.enter.prevent="sendMessage"
-               />
-               <button
-                  class="btn btn-primary"
-                  type="button"
-                  :disabled="sendButtonDisabled"
-                  @click="sendMessage"
-               >
-                  <Icon name="material-symbols:send" size="20" />
-               </button>
-            </div>
-         </div>
+         <ChatInputBox
+            ref="chatInputBox"
+            v-model="input"
+            :generating="copilotClient.state.generating"
+            class="py-4"
+            @send-message="sendMessage"
+         ></ChatInputBox>
       </div>
    </div>
 </template>
 
 <script setup lang="ts">
 import type { CopilotChatCallback } from "~/services/CopilotClientService"
-import { ChatRoles } from "~/types/Schemas"
 import type { ChatToDataCommonProps } from "~/types/UIProps"
+import ChatInputBox from "~/components/chat/input-box.vue"
 
 const sessionTitle = defineModel<string>("sessionTitle")
 
-const userInput = ref<string>("")
 const chatMain = ref<HTMLElement | null>(null)
-const chatInput = ref<HTMLTextAreaElement | null>(null)
+const chatInputBox = ref<InstanceType<typeof ChatInputBox> | null>(null)
+
+const input = ref<string>("")
 
 const settings = getSettings()
 const copilotClient = getCopilotClientService()
-
-const sendButtonDisabled = computed(
-   () => userInput.value.trim().length === 0 || copilotClient.state.generating
-)
 
 usePageTitle()
 
@@ -89,9 +65,7 @@ const scrollToBottom = async () => {
    if (chatMain.value) {
       chatMain.value.scrollTop = chatMain.value.scrollHeight
    }
-   if (chatInput.value) {
-      chatInput.value.focus()
-   }
+   chatInputBox.value?.chatInput?.focus()
 }
 
 const callback: CopilotChatCallback = (
@@ -100,13 +74,13 @@ const callback: CopilotChatCallback = (
    done: boolean
 ) => {
    scrollToBottom()
-   if (done) userInput.value = ""
+   if (done) input.value = ""
 }
 
 const sendMessage = async () => {
    if (!props.model) return
-   copilotClient.chatStreaming(userInput.value, props.model, callback)
-   userInput.value = ""
+   copilotClient.chatStreaming(input.value, props.model, callback)
+   input.value = ""
 }
 
 const handleAbortClicked = () => {
@@ -161,8 +135,9 @@ watch(
             callback,
             reinit
          )
-         if (copilotClient.state.session)
+         if (copilotClient.state.session) {
             sessionTitle.value = copilotClient.state.session.title
+         }
       }
    },
    { deep: true }
