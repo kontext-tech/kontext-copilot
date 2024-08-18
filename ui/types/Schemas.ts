@@ -48,6 +48,7 @@ export interface LlmChatMessage {
 
 export enum ActionTypes {
    RUN_SQL = "run_sql",
+   COPY_SQL = "copy_sql",
    SQL_TO_PYTHON = "sql_to_python",
    SQL_TO_PYSPARK = "sql_to_pyspark"
 }

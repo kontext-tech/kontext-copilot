@@ -8,6 +8,7 @@ from kontext_copilot.data.schemas import (
     RunSqlRequestModel,
     SessionMessageModel,
 )
+from kontext_copilot.data.schemas._copilot import ActionModel, ActionTypes
 
 
 class RunSqlTool(BaseTool):
@@ -18,7 +19,7 @@ class RunSqlTool(BaseTool):
         """
         Execute the tool
         """
-        sql = request.sql
+        self.sql = request.sql
         max_records = request.max_records
         self.message = self.add_message(
             content="",
@@ -27,7 +28,7 @@ class RunSqlTool(BaseTool):
             copilot_generated=True,
             parent_message_id=request.parent_message_id,
         )
-        response = self._run_sql(sql, max_records)
+        response = self._run_sql(self.sql, max_records)
         return self._generate_response(response)
 
     def _run_sql(self, sql: str, max_records: int = 10) -> Iterator[str]:
@@ -89,6 +90,9 @@ class RunSqlTool(BaseTool):
             yield message.model_dump_json(by_alias=True) + "\n"
             self.message.content += "\n"
 
+        # add actions to copy sql
+        self.add_copy_action(self.message, self.sql)
+
         # Return a message to indicate the SQL execution is done
         yield SessionMessageModel(
             id=self.message.id,
@@ -101,6 +105,20 @@ class RunSqlTool(BaseTool):
             generating=False,
             session_id=self.session.session_id,
             parent_message_id=self.message.parent_message_id,
+            actions=self.message.actions,
         ).model_dump_json(by_alias=True) + "\n"
         self.commit_message(self.message)
         self.append_new_line(self.message.id, done=True)
+
+    def add_copy_action(self, message: SessionMessageModel, sql: str):
+        """
+        Add copy action to the message
+        """
+        action = ActionModel(
+            action=ActionTypes.COPY_SQL,
+            data={"sql": sql},
+        )
+        self._logger.info("Adding action: %s", action)
+        if message.actions is None:
+            message.actions = []
+        message.actions.append(action)
