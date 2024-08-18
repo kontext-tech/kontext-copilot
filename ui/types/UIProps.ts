@@ -19,7 +19,7 @@ export interface ChatMessageCardProps {
 }
 
 export interface ChatToDataCommonProps {
-   dataProviderInfo: DataProviderInfoWrapModel
+   dataProviderInfo?: DataProviderInfoWrapModel
    schema?: string
    tables?: string[]
    model?: string

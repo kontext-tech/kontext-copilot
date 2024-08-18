@@ -115,19 +115,16 @@ watch(
       () => props.model,
       () => props.schema,
       () => props.tables,
-      () => props.dataProviderInfo.provider?.id
+      () => props.dataProviderInfo?.provider?.id
    ],
    async () => {
-      if (
-         props.model &&
-         props.dataProviderInfo.provider &&
-         props.dataSourceId
-      ) {
+      if (props.model) {
          let reinit = true
-         // If the data source and model are the same, reinitialize the session
+         // If the data source and model are the same  or are all undefined, reinitialize the session
          if (
-            copilotClient.state.session?.dataSourceId === props.dataSourceId &&
-            copilotClient.state.session?.model === props.model
+            (copilotClient.state.session?.dataSourceId === props.dataSourceId &&
+               copilotClient.state.session?.model === props.model) ||
+            !props.dataSourceId
          ) {
             reinit = false
          }
