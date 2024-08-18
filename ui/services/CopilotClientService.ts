@@ -7,7 +7,7 @@ import {
    type SettingsModel,
    type LlmChatMessage,
    type LLmOptions,
-   type ActionModel
+   type ActionsModel
 } from "~/types/Schemas"
 import {
    DataProviderServiceRequiredException,
@@ -129,7 +129,7 @@ export default class CopilotClientService {
       part: string,
       id?: number,
       done?: boolean,
-      actions?: ActionModel[]
+      actions?: ActionsModel[]
    ) {
       if (this.state.currentMessage) {
          if (part) this.state.currentMessage.content += part

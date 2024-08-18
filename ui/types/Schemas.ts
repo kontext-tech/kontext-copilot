@@ -53,8 +53,8 @@ export enum ActionTypes {
    SQL_TO_PYSPARK = "sql_to_pyspark"
 }
 
-export interface ActionModel {
-   action: ActionTypes
+export interface ActionsModel {
+   actions: ActionTypes[]
    data?: { [key: string]: unknown }
 }
 
@@ -75,7 +75,7 @@ export interface CopilotSessionMessage extends LlmChatMessage {
    promptEvalDuration?: number
    evalCount?: number
    evalDuration?: number
-   actions?: ActionModel[]
+   actions?: ActionsModel
 }
 
 export interface LlmToolbarOptions {

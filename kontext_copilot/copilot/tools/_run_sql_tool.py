@@ -4,11 +4,13 @@ from typing import Iterator
 from kontext_copilot.copilot._session import CopilotSession
 from kontext_copilot.copilot.tools._base_tool import BaseTool
 from kontext_copilot.data.schemas import (
+    ActionsDataKeys,
+    ActionsModel,
+    ActionTypes,
     ChatRoles,
     RunSqlRequestModel,
     SessionMessageModel,
 )
-from kontext_copilot.data.schemas._copilot import ActionModel, ActionTypes
 
 
 class RunSqlTool(BaseTool):
@@ -114,11 +116,6 @@ class RunSqlTool(BaseTool):
         """
         Add copy action to the message
         """
-        action = ActionModel(
-            action=ActionTypes.COPY_SQL,
-            data={"sql": sql},
-        )
-        self._logger.info("Adding action: %s", action)
-        if message.actions is None:
-            message.actions = []
-        message.actions.append(action)
+        message.init_actions()
+        self._logger.info("Adding action: %s", ActionTypes.COPY_SQL)
+        message.add_action(ActionTypes.COPY_SQL, {ActionsDataKeys.SQL_TEXT: sql})

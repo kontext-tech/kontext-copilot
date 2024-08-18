@@ -1,6 +1,7 @@
 from kontext_copilot.data.schemas._common import ChatRoles, ErrorResponseModel
 from kontext_copilot.data.schemas._copilot import (
-    ActionModel,
+    ActionsDataKeys,
+    ActionsModel,
     ActionTypes,
     ChatRequestModel,
     CodeBlockModel,
@@ -97,10 +98,11 @@ __all__ = [
     "PromptTypes",
     "QuestionTypes",
     "CodeBlockModel",
-    "ActionModel",
+    "ActionsModel",
     "ActionTypes",
     "GenerateRequestModel",
     "GenerateResponseModel",
     "EmbeddingsRequestModel",
     "EmbeddingsResponseModel",
+    "ActionsDataKeys",
 ]

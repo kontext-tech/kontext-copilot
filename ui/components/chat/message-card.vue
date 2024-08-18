@@ -56,7 +56,11 @@
                ><Icon name="material-symbols:content-copy-outline" />
             </BButton>
             <ChatActionBar
-               v-if="message.actions && message.actions.length > 0"
+               v-if="
+                  message.actions &&
+                  message.actions.actions &&
+                  message.actions.actions.length > 0
+               "
                :actions="message.actions"
                :message-id="message.id"
                @run-sql="runSql"

@@ -8,6 +8,7 @@ from kontext_copilot.data.schemas import (
     SessionMessageModel,
     UpdateSessionMessageModel,
 )
+from kontext_copilot.data.schemas._copilot import ActionsModel
 from kontext_copilot.utils import get_logger
 
 

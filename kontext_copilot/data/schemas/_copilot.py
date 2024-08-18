@@ -17,9 +17,14 @@ class ActionTypes(str, Enum):
     SQL_TO_PYSPARK = "sql_to_pyspark"
 
 
-class ActionModel(CamelAliasBaseModel):
-    action: ActionTypes
+class ActionsModel(CamelAliasBaseModel):
+    actions: List[ActionTypes]
     data: Optional[Dict[str, Any]] = None
+
+
+class ActionsDataKeys(str, Enum):
+    SQL_LIST = "sql"
+    SQL_TEXT = "sqlText"
 
 
 class RunSqlRequestModel(CamelAliasBaseModel):
@@ -118,19 +123,36 @@ class SessionMessageModel(LlmChatMessage):
     is_error: Optional[bool] = False
     is_streaming: Optional[bool] = False
     generating: Optional[bool] = False
-    actions: Optional[List[ActionModel]] = None
+    actions: Optional[ActionsModel] = None
     created_at: Optional[datetime] = datetime.now()
 
-    # Convert actions from JSON str to list of ActionModel
+    # Convert actions from JSON str to ActionsModel
     @field_validator("actions", mode="before")
     def convert_actions(cls, value):
         if value is None:
-            return []
+            return ActionsModel(actions=[], data={})
         # if it is a string, convert to list of action model from JSON
         if isinstance(value, str):
-            return [ActionModel(**action) for action in json.loads(value)]
+            return ActionsModel(**json.loads(value))
         else:
             return value
+
+    def init_actions(self):
+        if self.actions is None:
+            self.actions = ActionsModel(actions=[], data={})
+
+    def add_action(self, action: ActionTypes, data: Optional[Dict[str, Any]] = None):
+        self.init_actions()
+        self.actions.actions.append(action)
+        if data is not None:
+            for key, value in data.items():
+                if key in self.actions.data:
+                    if isinstance(self.actions.data[key], list):
+                        self.actions.data[key].append(value)
+                    else:
+                        self.actions.data[key] = value
+                else:
+                    self.actions.data[key] = value
 
 
 class CreateSessionMessageModel(CamelAliasBaseModel):
@@ -145,7 +167,7 @@ class CreateSessionMessageModel(CamelAliasBaseModel):
     is_error: Optional[bool] = False
     is_streaming: Optional[bool] = False
     generating: Optional[bool] = False
-    actions: Optional[List[ActionModel]] = None
+    actions: Optional[ActionsModel] = None
 
 
 class UpdateSessionMessageModel(CamelAliasBaseModel):
@@ -160,14 +182,14 @@ class UpdateSessionMessageModel(CamelAliasBaseModel):
     is_error: Optional[bool] = False
     is_streaming: Optional[bool] = False
     generating: Optional[bool] = False
-    actions: Optional[List[ActionModel]] = None
+    actions: Optional[ActionsModel] = None
 
     def model_dump(
         self,
         **kwargs,
     ):
         data = super().model_dump(**kwargs)
-        if isinstance(data["actions"], list):
+        if isinstance(data["actions"], dict):
             # Convert to json string
             data["actions"] = json.dumps(data["actions"])
         return data

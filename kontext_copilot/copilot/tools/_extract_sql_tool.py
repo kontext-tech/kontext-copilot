@@ -3,7 +3,7 @@ import re
 from kontext_copilot.copilot._session import CopilotSession
 from kontext_copilot.copilot.tools._base_tool import BaseTool
 from kontext_copilot.data.schemas import (
-    ActionModel,
+    ActionsDataKeys,
     ActionTypes,
     CodeBlockModel,
     SessionMessageModel,
@@ -25,14 +25,12 @@ class ExtractSqlTool(BaseTool):
             code_block for code_block in code_blocks if code_block.language == "sql"
         ]
         if len(sql_code_blocks) > 0:
-            action = ActionModel(
-                action=ActionTypes.RUN_SQL,
-                data={"sql": [cb.code for cb in sql_code_blocks]},
+            message.init_actions()
+            self._logger.info("Adding action: %s", ActionTypes.RUN_SQL)
+            message.add_action(
+                ActionTypes.RUN_SQL,
+                {ActionsDataKeys.SQL_LIST: [cb.code for cb in sql_code_blocks]},
             )
-            self._logger.info("Adding action: %s", action)
-            if message.actions is None:
-                message.actions = []
-            message.actions.append(action)
 
     def _extract_code(self, markdown: str) -> list[CodeBlockModel]:
         """Extract code blocks from markdown content"""
