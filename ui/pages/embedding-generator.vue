@@ -35,12 +35,16 @@
                   >Generated embeddings
                </label>
                <textarea
-                  v-model="state.generatedContent"
+                  v-model="generatedState.embeddings"
                   class="form-control main-textarea"
                   type="text"
                   rows="16"
                   :disabled="state.generating"
                />
+               <div class="mt-3">
+                  <label>Length: </label>
+                  <b class="ms-1">{{ state.generatedEmbeddings?.length }}</b>
+               </div>
             </div>
          </div>
       </div>
@@ -63,9 +67,13 @@ const disableGenerate = computed(
    () => (promptInput.value ?? "").length === 0 || state.generating
 )
 
+const generatedState = reactive({ embeddings: "" })
+
 const generateResponse = async () => {
    if (!llmToolbar.value?.model) throw new LlmModelRequiredException()
-   llmClient.embeddings(promptInput.value, llmToolbar.value?.model)
+   llmClient.embeddings(promptInput.value, llmToolbar.value?.model).then(() => {
+      generatedState.embeddings = JSON.stringify(state.generatedEmbeddings)
+   })
 }
 
 usePageTitle()

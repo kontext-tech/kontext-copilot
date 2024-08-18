@@ -129,7 +129,7 @@ export default class CopilotClientService {
       part: string,
       id?: number,
       done?: boolean,
-      actions?: ActionsModel[]
+      actions?: ActionsModel
    ) {
       if (this.state.currentMessage) {
          if (part) this.state.currentMessage.content += part
@@ -365,21 +365,21 @@ export default class CopilotClientService {
       return this.state.currentMessage
    }
 
-   async embeddings(prompt: string, model: string): Promise<string> {
-      this.state.generatedContent = ""
+   async embeddings(prompt: string, model: string): Promise<number[]> {
+      this.state.generatedEmbeddings = []
       this.startGenerating()
-      this.llmService
+      await this.llmService
          .embeddings({
             model: model,
             prompt: prompt,
             options: this.getLlmOptions()
          })
          .then((response) => {
-            this.state.generatedContent = JSON.stringify(response.embedding)
+            this.state.generatedEmbeddings = response.embedding
             this.stopGenerating()
-            return this.state.generatedContent
+            return this.state.generatedEmbeddings
          })
-      return this.state.generatedContent
+      return this.state.generatedEmbeddings
    }
 
    private replaceValues(prompt: string, userInput: string) {

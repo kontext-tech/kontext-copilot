@@ -99,6 +99,7 @@ export interface CopilotState {
    // For overall status incl. embeddings and other generation
    generating?: boolean
    generatedContent?: string
+   generatedEmbeddings?: number[]
 }
 
 export interface SettingsModel {
