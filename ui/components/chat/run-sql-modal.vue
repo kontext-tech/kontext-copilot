@@ -17,7 +17,7 @@
 
       <BFormTextarea
          v-model="model.sql"
-         rows="5"
+         rows="10"
          placeholder="Enter SQL statements here"
       />
    </BModal>
