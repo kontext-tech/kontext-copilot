@@ -65,13 +65,17 @@ export default class CopilotClientService {
       this.state.messages.push(message)
    }
 
-   createUserMessage(content: string, push?: boolean): CopilotSessionMessage {
-      const message = {
-         id: this.getLocalMessageId(),
-         content,
-         role: ChatRoles.USER,
-         sessionId: this.state.session?.sessionId
-      } as CopilotSessionMessage
+   async createUserMessage(
+      content: string,
+      model: string,
+      push?: boolean
+   ): Promise<CopilotSessionMessage> {
+      // Add message to server
+      const message = await this.llmService.addUserMessage({
+         sessionId: this.state.session?.sessionId,
+         content: content,
+         model: model
+      })
 
       if (push) this.addMessage(message)
       return message
@@ -276,7 +280,7 @@ export default class CopilotClientService {
       callback?: CopilotChatCallback
    ): Promise<LlmChatMessage> {
       // Create user message
-      this.createUserMessage(input, true)
+      await this.createUserMessage(input, model, true)
       if (callback) callback("", "", false)
 
       // Create assistant message
@@ -316,7 +320,7 @@ export default class CopilotClientService {
       callback: CopilotChatCallback
    ): Promise<LlmChatMessage> {
       // Create user message
-      this.createUserMessage(input, true)
+      await this.createUserMessage(input, model, true)
       if (callback) callback("", "", false)
 
       // Create assistant message

@@ -1,23 +1,22 @@
 import json
 from typing import Generator, Iterator, Optional
 
-from fastapi import APIRouter, Body, Depends, Request, Response
+from fastapi import APIRouter, Body, Depends, Response
 from fastapi.responses import StreamingResponse
 
 from kontext_copilot import ollama
 from kontext_copilot.copilot import Planner
 from kontext_copilot.data.schemas import (
+    AddUserMessageRequestModel,
     ChatRequestModel,
+    EmbeddingsRequestModel,
+    EmbeddingsResponseModel,
     GenerateRequestModel,
     GenerateResponseModel,
     LlmModelListResponse,
     RunSqlRequestModel,
     SessionInitRequestModel,
     SessionInitResponseModel,
-)
-from kontext_copilot.data.schemas._copilot import (
-    EmbeddingsRequestModel,
-    EmbeddingsResponseModel,
 )
 from kontext_copilot.services import SettingsService, get_settings_service
 from kontext_copilot.utils import get_logger
@@ -54,7 +53,7 @@ def _get_planner(
     return planner
 
 
-@router.post("/init_session", response_model=SessionInitResponseModel)
+@router.post("/init-session", response_model=SessionInitResponseModel)
 def init_session(
     request: SessionInitRequestModel = Body(None),
 ) -> SessionInitResponseModel:
@@ -183,3 +182,17 @@ async def generate_embeddings(
     response = client.embeddings(**request.model_dump(exclude_unset=True))
     reseponse_model = EmbeddingsResponseModel(**response)
     return Response(reseponse_model.model_dump_json(by_alias=True))
+
+
+@router.post("/add-user-message")
+async def add_user_message(request: AddUserMessageRequestModel = Body(None)):
+    logger.debug("Add User Message API invoked: %s", request)
+
+    planner = _get_planner(
+        model=request.model,
+        session_id=request.session_id,
+    )
+
+    return Response(
+        planner.session.add_user_message(request.content).model_dump_json(by_alias=True)
+    )

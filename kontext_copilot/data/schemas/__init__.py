@@ -3,6 +3,7 @@ from kontext_copilot.data.schemas._copilot import (
     ActionsDataKeys,
     ActionsModel,
     ActionTypes,
+    AddUserMessageRequestModel,
     ChatRequestModel,
     CodeBlockModel,
     CreateSessionMessageModel,
@@ -105,4 +106,5 @@ __all__ = [
     "EmbeddingsRequestModel",
     "EmbeddingsResponseModel",
     "ActionsDataKeys",
+    "AddUserMessageRequestModel",
 ]

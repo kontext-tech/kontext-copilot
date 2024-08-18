@@ -212,6 +212,12 @@ class ChatRequestModel(CamelAliasBaseModel):
     session_id: Optional[int] = None
 
 
+class AddUserMessageRequestModel(CamelAliasBaseModel):
+    session_id: Optional[int] = None
+    content: str
+    model: str
+
+
 class CodeBlockModel(CamelAliasBaseModel):
     language: Optional[str] = None
     code: str

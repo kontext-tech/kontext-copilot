@@ -11,7 +11,8 @@ import type {
    EmbeddingsRequestModel,
    EmbeddingsResponseModel,
    GenerateRequestModel,
-   GenerateResponseModel
+   GenerateResponseModel,
+   AddUserMessageRequestModel
 } from "~/types/Schemas"
 import { AbortableAsyncIterator } from "~/utils/CommonUtils"
 
@@ -42,7 +43,17 @@ export default class LlmProxyService {
       request: SessionInitRequestModel
    ): Promise<SessionInitResponseModel> {
       const response = await axios.post<SessionInitResponseModel>(
-         "/copilot/init_session",
+         "/copilot/init-session",
+         request
+      )
+      return response.data
+   }
+
+   async addUserMessage(
+      request: AddUserMessageRequestModel
+   ): Promise<CopilotSessionMessage> {
+      const response = await axios.post<CopilotSessionMessage>(
+         "/copilot/add-user-message",
          request
       )
       return response.data

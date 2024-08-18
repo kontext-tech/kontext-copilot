@@ -2,7 +2,12 @@ from datetime import datetime
 from typing import Optional
 
 from kontext_copilot.copilot._prompt_factory import PromptFactory as pf
-from kontext_copilot.data.schemas import CreateSessionModel, PromptNode
+from kontext_copilot.data.schemas import (
+    ChatRoles,
+    CreateSessionMessageModel,
+    CreateSessionModel,
+    PromptNode,
+)
 from kontext_copilot.services import (
     DataProviderService,
     get_data_sources_service,
@@ -160,3 +165,20 @@ class CopilotSession:
         Get the SQL to PySpark prompt
         """
         return "Convert the following SQL to PySpark code:\n```sql\n{}```".format(sql)
+
+    def add_user_message(self, content: str):
+        """
+        Add user message to the session
+        """
+        message = CreateSessionMessageModel(
+            session_id=self.session_model.id,
+            content=content,
+            role=ChatRoles.USER,
+            is_system_prompt=False,
+            is_streaming=False,
+            copilot_generated=False,
+            generating=False,
+        )
+        return self.session_service.add_session_message(
+            self.session_model.id, message=message
+        )

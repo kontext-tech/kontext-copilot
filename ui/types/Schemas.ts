@@ -253,6 +253,12 @@ export interface ChatRequestModel {
    sessionId?: number
 }
 
+export interface AddUserMessageRequestModel {
+   sessionId?: number
+   content: string
+   model: string
+}
+
 export interface EmbeddingsRequestModel {
    model: string
    prompt: string
