@@ -7,11 +7,12 @@
             class="flex-grow-1 flex-shrink-1 overflow-y-auto"
          >
             <template
-               v-for="(message, i) in copilotClient.state.messages"
+               v-for="(message, i) in copilotClient.state.messages.filter(
+                  (m) => !m.isSystemPrompt
+               )"
                :key="`${i}-${message.role}`"
             >
                <ChatMessageCard
-                  v-if="!message.isSystemPrompt"
                   :message="message"
                   :username="settings.generalUsername"
                   @delete-clicked="handleDeleteClicked"
@@ -22,6 +23,7 @@
             </template>
             <ChatMessageCard
                v-if="
+                  !copilotClient.state.currentMessage?.isSystemPrompt &&
                   copilotClient.state.currentMessage &&
                   copilotClient.state.generating
                "
