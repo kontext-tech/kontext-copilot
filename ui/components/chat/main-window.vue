@@ -79,11 +79,11 @@ const callback: CopilotChatCallback = (
 }
 
 const sendMessage = async () => {
-   if (!props.model) return
+   if (!props.llmOptions?.model) return
    if (props.llmOptions?.streaming || props.dataSourceId !== undefined) {
-      copilotClient.chatStreaming(input.value, props.model, callback)
+      copilotClient.chatStreaming(input.value, props.llmOptions.model, callback)
    } else {
-      copilotClient.chat(input.value, props.model, callback)
+      copilotClient.chat(input.value, props.llmOptions.model, callback)
    }
    input.value = ""
 }
@@ -108,30 +108,30 @@ const handlRunSqlClicked = async (sql: string, messageId?: number) => {
 }
 
 const handleUserInput = (input: string) => {
-   if (!props.model) return
+   if (!props.llmOptions?.model) return
    if (props.llmOptions?.streaming || props.dataSourceId !== undefined) {
-      copilotClient.chatStreaming(input, props.model, callback)
+      copilotClient.chatStreaming(input, props.llmOptions.model, callback)
    } else {
-      copilotClient.chat(input, props.model, callback)
+      copilotClient.chat(input, props.llmOptions.model, callback)
    }
 }
 
 const props = defineProps<ChatWindowProps>()
 
 const initSession = async () => {
-   if (props.model) {
+   if (props.llmOptions?.model) {
       let reinit = true
       // If the data source and model are the same  or are all undefined, reinitialize the session
       if (
          (copilotClient.state.session?.dataSourceId === props.dataSourceId &&
-            copilotClient.state.session?.model === props.model) ||
+            copilotClient.state.session?.model === props.llmOptions.model) ||
          !props.dataSourceId
       ) {
          reinit = false
       }
       await copilotClient.initCopilotSession(
          {
-            model: props.model,
+            model: props.llmOptions.model,
             dataSourceId: props.dataSourceId,
             tables: props.tables,
             schemaName: props.schema
@@ -147,7 +147,7 @@ const initSession = async () => {
 
 watch(
    [
-      () => props.model,
+      () => props.llmOptions?.model,
       () => props.schema,
       () => props.tables,
       () => props.dataProviderInfo?.model?.id
@@ -157,4 +157,8 @@ watch(
    },
    { deep: true }
 )
+
+onMounted(async () => {
+   await initSession()
+})
 </script>

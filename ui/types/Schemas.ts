@@ -358,7 +358,7 @@ export interface ChatStateModel {
    sql: string
    dataSource: DataSourceWrapModel
    dataProvider: DataProviderInfoWrapModel
-   llmOptions?: LlmToolbarOptions
+   llmOptions: LlmToolbarOptions
 }
 
 export interface SchemaSelectorModel {

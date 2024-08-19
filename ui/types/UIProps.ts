@@ -23,7 +23,6 @@ export interface ChatWindowProps {
    dataProviderInfo?: DataProviderInfoWrapModel
    schema?: string
    tables?: string[]
-   model?: string
    dataSourceId?: number
    llmOptions?: LlmToolbarOptions
 }

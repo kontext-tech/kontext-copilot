@@ -13,7 +13,7 @@
             settings-button
          />
          <LlmSettingsToolbar
-            v-else-if="chatState.chatType === ChatTypes.GENGERAL_CHAT"
+            v-if="chatState.chatType === ChatTypes.GENGERAL_CHAT"
             v-model="chatState.llmOptions"
             model-selector
             settings-button
@@ -48,7 +48,6 @@
       <ChatMainWindow
          v-if="chatState.chatType === ChatTypes.GENGERAL_CHAT"
          v-model="chatState.sessionTitle"
-         :model="chatState.llmOptions?.model"
          :llm-options="chatState.llmOptions"
          class="mt-3 px-4"
       ></ChatMainWindow>
@@ -77,7 +76,6 @@
                :data-provider-info="chatState.dataProvider"
                :schema="chatState.schemaSelector.schema"
                :tables="chatState.schemaSelector.tables"
-               :model="chatState.llmOptions?.model"
                :data-source-id="chatState.dataSource.model?.id"
                :llm-options="chatState.llmOptions"
             />
