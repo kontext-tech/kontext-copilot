@@ -1,13 +1,15 @@
 <template>
    <BDropdown variant="outline-secondary" size="sm">
       <template #button-content>
-         <template v-if="selectedDataSource">
-            {{ selectedDataSource.name }}
+         <template v-if="model.model">
+            {{ model.model.name }}
          </template>
          <template v-else> Select data source </template>
          <Icon name="material-symbols:arrow-drop-down" />
       </template>
-      <BDropdownItem v-if="isLoading" disabled> Loading... </BDropdownItem>
+      <BDropdownItem v-if="model.isLoading" disabled>
+         Loading...
+      </BDropdownItem>
       <BDropdownItem v-if="error">
          {{ error }}
       </BDropdownItem>
@@ -22,7 +24,7 @@
                {{ ds.type }}
             </BBadge>
             <Icon
-               v-if="selectedDataSource?.id === ds.id"
+               v-if="model.model?.id === ds.id"
                name="material-symbols:check"
                class="ms-auto text-primary"
             />
@@ -32,48 +34,45 @@
 </template>
 
 <script setup lang="ts">
-import type { DataSourceModel } from "~/types/Schemas"
+import type { DataSourceModel, DataSourceWrapModel } from "~/types/Schemas"
+
+const model = defineModel<DataSourceWrapModel>({
+   default: { dataSource: null, isLoading: false, loaded: false }
+})
 
 const dataSourceService = getDataSourceService()
 
-const selectedDataSource = ref<DataSourceModel | null>(null)
-
 const dataSources = ref<DataSourceModel[]>()
 const error = ref<string | null>(null)
-const isLoading = ref(false)
-const loaded = ref(false)
 
 const selectSource = (ds: DataSourceModel) => {
-   selectedDataSource.value = ds
+   model.value.model = ds
+   model.value.id = ds.id
    emit("dataSourceSelected", ds.id)
 }
 
 const emit = defineEmits(["dataSourceSelected"])
 
 onMounted(() => {
-   isLoading.value = true
-   loaded.value = false
+   model.value.isLoading = true
+   model.value.loaded = false
    dataSourceService
       .getDataSources()
       .then((data) => {
          dataSources.value = data
-         loaded.value = true
-         isLoading.value = false
+         model.value.loaded = true
+         model.value.isLoading = false
          if (props.autoSelect && data.length > 0) {
-            selectedDataSource.value = data[0]
+            model.value.model = data[0]
             emit("dataSourceSelected", data[0].id)
          }
       })
       .catch((err) => {
          error.value =
             err instanceof Error ? err.message : "An unexpected error occurred"
-         isLoading.value = false
-         loaded.value = false
+         model.value.isLoading = false
+         model.value.loaded = false
       })
-})
-
-defineExpose({
-   selectedDataSource
 })
 
 const props = defineProps({

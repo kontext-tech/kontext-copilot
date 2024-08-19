@@ -1,7 +1,7 @@
 <template>
    <div class="inset-0 h-100 d-flex flex-column align-items-stretch">
       <BFormTextarea
-         v-if="dataProviderInfo.provider"
+         v-if="dataProviderInfo.model"
          v-model="model.query"
          class="flex-shrink-0 d-flex flex-column"
          placeholder="Enter your query here"
@@ -68,11 +68,11 @@ const hasQueryError = computed(
 const runDisabled = computed(() => isEmptyOrNull(model.query))
 
 const runQuery = async () => {
-   if (props.dataProviderInfo.provider && model.query) {
+   if (props.dataProviderInfo.model && model.query) {
       model.isLoading = true
       dataProviderService
          .runSql(
-            props.dataProviderInfo.provider.id,
+            props.dataProviderInfo.model.id,
             model.query,
             props.selectedSchema
          )

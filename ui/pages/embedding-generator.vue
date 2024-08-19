@@ -1,7 +1,7 @@
 <template>
    <DefaultLayout>
       <template #header-secondary>
-         <LlmSettingsToolbar id="llmToolbar" ref="llmToolbar" model-selector />
+         <LlmSettingsToolbar v-model="llmToolbar" model-selector />
       </template>
 
       <div class="px-4 mt-3">
@@ -53,12 +53,15 @@
 
 <script setup lang="ts">
 import DefaultLayout from "~/layouts/default-layout.vue"
-import LlmSettingsToolbar from "~/components/llm/settings-toolbar.vue"
 import { LlmModelRequiredException } from "~/types/Errors"
-
-const llmToolbar = ref<InstanceType<typeof LlmSettingsToolbar> | null>(null)
+import type { LlmToolbarOptions } from "~/types/Schemas"
 
 const promptInput = ref<string>("")
+
+const llmToolbar = reactive<LlmToolbarOptions>({
+   streaming: false,
+   format: ""
+})
 
 const llmClient = getCopilotClientService()
 const state = llmClient.state
@@ -70,8 +73,8 @@ const disableGenerate = computed(
 const generatedState = reactive({ embeddings: "" })
 
 const generateResponse = async () => {
-   if (!llmToolbar.value?.model) throw new LlmModelRequiredException()
-   llmClient.embeddings(promptInput.value, llmToolbar.value?.model).then(() => {
+   if (!llmToolbar.model) throw new LlmModelRequiredException()
+   llmClient.embeddings(promptInput.value, llmToolbar.model).then(() => {
       generatedState.embeddings = JSON.stringify(state.generatedEmbeddings)
    })
 }

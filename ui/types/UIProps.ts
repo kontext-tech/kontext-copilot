@@ -1,6 +1,7 @@
 import type {
    CopilotSessionMessage,
-   DataProviderInfoWrapModel
+   DataProviderInfoWrapModel,
+   LlmToolbarOptions
 } from "./Schemas"
 
 export interface NavItemProps {
@@ -18,12 +19,13 @@ export interface ChatMessageCardProps {
    allowAbort?: boolean
 }
 
-export interface ChatToDataCommonProps {
+export interface ChatWindowProps {
    dataProviderInfo?: DataProviderInfoWrapModel
    schema?: string
    tables?: string[]
    model?: string
    dataSourceId?: number
+   llmOptions?: LlmToolbarOptions
 }
 
 export interface LlmSettingsToolbarProps {
@@ -32,15 +34,4 @@ export interface LlmSettingsToolbarProps {
    jsonToogle?: boolean
    streamingDefault?: boolean
    jsonDefault?: boolean
-}
-
-export interface SchemaSelectorModel {
-   schema?: string
-   tables: string[]
-}
-
-export interface RunSqlModalModel {
-   open: boolean
-   sql: string
-   maxRecords?: number
 }

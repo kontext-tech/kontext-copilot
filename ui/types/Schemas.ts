@@ -156,6 +156,13 @@ export interface DataSourceModel {
    connStr: string
 }
 
+export interface DataSourceWrapModel {
+   model: DataSourceModel | null
+   isLoading: boolean
+   loaded: boolean
+   id?: number
+}
+
 // Create model excludes auto-generated fields like 'id'
 export interface DataSourceCreateModel {
    name?: string
@@ -195,7 +202,7 @@ export interface DataProviderInfoModel extends DataSourceModel {
 }
 
 export interface DataProviderInfoWrapModel {
-   provider: DataProviderInfoModel | null
+   model: DataProviderInfoModel | null
    isLoading: boolean
 }
 
@@ -336,4 +343,31 @@ export interface LLmOptions {
 export interface ErrorResponseModel {
    error: string
    detail?: string
+}
+
+export enum ChatTypes {
+   GENGERAL_CHAT = "general_chat",
+   CHAT_TO_DATA = "chat_to_data"
+}
+
+export interface ChatStateModel {
+   sessionTitle: string
+   chatType?: ChatTypes
+   model?: string
+   schemaSelector: SchemaSelectorModel
+   sql: string
+   dataSource: DataSourceWrapModel
+   dataProvider: DataProviderInfoWrapModel
+   llmOptions?: LlmToolbarOptions
+}
+
+export interface SchemaSelectorModel {
+   schema?: string
+   tables: string[]
+}
+
+export interface RunSqlModalModel {
+   open: boolean
+   sql: string
+   maxRecords?: number
 }

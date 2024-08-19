@@ -1,32 +1,166 @@
 <template>
    <DefaultLayout>
-      <template #header-secondary>
+      <ChatTypeSelector
+         v-if="chatState.chatType === undefined"
+         v-model="chatState.chatType"
+         class="mt-3 px-4"
+      />
+      <template v-if="chatState.chatType" #header-secondary>
          <LlmSettingsToolbar
-            id="llmToolbar"
-            ref="llmToolbar"
+            v-if="chatState.chatType === ChatTypes.CHAT_TO_DATA && chatState"
+            v-model="chatState.llmOptions"
+            model-selector
+            settings-button
+         />
+         <LlmSettingsToolbar
+            v-else-if="chatState.chatType === ChatTypes.GENGERAL_CHAT"
+            v-model="chatState.llmOptions"
             model-selector
             settings-button
             streaming-toggle
             :streaming-default="true"
          />
+         <template v-if="chatState.chatType === ChatTypes.CHAT_TO_DATA">
+            <DataSourceSelector
+               v-model="chatState.dataSource"
+               auto-select
+               @data-source-selected="handleDataSourceSelected"
+            />
+            <DataProviderSchemaSelector
+               v-if="chatState.dataProvider.model"
+               v-model="chatState.schemaSelector"
+               :data-provider-info="chatState.dataProvider"
+            ></DataProviderSchemaSelector>
+         </template>
+      </template>
+      <template v-if="chatState.dataSource.model" #secondary-sidebar>
+         <DataSourceDisplay
+            v-if="chatState.dataSource"
+            :selected-data-source="chatState.dataSource.model"
+         />
+         <hr />
+         <DataProviderDisplay
+            :data-provider-info="chatState.dataProvider"
+            @refresh-clicked="refresh"
+         ></DataProviderDisplay>
       </template>
 
       <ChatMainWindow
-         v-model:session-title="sessionTitle"
-         :model="selectedModelName"
+         v-if="chatState.chatType === ChatTypes.GENGERAL_CHAT"
+         v-model="chatState.sessionTitle"
+         :model="chatState.llmOptions?.model"
+         :llm-options="chatState.llmOptions"
          class="mt-3 px-4"
-      />
+      ></ChatMainWindow>
+      <BTabs
+         v-if="
+            chatState.dataProvider.model &&
+            chatState.chatType === ChatTypes.CHAT_TO_DATA
+         "
+         class="d-flex flex-column align-items-stretch overflow-y-auto pt-3"
+         nav-wrapper-class="flex-grow-0 flex-shrink-0"
+         nav-class="px-4 w-auto mb-3"
+         content-class="flex-grow-1 px-4 w-auto inset-0 min-h-0 overflow-y-hidden d-flex flex-column align-items-stretch"
+         tab-class="w-auto inset-0 min-h-0 overflow-y-hidden"
+      >
+         <BTab id="chatToDataTab" active>
+            <template #title>
+               <span class="d-flex align-items-center">
+                  <Icon name="material-symbols:chat-outline" /><span
+                     class="ms-1"
+                     >{{ chatState.sessionTitle }}</span
+                  >
+               </span>
+            </template>
+            <ChatMainWindow
+               v-model="chatState.sessionTitle"
+               :data-provider-info="chatState.dataProvider"
+               :schema="chatState.schemaSelector.schema"
+               :tables="chatState.schemaSelector.tables"
+               :model="chatState.llmOptions?.model"
+               :data-source-id="chatState.dataSource.model?.id"
+               :llm-options="chatState.llmOptions"
+            />
+         </BTab>
+         <BTab id="queryTab">
+            <template #title>
+               <span class="d-flex align-items-center">
+                  <Icon name="material-symbols:database-outline" /><span
+                     class="ms-1"
+                     >Query</span
+                  >
+               </span>
+            </template>
+            <ChatQueryWindow
+               :data-provider-info="chatState.dataProvider"
+               :selected-schema="chatState.schemaSelector.schema"
+               :selected-tables="chatState.schemaSelector.tables"
+            ></ChatQueryWindow>
+         </BTab>
+      </BTabs>
    </DefaultLayout>
 </template>
 
 <script setup lang="ts">
-import LlmSettingsToolbar from "~/components/llm/settings-toolbar.vue"
 import DefaultLayout from "~/layouts/default-layout.vue"
-
-const llmToolbar = ref<InstanceType<typeof LlmSettingsToolbar> | null>(null)
-const selectedModelName = computed(() => llmToolbar.value?.model)
-
-const sessionTitle = ref<string>("General chat")
+import { type ChatStateModel, ChatTypes } from "~/types/Schemas"
 
 usePageTitle()
+
+const chatState = reactive<ChatStateModel>({
+   sessionTitle: "General chat",
+   sql: "",
+   schemaSelector: {
+      schema: undefined,
+      tables: []
+   },
+   chatType: undefined,
+   dataSource: {
+      model: null,
+      isLoading: false,
+      loaded: false
+   },
+   dataProvider: {
+      model: null,
+      isLoading: false
+   },
+   llmOptions: {
+      streaming: false,
+      format: ""
+   }
+})
+
+const dataProviderService = getDataProviderService()
+
+const handleDataSourceSelected = async (dataSourceId: number) => {
+   chatState.dataProvider.isLoading = true
+   dataProviderService
+      .getDataProviderInfo(dataSourceId)
+      .then((data) => {
+         chatState.dataProvider.model = data
+         chatState.schemaSelector.tables = []
+         chatState.schemaSelector.schema = undefined
+      })
+      .catch((err) => {
+         console.error(err)
+      })
+      .finally(() => {
+         chatState.dataProvider.isLoading = false
+      })
+}
+
+const refresh = (dataSourceId: number) => {
+   chatState.dataProvider.isLoading = true
+   dataProviderService
+      .getDataProviderInfo(dataSourceId)
+      .then((data) => {
+         chatState.dataProvider.model = data
+      })
+      .catch((err) => {
+         console.error(err)
+      })
+      .finally(() => {
+         chatState.dataProvider.isLoading = false
+      })
+}
 </script>

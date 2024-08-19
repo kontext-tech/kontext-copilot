@@ -45,10 +45,10 @@
 
 <script setup lang="ts">
 import type { CopilotChatCallback } from "~/services/CopilotClientService"
-import type { ChatToDataCommonProps } from "~/types/UIProps"
+import type { ChatWindowProps } from "~/types/UIProps"
 import ChatInputBox from "~/components/chat/input-box.vue"
 
-const sessionTitle = defineModel<string>("sessionTitle")
+const sessionTitle = defineModel<string>()
 
 const chatMain = ref<HTMLElement | null>(null)
 const chatInputBox = ref<InstanceType<typeof ChatInputBox> | null>(null)
@@ -80,7 +80,11 @@ const callback: CopilotChatCallback = (
 
 const sendMessage = async () => {
    if (!props.model) return
-   copilotClient.chatStreaming(input.value, props.model, callback)
+   if (props.llmOptions?.streaming || props.dataSourceId !== undefined) {
+      copilotClient.chatStreaming(input.value, props.model, callback)
+   } else {
+      copilotClient.chat(input.value, props.model, callback)
+   }
    input.value = ""
 }
 
@@ -105,43 +109,51 @@ const handlRunSqlClicked = async (sql: string, messageId?: number) => {
 
 const handleUserInput = (input: string) => {
    if (!props.model) return
-   copilotClient.chatStreaming(input, props.model, callback)
+   if (props.llmOptions?.streaming || props.dataSourceId !== undefined) {
+      copilotClient.chatStreaming(input, props.model, callback)
+   } else {
+      copilotClient.chat(input, props.model, callback)
+   }
 }
 
-const props = defineProps<ChatToDataCommonProps>()
+const props = defineProps<ChatWindowProps>()
+
+const initSession = async () => {
+   if (props.model) {
+      let reinit = true
+      // If the data source and model are the same  or are all undefined, reinitialize the session
+      if (
+         (copilotClient.state.session?.dataSourceId === props.dataSourceId &&
+            copilotClient.state.session?.model === props.model) ||
+         !props.dataSourceId
+      ) {
+         reinit = false
+      }
+      await copilotClient.initCopilotSession(
+         {
+            model: props.model,
+            dataSourceId: props.dataSourceId,
+            tables: props.tables,
+            schemaName: props.schema
+         },
+         callback,
+         reinit
+      )
+      if (copilotClient.state.session) {
+         sessionTitle.value = copilotClient.state.session.title
+      }
+   }
+}
 
 watch(
    [
       () => props.model,
       () => props.schema,
       () => props.tables,
-      () => props.dataProviderInfo?.provider?.id
+      () => props.dataProviderInfo?.model?.id
    ],
    async () => {
-      if (props.model) {
-         let reinit = true
-         // If the data source and model are the same  or are all undefined, reinitialize the session
-         if (
-            (copilotClient.state.session?.dataSourceId === props.dataSourceId &&
-               copilotClient.state.session?.model === props.model) ||
-            !props.dataSourceId
-         ) {
-            reinit = false
-         }
-         await copilotClient.initCopilotSession(
-            {
-               model: props.model,
-               dataSourceId: props.dataSourceId,
-               tables: props.tables,
-               schemaName: props.schema
-            },
-            callback,
-            reinit
-         )
-         if (copilotClient.state.session) {
-            sessionTitle.value = copilotClient.state.session.title
-         }
-      }
+      await initSession()
    },
    { deep: true }
 )

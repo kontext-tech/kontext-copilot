@@ -37,9 +37,9 @@
 import {
    ActionsDataKeys,
    ActionTypes,
-   type ActionsModel
+   type ActionsModel,
+   type RunSqlModalModel
 } from "~/types/Schemas"
-import type { RunSqlModalModel } from "~/types/UIProps"
 import { useClipboard } from "@vueuse/core"
 
 const props = defineProps<{ actions: ActionsModel; messageId?: number }>()

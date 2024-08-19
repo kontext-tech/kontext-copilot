@@ -1,5 +1,5 @@
 <template>
-   <div v-if="dataProviderInfo.provider">
+   <div v-if="dataProviderInfo.model">
       <div class="fw-bold mb-3 d-flex align-items-center gap-1">
          Objects
          <BButton variant="link" class="ms-auto" @click="refresh">
@@ -12,7 +12,7 @@
             <BSpinner variant="primary" />
          </template>
          <div
-            v-for="(m, index) in dataProviderInfo.provider.metadata"
+            v-for="(m, index) in dataProviderInfo.model.metadata"
             v-else
             :key="index"
          >
@@ -29,8 +29,8 @@
 import type { DataProviderInfoWrapModel } from "~/types/Schemas"
 
 const refresh = () => {
-   if (props.dataProviderInfo.provider)
-      emits("refresh-clicked", props.dataProviderInfo.provider.id)
+   if (props.dataProviderInfo.model)
+      emits("refresh-clicked", props.dataProviderInfo.model.id)
 }
 
 const emits = defineEmits(["refresh-clicked"])

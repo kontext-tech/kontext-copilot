@@ -2,8 +2,7 @@
    <DefaultLayout>
       <template #header-secondary>
          <LlmSettingsToolbar
-            id="llmToolbar"
-            ref="llmToolbar"
+            v-model="llmToolbar"
             model-selector
             settings-button
             streaming-toggle
@@ -100,12 +99,18 @@
 </template>
 
 <script setup lang="ts">
-import LlmSettingsToolbar from "~/components/llm/settings-toolbar.vue"
 import DefaultLayout from "~/layouts/default-layout.vue"
 import { LlmModelRequiredException } from "~/types/Errors"
-import type { PromptInfoModel, PromptModel } from "~/types/Schemas"
+import type {
+   LlmToolbarOptions,
+   PromptInfoModel,
+   PromptModel
+} from "~/types/Schemas"
 
-const llmToolbar = ref<InstanceType<typeof LlmSettingsToolbar> | null>(null)
+const llmToolbar = reactive<LlmToolbarOptions>({
+   streaming: false,
+   format: ""
+})
 
 const systemPromptInput = ref<string>()
 const promptInput = ref<string>("")
@@ -137,15 +142,15 @@ watch(
 )
 
 const generateResponse = async () => {
-   if (!llmToolbar.value?.model) throw new LlmModelRequiredException()
+   if (!llmToolbar.model) throw new LlmModelRequiredException()
 
    if (userInput.value)
       llmClient.generate(
          promptInput.value,
          userInput.value,
-         llmToolbar.value.model,
-         llmToolbar.value.format,
-         llmToolbar.value.streaming,
+         llmToolbar.model,
+         llmToolbar.format,
+         llmToolbar.streaming,
          undefined,
          systemPromptInput.value
       )

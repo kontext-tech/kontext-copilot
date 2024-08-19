@@ -24,7 +24,7 @@
 </template>
 <script setup lang="ts">
 import type { Size } from "bootstrap-vue-next"
-import type { RunSqlModalModel } from "~/types/UIProps"
+import type { RunSqlModalModel } from "~/types/Schemas"
 
 const model = defineModel<RunSqlModalModel>({
    default: {

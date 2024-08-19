@@ -5,7 +5,7 @@
       <LlmModelSelector v-if="props.modelSelector" />
       <BFormCheckbox
          v-if="props.streamingToggle"
-         v-model="options.streaming"
+         v-model="model.streaming"
          switch
          class="d-flex align-items-center gap-1"
       >
@@ -35,21 +35,27 @@ const jsonFormat = ref(
 
 const { defaultModel } = useModels()
 
-const options = reactive<LlmToolbarOptions>({
-   streaming:
-      props.streamingDefault === undefined ? false : props.streamingDefault,
-   format: ""
+const model = defineModel<LlmToolbarOptions>({
+   default: {
+      streaming: false,
+      format: ""
+   }
 })
 
 watch(jsonFormat, (value) => {
-   options.format = value ? "json" : ""
+   model.value.format = value ? "json" : ""
 })
 
 watchEffect(() => {
    if (defaultModel.value) {
-      options.model = defaultModel.value.name
+      model.value.model = defaultModel.value.name
    }
 })
 
-defineExpose(options)
+onMounted(() => {
+   if (props.streamingToggle) {
+      model.value.streaming =
+         props.streamingDefault === undefined ? false : props.streamingDefault
+   }
+})
 </script>

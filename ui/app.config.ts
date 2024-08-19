@@ -29,10 +29,10 @@ export default defineAppConfig({
          flat: true,
          children: [
             {
-               id: "chatToData",
-               to: "/chat-to-data",
+               id: "newChat",
+               to: "/chat",
                icon: "material-symbols:chat-outline",
-               text: "Chat to data"
+               text: "Chat"
             }
             // {
             //    id: "charts",
@@ -48,12 +48,6 @@ export default defineAppConfig({
          text: "GenAI utils",
          flat: true,
          children: [
-            {
-               id: "newChat",
-               to: "/chat",
-               icon: "material-symbols:chat-outline",
-               text: "General chat"
-            },
             {
                id: "prompt",
                to: "/prompt-engineering",

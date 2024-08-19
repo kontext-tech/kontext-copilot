@@ -1,9 +1,9 @@
 <template>
    <BDropdown
-      v-if="dataProviderInfo.provider"
+      v-if="dataProviderInfo.model"
       key="schemaSelector"
       variant="outline-secondary"
-      :disabled="!dataProviderInfo.provider.supportsSchema"
+      :disabled="!dataProviderInfo.model.supportsSchema"
       size="sm"
    >
       <template #button-content>
@@ -14,7 +14,7 @@
          <Icon name="material-symbols:arrow-drop-down" />
       </template>
       <BDropdownItem
-         v-for="schema in dataProviderInfo.provider.metadata"
+         v-for="schema in dataProviderInfo.model.metadata"
          :key="schema.schemaName ?? '-'"
          @click="handleSelectSchema(schema.schemaName)"
       >
@@ -59,11 +59,13 @@
 </template>
 
 <script setup lang="ts">
-import type { DataProviderInfoWrapModel } from "~/types/Schemas"
-import type { SchemaSelectorModel } from "~/types/UIProps"
+import type {
+   DataProviderInfoWrapModel,
+   SchemaSelectorModel
+} from "~/types/Schemas"
 
 const model = defineModel<SchemaSelectorModel>({
-   default: { schema: null, tables: [] }
+   default: { schema: undefined, tables: [] }
 })
 
 const handleSelectSchema = (schema: string | null) => {
@@ -75,12 +77,12 @@ const handleSelectSchema = (schema: string | null) => {
 }
 
 const tables = computed(() => {
-   if (props.dataProviderInfo.provider) {
-      const schema = props.dataProviderInfo.provider.supportsSchema
-         ? props.dataProviderInfo.provider.metadata.find(
+   if (props.dataProviderInfo.model) {
+      const schema = props.dataProviderInfo.model.supportsSchema
+         ? props.dataProviderInfo.model.metadata.find(
               (m) => m.schemaName === model.value.schema
            )
-         : props.dataProviderInfo.provider.metadata[0]
+         : props.dataProviderInfo.model.metadata[0]
       return (
          schema?.tables.map((table) => ({
             key: table,

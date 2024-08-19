@@ -161,7 +161,7 @@ const sampleDataFields = computed(() => {
 const showSampleDataModal = (table: string) => {
    currentTable.value = table
    /*Load sample data */
-   if (props.dataProviderInfo.provider?.id) {
+   if (props.dataProviderInfo.model?.id) {
       sampleDataModal.isLoading = true
       sampleDataModal.title = currentTable.value
          ? `Sample data for ${props.schema?.schemaName ? props.schema.schemaName + "." : ""}${currentTable.value}`
@@ -169,7 +169,7 @@ const showSampleDataModal = (table: string) => {
       sampleDataModal.open = true
       dataProviderService
          .getTableSamples(
-            props.dataProviderInfo.provider.id,
+            props.dataProviderInfo.model.id,
             table,
             props.schema?.schemaName ?? undefined
          )
@@ -212,7 +212,7 @@ const resetSqlModal = () => {
 }
 
 const showSqlModal = (table: string, sqlType: SqlType) => {
-   if (props.dataProviderInfo.provider?.id) {
+   if (props.dataProviderInfo.model?.id) {
       sqlModal.isLoading = true
       const table_full_name = props.schema?.schemaName
          ? `${props.schema.schemaName}.${table}`
@@ -227,7 +227,7 @@ const showSqlModal = (table: string, sqlType: SqlType) => {
             ? dataProviderService.getTableCreationSQL
             : dataProviderService.getTableSelectSQL
       func(
-         props.dataProviderInfo.provider.id,
+         props.dataProviderInfo.model.id,
          table,
          props.schema?.schemaName ?? undefined
       )
