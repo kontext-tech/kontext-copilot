@@ -12,7 +12,7 @@
                      class="btn btn-outline-primary d-inline-flex gap-1 align-items-center"
                   >
                      <Icon name="material-symbols:edit-square-outline" />
-                     <span>New chat</span>
+                     <span>Start</span>
                   </NuxtLink>
                </div>
             </div>

@@ -1,6 +1,6 @@
 <template>
    <BModal
-      v-model="model.open"
+      v-model="model.modalOpen"
       size="lg"
       hide-footer
       no-close-on-backdrop
@@ -67,11 +67,15 @@
 import { ChatTypes, type ChatTypeSelectorModel } from "~/types/Schemas"
 
 const model = defineModel<ChatTypeSelectorModel>({
-   default: { chatType: undefined, open: true }
+   default: { chatType: undefined, open: true, show: true }
 })
 
 const handleClick = (chatType: ChatTypes) => {
    model.value.chatType = chatType
-   model.value.open = false
+   model.value.modalOpen = false
+   model.value.show = false
+   emits("chat-type-selected", chatType)
 }
+
+const emits = defineEmits(["chat-type-selected"])
 </script>

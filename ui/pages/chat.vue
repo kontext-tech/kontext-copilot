@@ -1,9 +1,10 @@
 <template>
    <DefaultLayout>
       <ChatTypeSelector
-         v-if="chatState.chatTypeSelector.chatType === undefined"
+         v-if="chatState.chatTypeSelector.show"
          v-model="chatState.chatTypeSelector"
          class="mt-3 px-4"
+         @chat-type-selected="handleChatTypeSelected"
       />
       <template v-if="chatState.chatTypeSelector.chatType" #header-secondary>
          <LlmSettingsToolbar
@@ -42,7 +43,7 @@
             ></DataProviderSchemaSelector>
          </template>
 
-         <BButton variant="link" class="ms-auto" @click="handleSelectChatType">
+         <BButton variant="link" class="ms-auto" @click="showChatSelector">
             <Icon name="material-symbols:edit-square-outline" />
             New chat
          </BButton>
@@ -132,7 +133,7 @@ const chatStateDefault: ChatStateModel = {
       schema: undefined,
       tables: []
    },
-   chatTypeSelector: { chatType: undefined, open: true },
+   chatTypeSelector: { chatType: undefined, modalOpen: true, show: true },
    dataSource: {
       model: null,
       isLoading: false,
@@ -184,10 +185,16 @@ const handleDataSourceSelected = async (dataSourceId: number) => {
       })
 }
 
-const handleSelectChatType = () => {
+const showChatSelector = () => {
+   chatState.value.chatTypeSelector.modalOpen = true
+   chatState.value.chatTypeSelector.show = true
+}
+
+const handleChatTypeSelected = (chatType: ChatTypes) => {
    reset()
-   chatState.value.chatTypeSelector.chatType = undefined
-   chatState.value.chatTypeSelector.open = true
+   chatState.value.chatTypeSelector.chatType = chatType
+   chatState.value.chatTypeSelector.modalOpen = false
+   chatState.value.chatTypeSelector.show = false
 }
 
 const refresh = (dataSourceId: number) => {

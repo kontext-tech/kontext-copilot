@@ -352,7 +352,8 @@ export enum ChatTypes {
 
 export interface ChatTypeSelectorModel {
    chatType?: ChatTypes
-   open: boolean
+   modalOpen: boolean
+   show: boolean
 }
 
 export interface ChatStateModel {
