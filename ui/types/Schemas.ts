@@ -350,9 +350,14 @@ export enum ChatTypes {
    CHAT_TO_DATA = "chat_to_data"
 }
 
+export interface ChatTypeSelectorModel {
+   chatType?: ChatTypes
+   open: boolean
+}
+
 export interface ChatStateModel {
    sessionTitle: string
-   chatType?: ChatTypes
+   chatTypeSelector: ChatTypeSelectorModel
    model?: string
    schemaSelector: SchemaSelectorModel
    sql: string

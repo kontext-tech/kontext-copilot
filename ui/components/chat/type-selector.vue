@@ -1,61 +1,77 @@
 <template>
-   <div class="d-flex gap-3">
-      <!--Start Chat-To-Data-->
-      <div class="col-md-6">
-         <div class="card">
+   <BModal
+      v-model="model.open"
+      size="lg"
+      hide-footer
+      no-close-on-backdrop
+      no-close-on-esc
+      title="Select a chat type"
+      class="shadow"
+      no-fade
+   >
+      <div class="card-group my-3">
+         <!--Start Chat-To-Data-->
+         <div class="card border-0">
             <div class="card-body">
-               <h4 class="card-title">Chat to Data</h4>
+               <h4 class="card-title">
+                  <Icon name="material-symbols:database-outline" size="24" />
+                  Chat to Data
+               </h4>
                <p class="text-muted">
-                  Use Chat to Data to ask questions related to databases. It
-                  enables you to run SQL queries and get results quickly.
+                  Use Chat to Data to ask database-related questions. It allows
+                  you to run SQL queries and get results quickly.
                </p>
-               <div class="d-flex align-items-center">
-                  <BButton
-                     variant="primary"
-                     @click="
-                        () => {
-                           model = ChatTypes.CHAT_TO_DATA
-                        }
-                     "
-                  >
-                     <Icon name="material-symbols:edit-square-outline" />
-                     <span class="ms-1">New chat</span>
-                  </BButton>
-               </div>
+            </div>
+            <div
+               class="card-footer bg-transparent border-top-0 d-flex align-items-center"
+            >
+               <BButton
+                  variant="primary"
+                  @click="handleClick(ChatTypes.CHAT_TO_DATA)"
+               >
+                  <Icon name="material-symbols:edit-square-outline" />
+                  <span class="ms-1">New chat</span>
+               </BButton>
             </div>
          </div>
-      </div>
 
-      <!--Start General-Chat-->
-      <div class="col-md-6">
-         <div class="card">
+         <!--Start General-Chat-->
+         <div class="card border-0">
             <div class="card-body">
-               <h4 class="card-title">General Chat</h4>
+               <h4 class="card-title">
+                  <Icon name="material-symbols:chat-outline" size="24" />
+                  General Chat
+               </h4>
                <p class="text-muted">
-                  Use general chat to ask questions with large language models
+                  Use this chat to ask questions to large language models
                   (LLMs).
                </p>
-               <div class="d-flex align-items-center">
-                  <BButton
-                     variant="primary"
-                     @click="
-                        () => {
-                           model = ChatTypes.GENGERAL_CHAT
-                        }
-                     "
-                  >
-                     <Icon name="material-symbols:edit-square-outline" />
-                     <span class="ms-1">New chat</span>
-                  </BButton>
-               </div>
+            </div>
+            <div
+               class="card-footer bg-transparent border-top-0 d-flex align-items-center"
+            >
+               <BButton
+                  variant="primary"
+                  @click="handleClick(ChatTypes.GENGERAL_CHAT)"
+               >
+                  <Icon name="material-symbols:edit-square-outline" />
+                  <span class="ms-1">New chat</span>
+               </BButton>
             </div>
          </div>
-      </div>
-   </div>
+      </div></BModal
+   >
 </template>
 
 <script setup lang="ts">
-import { ChatTypes } from "~/types/Schemas"
+import { ChatTypes, type ChatTypeSelectorModel } from "~/types/Schemas"
 
-const model = defineModel<ChatTypes>()
+const model = defineModel<ChatTypeSelectorModel>({
+   default: { chatType: undefined, open: true }
+})
+
+const handleClick = (chatType: ChatTypes) => {
+   model.value.chatType = chatType
+   model.value.open = false
+}
 </script>
