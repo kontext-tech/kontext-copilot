@@ -46,17 +46,17 @@ const dataSources = ref<DataSourceModel[]>()
 const error = ref<string | null>(null)
 
 const selectSource = (ds: DataSourceModel) => {
+   if (model.value.model?.id === ds.id) return
    model.value.model = ds
-   model.value.id = ds.id
    emit("dataSourceSelected", ds.id)
 }
 
 const emit = defineEmits(["dataSourceSelected"])
 
-onMounted(() => {
+onMounted(async () => {
    model.value.isLoading = true
    model.value.loaded = false
-   dataSourceService
+   await dataSourceService
       .getDataSources()
       .then((data) => {
          dataSources.value = data

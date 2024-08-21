@@ -1,7 +1,8 @@
 import type {
    CopilotSessionMessage,
    DataProviderInfoWrapModel,
-   LlmToolbarOptions
+   LlmToolbarOptions,
+   SchemaSelectorModel
 } from "./Schemas"
 
 export interface NavItemProps {
@@ -21,10 +22,9 @@ export interface ChatMessageCardProps {
 
 export interface ChatWindowProps {
    dataProviderInfo?: DataProviderInfoWrapModel
-   schema?: string
-   tables?: string[]
+   schemaSelector?: SchemaSelectorModel
    dataSourceId?: number
-   llmOptions?: LlmToolbarOptions
+   llmOptions: LlmToolbarOptions
 }
 
 export interface LlmSettingsToolbarProps {

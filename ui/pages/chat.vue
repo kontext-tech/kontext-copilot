@@ -70,12 +70,13 @@
          v-if="chatState.chatTypeSelector.chatType === ChatTypes.GENGERAL_CHAT"
          v-model="chatState.sessionTitle"
          :llm-options="chatState.llmOptions"
+         :chat-type-selector="chatState.chatTypeSelector"
          class="mt-3 px-4"
       ></ChatMainWindow>
       <BTabs
          v-if="
-            chatState.dataProvider.model &&
-            chatState.chatTypeSelector.chatType === ChatTypes.CHAT_TO_DATA
+            chatState.chatTypeSelector.chatType === ChatTypes.CHAT_TO_DATA &&
+            chatState.dataProvider.model
          "
          class="d-flex flex-column align-items-stretch overflow-y-auto pt-3"
          nav-wrapper-class="flex-grow-0 flex-shrink-0"
@@ -93,11 +94,14 @@
                </span>
             </template>
             <ChatMainWindow
+               v-if="
+                  chatState.chatTypeSelector.chatType ===
+                     ChatTypes.CHAT_TO_DATA && chatState.dataProvider.model
+               "
                v-model="chatState.sessionTitle"
                :data-provider-info="chatState.dataProvider"
-               :schema="chatState.schemaSelector.schema"
-               :tables="chatState.schemaSelector.tables"
-               :data-source-id="chatState.dataSource.model?.id"
+               :schema-selector="chatState.schemaSelector"
+               :data-source-id="chatState.dataSource?.model?.id"
                :llm-options="chatState.llmOptions"
             />
          </BTab>
@@ -121,17 +125,19 @@
 </template>
 
 <script setup lang="ts">
+import _ from "lodash"
 import DefaultLayout from "~/layouts/default-layout.vue"
 import { type ChatStateModel, ChatTypes } from "~/types/Schemas"
 
 usePageTitle()
 
-const chatStateDefault: ChatStateModel = {
+const chatStateDefault: Readonly<ChatStateModel> = {
    sessionTitle: "Chat",
    sql: "",
    schemaSelector: {
       schema: undefined,
-      tables: []
+      tables: [],
+      selectAll: false
    },
    chatTypeSelector: { chatType: undefined, modalOpen: true, show: true },
    dataSource: {
@@ -145,70 +151,74 @@ const chatStateDefault: ChatStateModel = {
    },
    llmOptions: {
       streaming: false,
-      format: ""
+      format: "",
+      model: undefined
    }
 }
 
-const chatState = ref<ChatStateModel>(chatStateDefault)
+// Create a deep copy of the default state using loadash
+const chatState = reactive<ChatStateModel>(_.cloneDeep(chatStateDefault))
 
 const dataProviderService = getDataProviderService()
 
 const reset = () => {
-   // Object.assign(chatState.value, chatStateDefault)
+   resetSchemaSelector()
+   Object.assign(chatState.dataSource, _.cloneDeep(chatStateDefault.dataSource))
    Object.assign(
-      chatState.value.schemaSelector,
-      chatStateDefault.schemaSelector
+      chatState.dataProvider,
+      _.cloneDeep(chatStateDefault.dataProvider)
    )
-   Object.assign(chatState.value.dataSource, chatStateDefault.dataSource)
-   Object.assign(chatState.value.dataProvider, chatStateDefault.dataProvider)
-   Object.assign(chatState.value.llmOptions, chatStateDefault.llmOptions)
+   Object.assign(chatState.llmOptions, _.cloneDeep(chatStateDefault.llmOptions))
    Object.assign(
-      chatState.value.chatTypeSelector,
-      chatStateDefault.chatTypeSelector
+      chatState.chatTypeSelector,
+      _.cloneDeep(chatStateDefault.chatTypeSelector)
    )
 }
 
+const resetSchemaSelector = () => {
+   chatState.schemaSelector = _.cloneDeep(chatStateDefault.schemaSelector)
+}
+
 const handleDataSourceSelected = async (dataSourceId: number) => {
-   chatState.value.dataProvider.isLoading = true
-   dataProviderService
+   chatState.dataProvider.isLoading = true
+   await dataProviderService
       .getDataProviderInfo(dataSourceId)
       .then((data) => {
-         chatState.value.dataProvider.model = data
-         chatState.value.schemaSelector.tables = []
-         chatState.value.schemaSelector.schema = undefined
+         chatState.dataProvider.model = data
+         resetSchemaSelector()
       })
       .catch((err) => {
          console.error(err)
       })
       .finally(() => {
-         chatState.value.dataProvider.isLoading = false
+         chatState.dataProvider.isLoading = false
       })
 }
 
 const showChatSelector = () => {
-   chatState.value.chatTypeSelector.modalOpen = true
-   chatState.value.chatTypeSelector.show = true
+   chatState.chatTypeSelector.modalOpen = true
+   chatState.chatTypeSelector.show = true
 }
 
 const handleChatTypeSelected = (chatType: ChatTypes) => {
    reset()
-   chatState.value.chatTypeSelector.chatType = chatType
-   chatState.value.chatTypeSelector.modalOpen = false
-   chatState.value.chatTypeSelector.show = false
+   chatState.chatTypeSelector.chatType = chatType
+   chatState.chatTypeSelector.modalOpen = false
+   chatState.chatTypeSelector.show = false
 }
 
-const refresh = (dataSourceId: number) => {
-   chatState.value.dataProvider.isLoading = true
-   dataProviderService
+const refresh = async (dataSourceId: number) => {
+   chatState.dataProvider.isLoading = true
+   await dataProviderService
       .getDataProviderInfo(dataSourceId)
       .then((data) => {
-         chatState.value.dataProvider.model = data
+         chatState.dataProvider.model = data
       })
       .catch((err) => {
          console.error(err)
       })
       .finally(() => {
-         chatState.value.dataProvider.isLoading = false
+         chatState.dataProvider.isLoading = false
       })
 }
 </script>

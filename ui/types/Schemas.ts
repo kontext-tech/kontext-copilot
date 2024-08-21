@@ -160,7 +160,6 @@ export interface DataSourceWrapModel {
    model: DataSourceModel | null
    isLoading: boolean
    loaded: boolean
-   id?: number
 }
 
 // Create model excludes auto-generated fields like 'id'
@@ -359,7 +358,6 @@ export interface ChatTypeSelectorModel {
 export interface ChatStateModel {
    sessionTitle: string
    chatTypeSelector: ChatTypeSelectorModel
-   model?: string
    schemaSelector: SchemaSelectorModel
    sql: string
    dataSource: DataSourceWrapModel
@@ -370,6 +368,7 @@ export interface ChatStateModel {
 export interface SchemaSelectorModel {
    schema?: string
    tables: string[]
+   selectAll: boolean
 }
 
 export interface RunSqlModalModel {

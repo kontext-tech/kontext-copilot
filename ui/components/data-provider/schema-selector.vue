@@ -23,7 +23,7 @@
    </BDropdown>
 
    <BDropdown
-      v-if="dataProviderInfo"
+      v-if="dataProviderInfo.model"
       key="tableSelector"
       variant="outline-secondary"
       size="sm"
@@ -40,7 +40,7 @@
             class="d-flex align-items-center gap-1"
             @change="handleSelectAllTables"
          >
-            <BFormCheckbox v-model="selectAll">
+            <BFormCheckbox v-model="model.selectAll">
                {{ selectAllLabel }}
             </BFormCheckbox>
          </div>
@@ -65,7 +65,7 @@ import type {
 } from "~/types/Schemas"
 
 const model = defineModel<SchemaSelectorModel>({
-   default: { schema: undefined, tables: [] }
+   default: { schema: undefined, tables: [], selectAll: false }
 })
 
 const handleSelectSchema = (schema: string | null) => {
@@ -102,13 +102,13 @@ const handleSelectTable = (table: string) => {
       model.value.tables.push(table)
    }
 }
-const selectAll = ref(false)
+
 const selectAllLabel = computed(() =>
-   selectAll.value ? "Deselect all" : "Select all"
+   model.value.selectAll ? "Deselect all" : "Select all"
 )
 
 const handleSelectAllTables = () => {
-   if (!selectAll.value) {
+   if (!model.value.selectAll) {
       model.value.tables = []
       tables.value?.forEach((t) => (t.selected = false))
    } else {

@@ -103,7 +103,7 @@ const handlRunSqlClicked = async (sql: string, messageId?: number) => {
    copilotClient.runCopilotSql(
       props.dataSourceId,
       sql,
-      props.schema,
+      props.schemaSelector?.schema,
       messageId,
       callback
    )
@@ -121,7 +121,7 @@ const handleUserInput = (input: string) => {
 const props = defineProps<ChatWindowProps>()
 
 const initSession = async () => {
-   if (props.llmOptions?.model) {
+   if (props.llmOptions.model) {
       let reinit = true
       // If the data source and model are the same  or are all undefined, reinitialize the session
       if (
@@ -135,8 +135,8 @@ const initSession = async () => {
          {
             model: props.llmOptions.model,
             dataSourceId: props.dataSourceId,
-            tables: props.tables,
-            schemaName: props.schema
+            tables: props.schemaSelector?.tables,
+            schemaName: props.schemaSelector?.schema
          },
          callback,
          reinit
@@ -149,18 +149,14 @@ const initSession = async () => {
 
 watch(
    [
-      () => props.llmOptions?.model,
-      () => props.schema,
-      () => props.tables,
-      () => props.dataProviderInfo?.model?.id
+      () => props.llmOptions.model,
+      () => props.dataProviderInfo?.model?.id,
+      () => props.schemaSelector?.schema,
+      () => props.schemaSelector?.tables
    ],
    async () => {
       await initSession()
    },
-   { deep: true }
+   { deep: true, immediate: true }
 )
-
-onMounted(async () => {
-   await initSession()
-})
 </script>
