@@ -43,36 +43,37 @@ export default defineAppConfig({
          ]
       },
       {
+         id: "dataSources",
+         to: "/data-sources",
+         icon: "material-symbols:database-outline",
+         text: "Data sources"
+      },
+      {
          id: "tools",
          icon: "material-symbols:tools-wrench-outline",
-         text: "GenAI utils",
-         flat: true,
-         children: [
-            {
-               id: "prompt",
-               to: "/prompt-engineering",
-               icon: "material-symbols:lightbulb-outline",
-               text: "Prompt scratchboard"
-            },
-            {
-               id: "embedding",
-               to: "/embedding-generator",
-               icon: "material-symbols:transform",
-               text: "Embedding generator"
-            }
-         ]
+         text: "Tools",
+         to: "/tools",
+         flat: true
+      },
+      {
+         id: "prompt",
+         to: "/prompt-engineering",
+         icon: "material-symbols:lightbulb-outline",
+         text: "Prompt scratchboard",
+         hidden: true
+      },
+      {
+         id: "embedding",
+         to: "/embedding-generator",
+         icon: "material-symbols:transform",
+         text: "Embedding generator",
+         hidden: true
       },
       // { id: "llmflow", to: '/dashboards', icon: 'material-symbols:linked-services-outline', text: 'Workflows' },
       // { id: "knowledgebase", to: '/dashboards', icon: 'material-symbols:menu-book-outline', text: 'Knowledge base' },
       // { id: "dataSources", to: '/data-sources', icon: 'material-symbols:database-outline', text: 'Data sources' },
 
       // { id: "databoards", to: '/dashboards', icon: 'material-symbols:dashboard-customize-outline', text: 'Dashboards' },
-      {
-         id: "dataSources",
-         to: "/data-sources",
-         icon: "material-symbols:database-outline",
-         text: "Data sources"
-      },
       {
          id: "settings",
          to: "/settings",

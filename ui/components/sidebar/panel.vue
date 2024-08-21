@@ -1,6 +1,9 @@
 <template>
    <ul class="nav nav-pills flex-column mb-auto flex-fill mt-3">
-      <template v-for="item in navItems" :key="item.id">
+      <template
+         v-for="item in navItems.filter((i) => !i.hidden)"
+         :key="item.id"
+      >
          <SidebarNavItem v-bind="item" />
       </template>
    </ul>

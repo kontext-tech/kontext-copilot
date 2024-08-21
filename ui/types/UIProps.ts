@@ -12,6 +12,7 @@ export interface NavItemProps {
    text: string
    children?: NavItemProps[]
    flat?: boolean
+   hidden?: boolean
 }
 
 export interface ChatMessageCardProps {
