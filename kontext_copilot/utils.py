@@ -1,9 +1,10 @@
-import os
 import logging
 import logging.config
+import os
+
 import colorlog
 
-ENV_NAME = os.getenv("ENV_NAME", "development")
+ENV_NAME = os.getenv("KONTEXT_COPILOT_ENV", "development")
 IS_LOCAL = ENV_NAME == "local"
 CLIENT_APP_DIR = os.getenv("KONTEXT_COPILOT_CLIENTAPP_DIR", "./ui")
 HOST = os.getenv("KONTEXT_COPILOT_HOST", "localhost")
