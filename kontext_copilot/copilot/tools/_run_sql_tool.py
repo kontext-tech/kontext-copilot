@@ -78,7 +78,7 @@ class RunSqlTool(BaseTool):
                 [ActionTypes.FIX_SQL_ERRORS],
                 {
                     ActionsDataKeys.FIX_SQL_ERRORS_PROMPT: self.session.get_fix_error_prompt(
-                        str(e)
+                        e
                     )
                 },
             )

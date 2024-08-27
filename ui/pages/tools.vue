@@ -30,7 +30,7 @@
                   </h5>
                   <p class="text-muted">Generate embeddings from a model.</p>
                   <NuxtLink
-                     to="/prompt-engineering"
+                     to="/embedding-generator"
                      class="btn btn-outline-primary d-inline-flex gap-1 align-items-center"
                   >
                      Try</NuxtLink

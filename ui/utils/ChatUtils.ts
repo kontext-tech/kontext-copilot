@@ -27,7 +27,7 @@ export const getRoleName = (role: ChatRoles) => {
       case ChatRoles.USER:
          return "User"
       case ChatRoles.ASSISTANT:
-         return "AI Assistant"
+         return "Kontext Copilot"
       default:
          return "System"
    }
