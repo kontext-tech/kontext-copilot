@@ -6,7 +6,7 @@
             ref="chatMain"
             class="flex-grow-1 flex-shrink-1 overflow-y-auto"
          >
-            <div class="py-1 d-flex align-items-top mx-1">
+            <div v-if="dataSourceId" class="py-1 d-flex align-items-top mx-1">
                <BButton
                   variant="link"
                   @click="
