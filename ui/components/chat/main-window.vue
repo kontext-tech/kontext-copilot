@@ -6,6 +6,19 @@
             ref="chatMain"
             class="flex-grow-1 flex-shrink-1 overflow-y-auto"
          >
+            <div class="py-1 d-flex align-items-top mx-1">
+               <BButton
+                  variant="link"
+                  @click="
+                     handleUserInput(
+                        'Suggest three questions to ask about this database.'
+                     )
+                  "
+               >
+                  <Icon name="material-symbols:magic-button-outline" /> Suggest
+                  questions to ask</BButton
+               >
+            </div>
             <template
                v-for="(message, i) in copilotClient.state.messages.filter(
                   (m) => !m.isSystemPrompt
@@ -116,6 +129,7 @@ const handleUserInput = (input: string) => {
    } else {
       copilotClient.chat(input, props.llmOptions.model, callback)
    }
+   scrollToBottom()
 }
 
 const props = defineProps<ChatWindowProps>()
