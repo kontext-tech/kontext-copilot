@@ -70,9 +70,18 @@ class RunSqlTool(BaseTool):
                         yield f"{col}|"
                     yield "\n"
         except Exception as e:
+            self.message.is_error = True
             self._logger.error(f"Error running SQL: {e}")
             yield "\n**Error running SQL:**\n"
             yield f"```\n{e}\n```\n"
+            self.message.add_actions(
+                [ActionTypes.FIX_SQL_ERRORS],
+                {
+                    ActionsDataKeys.FIX_SQL_ERRORS_PROMPT: self.session.get_fix_error_prompt(
+                        str(e)
+                    )
+                },
+            )
 
     def _generate_response(self, response: Iterator[str]):
         for res in response:
@@ -93,7 +102,8 @@ class RunSqlTool(BaseTool):
             self.message.content += "\n"
 
         # add actions to copy sql
-        self.add_sql_related_actions(self.message, self.sql)
+        if not self.message.is_error:
+            self.add_sql_related_actions(self.message, self.sql)
 
         # Return a message to indicate the SQL execution is done
         yield SessionMessageModel(

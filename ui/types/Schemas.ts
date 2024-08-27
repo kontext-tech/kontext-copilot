@@ -50,7 +50,8 @@ export enum ActionTypes {
    RUN_SQL = "run_sql",
    COPY_SQL = "copy_sql",
    SQL_TO_PYTHON = "sql_to_python",
-   SQL_TO_PYSPARK = "sql_to_pyspark"
+   SQL_TO_PYSPARK = "sql_to_pyspark",
+   FIX_SQL_ERRORS = "fix_sql_errors"
 }
 
 export interface ActionsModel {
@@ -62,7 +63,8 @@ export enum ActionsDataKeys {
    SQL_LIST = "sql",
    SQL_TEXT = "sqlText",
    SQL_TO_PYTHON_PROMPT = "sqlToPythonPrompt",
-   SQL_TO_PYSPARK_PROMPT = "sqlToPysparkPrompt"
+   SQL_TO_PYSPARK_PROMPT = "sqlToPysparkPrompt",
+   FIX_SQL_ERRORS_PROMPT = "fixSqlErrorsPrompt"
 }
 
 export interface CopilotSessionMessage extends LlmChatMessage {

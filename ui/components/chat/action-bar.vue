@@ -73,6 +73,23 @@ const runAction = (action: ActionTypes, index: number) => {
       case ActionTypes.SQL_TO_PYSPARK:
          executeSqlToPysparkAction()
          break
+      case ActionTypes.FIX_SQL_ERRORS:
+         executeFixSqlErrorsAction()
+         break
+   }
+}
+
+const executeFixSqlErrorsAction = () => {
+   if (
+      props.actions.data &&
+      props.actions.data[ActionsDataKeys.FIX_SQL_ERRORS_PROMPT] &&
+      typeof props.actions.data[ActionsDataKeys.FIX_SQL_ERRORS_PROMPT] ===
+         "string"
+   ) {
+      emits(
+         "user-input",
+         props.actions.data[ActionsDataKeys.FIX_SQL_ERRORS_PROMPT]
+      )
    }
 }
 

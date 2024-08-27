@@ -43,6 +43,8 @@ export const getActionName = (action: ActionTypes) => {
          return "To Python"
       case ActionTypes.SQL_TO_PYSPARK:
          return "To PySpark"
+      case ActionTypes.FIX_SQL_ERRORS:
+         return "Fix SQL Errors"
       default:
          return action
    }

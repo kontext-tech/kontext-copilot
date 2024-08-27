@@ -15,6 +15,7 @@ class ActionTypes(str, Enum):
     COPY_SQL = "copy_sql"
     SQL_TO_PYTHON = "sql_to_python"
     SQL_TO_PYSPARK = "sql_to_pyspark"
+    FIX_SQL_ERRORS = "fix_sql_errors"
 
 
 class ActionsModel(CamelAliasBaseModel):
@@ -27,6 +28,7 @@ class ActionsDataKeys(str, Enum):
     SQL_TEXT = "sqlText"
     SQL_TO_PYTHON_PROMPT = "sqlToPythonPrompt"
     SQL_TO_PYSPARK_PROMPT = "sqlToPysparkPrompt"
+    FIX_SQL_ERRORS_PROMPT = "fixSqlErrorsPrompt"
 
 
 class RunSqlRequestModel(CamelAliasBaseModel):

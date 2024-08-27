@@ -154,6 +154,12 @@ class CopilotSession:
 
         return self.system_prompt
 
+    def get_fix_error_prompt(self, error: str) -> PromptNode:
+        """
+        Get the fix error prompt
+        """
+        return "Fix the following error in the above code:\n ```{}```. ".format(error)
+
     def get_sql_to_python_prompt(self, sql: str) -> PromptNode:
         """
         Get the SQL to Python prompt
