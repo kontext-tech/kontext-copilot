@@ -68,6 +68,7 @@
                <div class="d-flex align-items-center gap-1 ms-auto">
                   <slot name="header-tools" />
                   <LlmSettingsButton />
+                  <HelpMenu />
                   <ThemeToggle simple />
                </div>
             </div>
