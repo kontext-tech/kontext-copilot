@@ -2,9 +2,11 @@
    <DefaultLayout>
       <ChatTypeSelector
          v-if="chatState.chatTypeSelector.show"
-         v-model="chatState.chatTypeSelector"
+         v-model:chat-type-selector="chatState.chatTypeSelector"
+         v-model:data-source-selector="chatState.dataSource"
          class="mt-3 px-4"
          @chat-type-selected="handleChatTypeSelected"
+         @data-source-selected="handleDataSourceSelected"
       />
       <template v-if="chatState.chatTypeSelector.chatType" #header-secondary>
          <LlmSettingsToolbar
@@ -31,11 +33,6 @@
                chatState.chatTypeSelector.chatType === ChatTypes.CHAT_TO_DATA
             "
          >
-            <DataSourceSelector
-               v-model="chatState.dataSource"
-               auto-select
-               @data-source-selected="handleDataSourceSelected"
-            />
             <DataProviderSchemaSelector
                v-if="chatState.dataProvider.model"
                v-model="chatState.schemaSelector"
@@ -68,7 +65,7 @@
 
       <ChatMainWindow
          v-if="chatState.chatTypeSelector.chatType === ChatTypes.GENGERAL_CHAT"
-         v-model="chatState.sessionTitle"
+         v-model:session-title="chatState.sessionTitle"
          :llm-options="chatState.llmOptions"
          :chat-type-selector="chatState.chatTypeSelector"
          class="mt-3 px-4"
@@ -98,7 +95,7 @@
                   chatState.chatTypeSelector.chatType ===
                      ChatTypes.CHAT_TO_DATA && chatState.dataProvider.model
                "
-               v-model="chatState.sessionTitle"
+               v-model:session-title="chatState.sessionTitle"
                :data-provider-info="chatState.dataProvider"
                :schema-selector="chatState.schemaSelector"
                :data-source-id="chatState.dataSource?.model?.id"
@@ -163,16 +160,17 @@ const dataProviderService = getDataProviderService()
 
 const reset = () => {
    resetSchemaSelector()
-   Object.assign(chatState.dataSource, _.cloneDeep(chatStateDefault.dataSource))
+   // Object.assign(chatState.dataSource, _.cloneDeep(chatStateDefault.dataSource))
    Object.assign(
       chatState.dataProvider,
       _.cloneDeep(chatStateDefault.dataProvider)
    )
-   Object.assign(chatState.llmOptions, _.cloneDeep(chatStateDefault.llmOptions))
+   // Object.assign(chatState.llmOptions, _.cloneDeep(chatStateDefault.llmOptions))
    Object.assign(
       chatState.chatTypeSelector,
       _.cloneDeep(chatStateDefault.chatTypeSelector)
    )
+   chatState.sessionTitle = chatStateDefault.sessionTitle
 }
 
 const resetSchemaSelector = () => {
@@ -205,6 +203,9 @@ const handleChatTypeSelected = (chatType: ChatTypes) => {
    chatState.chatTypeSelector.chatType = chatType
    chatState.chatTypeSelector.modalOpen = false
    chatState.chatTypeSelector.show = false
+   if (chatState.dataSource.model) {
+      handleDataSourceSelected(chatState.dataSource.model.id)
+   }
 }
 
 const refresh = async (dataSourceId: number) => {

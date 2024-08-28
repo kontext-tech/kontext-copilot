@@ -37,7 +37,7 @@
 import type { DataSourceModel, DataSourceWrapModel } from "~/types/Schemas"
 
 const model = defineModel<DataSourceWrapModel>({
-   default: { dataSource: null, isLoading: false, loaded: false }
+   default: { model: null, isLoading: false, loaded: false }
 })
 
 const dataSourceService = getDataSourceService()
@@ -48,10 +48,10 @@ const error = ref<string | null>(null)
 const selectSource = (ds: DataSourceModel) => {
    if (model.value.model?.id === ds.id) return
    model.value.model = ds
-   emit("dataSourceSelected", ds.id)
+   emit("data-source-selected", ds.id)
 }
 
-const emit = defineEmits(["dataSourceSelected"])
+const emit = defineEmits(["data-source-selected"])
 
 onMounted(async () => {
    model.value.isLoading = true
@@ -62,9 +62,9 @@ onMounted(async () => {
          dataSources.value = data
          model.value.loaded = true
          model.value.isLoading = false
-         if (props.autoSelect && data.length > 0) {
+         if (!model.value.model && props.autoSelect && data.length > 0) {
             model.value.model = data[0]
-            emit("dataSourceSelected", data[0].id)
+            emit("data-source-selected", data[0].id)
          }
       })
       .catch((err) => {

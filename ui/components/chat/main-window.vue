@@ -63,7 +63,7 @@ import type { CopilotChatCallback } from "~/services/CopilotClientService"
 import type { ChatWindowProps } from "~/types/UIProps"
 import ChatInputBox from "~/components/chat/input-box.vue"
 
-const sessionTitle = defineModel<string>()
+const sessionTitle = defineModel<string>("sessionTitle")
 
 const chatMain = ref<HTMLElement | null>(null)
 const chatInputBox = ref<InstanceType<typeof ChatInputBox> | null>(null)
@@ -139,9 +139,8 @@ const initSession = async () => {
       let reinit = true
       // If the data source and model are the same  or are all undefined, reinitialize the session
       if (
-         (copilotClient.state.session?.dataSourceId === props.dataSourceId &&
-            copilotClient.state.session?.model === props.llmOptions.model) ||
-         !props.dataSourceId
+         copilotClient.state.session?.dataSourceId === props.dataSourceId &&
+         copilotClient.state.session?.model === props.llmOptions.model
       ) {
          reinit = false
       }

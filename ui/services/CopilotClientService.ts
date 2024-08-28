@@ -327,7 +327,6 @@ export default class CopilotClientService {
       this.state.currentMessage = this.createAssistantMessage("")
 
       try {
-         this.startGenerating(true)
          const response = await this.llmService.chatStreaming(
             {
                model: model,
@@ -339,6 +338,7 @@ export default class CopilotClientService {
             },
             () => {}
          )
+         this.startGenerating(true)
 
          for await (const part of response) {
             this.updateMessage(part.content, part.id, part.done, part.actions)

@@ -1,6 +1,6 @@
 <template>
    <BModal
-      v-model="model.modalOpen"
+      v-model="chatTypeSelector.modalOpen"
       size="lg"
       hide-footer
       no-close-on-backdrop
@@ -21,12 +21,14 @@
                   Use Chat to Data to ask database-related questions. It allows
                   you to run SQL queries and get results quickly.
                </p>
+               <DataSourceSelector v-model="dataSourceSelector" auto-select />
             </div>
             <div
                class="card-footer bg-transparent border-top-0 d-flex align-items-center"
             >
                <BButton
                   variant="primary"
+                  :disabled="!dataSourceSelector.model"
                   @click="handleClick(ChatTypes.CHAT_TO_DATA)"
                >
                   <Icon name="material-symbols:edit-square-outline" />
@@ -64,18 +66,39 @@
 </template>
 
 <script setup lang="ts">
-import { ChatTypes, type ChatTypeSelectorModel } from "~/types/Schemas"
+import {
+   ChatTypes,
+   type ChatTypeSelectorModel,
+   type DataSourceWrapModel
+} from "~/types/Schemas"
 
-const model = defineModel<ChatTypeSelectorModel>({
-   default: { chatType: undefined, open: true, show: true }
-})
+const chatTypeSelector = defineModel<ChatTypeSelectorModel>(
+   "chatTypeSelector",
+   {
+      default: { chatType: undefined, modalOpen: true, show: true }
+   }
+)
+
+const dataSourceSelector = defineModel<DataSourceWrapModel>(
+   "dataSourceSelector",
+   {
+      default: {
+         model: null,
+         isLoading: false,
+         loaded: false
+      }
+   }
+)
 
 const handleClick = (chatType: ChatTypes) => {
-   model.value.chatType = chatType
-   model.value.modalOpen = false
-   model.value.show = false
+   chatTypeSelector.value.chatType = chatType
+   chatTypeSelector.value.modalOpen = false
+   chatTypeSelector.value.show = false
    emits("chat-type-selected", chatType)
+   if (dataSourceSelector.value.model) {
+      emits("data-source-selected", dataSourceSelector.value.model.id)
+   }
 }
 
-const emits = defineEmits(["chat-type-selected"])
+const emits = defineEmits(["chat-type-selected", "data-source-selected"])
 </script>
