@@ -19,27 +19,11 @@
                </div>
             </div>
          </div>
-         <h4 class="my-3">About {{ appConfig.appName }}</h4>
-         <BLink
-            :href="appConfig.kontextCopilotUrl"
-            class="btn btn-outline-primary"
-            target="_blank"
-         >
-            Project site
-         </BLink>
-         <BLink
-            :href="appConfig.kontextCopilotLinkedInUrl"
-            class="btn btn-outline-primary ms-2"
-            target="_blank"
-         >
-            Follow Kontext on LinkedIn
-         </BLink>
       </div>
    </DefaultLayout>
 </template>
 
 <script setup lang="ts">
-import appConfig from "~/app.config"
 import DefaultLayout from "~/layouts/default-layout.vue"
 usePageTitle()
 </script>
