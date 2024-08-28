@@ -4,7 +4,7 @@
          <Icon name="material-symbols:database-outline" />
          {{ selectedDataSource.name }}
       </div>
-      <BBadge variant="primary">
+      <BBadge variant="secondary">
          {{ selectedDataSource.type }}
       </BBadge>
       <div class="my-3 text-muted">

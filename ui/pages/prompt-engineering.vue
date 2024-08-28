@@ -3,12 +3,15 @@
       <template #header-secondary>
          <LlmSettingsToolbar
             v-model="llmToolbar"
-            model-selector
             settings-button
             streaming-toggle
             json-toogle
             :streaming-default="true"
          />
+      </template>
+
+      <template #header-tools>
+         <LlmModelSelector simple />
       </template>
 
       <div class="px-4 mt-3">

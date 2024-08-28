@@ -1,7 +1,7 @@
 <template>
    <DefaultLayout>
-      <template #header-secondary>
-         <LlmSettingsToolbar v-model="llmToolbar" model-selector />
+      <template #header-tools>
+         <LlmModelSelector simple />
       </template>
 
       <div class="px-4 mt-3">
@@ -54,14 +54,8 @@
 <script setup lang="ts">
 import DefaultLayout from "~/layouts/default-layout.vue"
 import { LlmModelRequiredException } from "~/types/Errors"
-import type { LlmToolbarOptions } from "~/types/Schemas"
 
 const promptInput = ref<string>("")
-
-const llmToolbar = reactive<LlmToolbarOptions>({
-   streaming: false,
-   format: ""
-})
 
 const llmClient = getCopilotClientService()
 const state = llmClient.state
@@ -72,11 +66,15 @@ const disableGenerate = computed(
 
 const generatedState = reactive({ embeddings: "" })
 
+const { defaultModel } = useModels()
+
 const generateResponse = async () => {
-   if (!llmToolbar.model) throw new LlmModelRequiredException()
-   llmClient.embeddings(promptInput.value, llmToolbar.model).then(() => {
-      generatedState.embeddings = JSON.stringify(state.generatedEmbeddings)
-   })
+   if (!defaultModel.value?.name) throw new LlmModelRequiredException()
+   llmClient
+      .embeddings(promptInput.value, defaultModel.value?.name)
+      .then(() => {
+         generatedState.embeddings = JSON.stringify(state.generatedEmbeddings)
+      })
 }
 
 usePageTitle()

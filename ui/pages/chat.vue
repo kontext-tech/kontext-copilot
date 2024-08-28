@@ -8,6 +8,9 @@
          @chat-type-selected="handleChatTypeSelected"
          @data-source-selected="handleDataSourceSelected"
       />
+      <template #header-tools>
+         <LlmModelSelector simple />
+      </template>
       <template v-if="chatState.chatTypeSelector.chatType" #header-secondary>
          <LlmSettingsToolbar
             v-if="
@@ -15,7 +18,6 @@
                chatState
             "
             v-model="chatState.llmOptions"
-            model-selector
             settings-button
          />
          <LlmSettingsToolbar
@@ -23,7 +25,6 @@
                chatState.chatTypeSelector.chatType === ChatTypes.GENGERAL_CHAT
             "
             v-model="chatState.llmOptions"
-            model-selector
             settings-button
             streaming-toggle
             :streaming-default="true"
@@ -39,8 +40,11 @@
                :data-provider-info="chatState.dataProvider"
             ></DataProviderSchemaSelector>
          </template>
-
-         <BButton variant="link" class="ms-auto" @click="showChatSelector">
+         <BButton
+            variant="link"
+            class="d-flex align-items-center gap-1 ms-auto"
+            @click="showChatSelector"
+         >
             <Icon name="material-symbols:edit-square-outline" />
             New chat
          </BButton>

@@ -66,6 +66,7 @@
                   {{ route.meta["title"] ?? route.name }}
                </h1>
                <div class="d-flex align-items-center gap-1 ms-auto">
+                  <slot name="header-tools" />
                   <LlmSettingsButton />
                   <ThemeToggle simple />
                </div>

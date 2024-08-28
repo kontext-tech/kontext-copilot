@@ -1,6 +1,6 @@
 <template>
    <BButtonGroup size="sm">
-      <BDropdown variant="outline-secondary" size="sm">
+      <BDropdown :variant="simple ? 'link' : 'outline-secondary'" size="sm">
          <template #button-content>
             <template v-if="defaultModel">
                {{ defaultModel.name }}
@@ -54,5 +54,12 @@ const selectedModelName = computed(() => defaultModel.value?.name)
 
 defineExpose({
    selectedModelName
+})
+
+defineProps({
+   simple: {
+      type: Boolean,
+      default: false
+   }
 })
 </script>

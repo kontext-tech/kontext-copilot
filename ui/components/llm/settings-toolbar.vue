@@ -24,7 +24,6 @@
 
 <script setup lang="ts">
 import type { LlmSettingsToolbarProps } from "~/types/UIProps"
-import LlmModelSelector from "./model-selector.vue"
 import type { LlmToolbarOptions } from "~/types/Schemas"
 
 const props = defineProps<LlmSettingsToolbarProps>()
