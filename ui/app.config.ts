@@ -8,6 +8,10 @@ export default defineAppConfig({
    },
    appName: "Kontext Copilot",
    apiBaseUrl: "http://localhost:8100",
+   kontextCopilotUrl: "https://kontext.tech/copilot",
+   kontextCopilotLinkedInUrl:
+      "https://www.linkedin.com/company/kontext-technology",
+   kontextCopilotRssUrl: "https://kontext.tech/api/flex/rss/250",
    settingKeys: {
       llmTemperture: "llm_temperature",
       llmEndpoint: "llm_endpoint",
