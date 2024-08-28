@@ -165,7 +165,9 @@ const reset = () => {
       chatState.dataProvider,
       _.cloneDeep(chatStateDefault.dataProvider)
    )
-   // Object.assign(chatState.llmOptions, _.cloneDeep(chatStateDefault.llmOptions))
+   // Only reset streaming & format and keep model as is
+   chatState.llmOptions.streaming = chatStateDefault.llmOptions.streaming
+   chatState.llmOptions.format = chatStateDefault.llmOptions.format
    Object.assign(
       chatState.chatTypeSelector,
       _.cloneDeep(chatStateDefault.chatTypeSelector)
