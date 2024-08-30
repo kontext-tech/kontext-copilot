@@ -5,7 +5,7 @@ from fastapi import APIRouter, Body, Depends, Response
 from fastapi.responses import StreamingResponse
 
 from kontext_copilot import ollama
-from kontext_copilot.copilot import Planner
+from kontext_copilot.copilot import CopilotOrchestrator
 from kontext_copilot.data.schemas import (
     AddUserMessageRequestModel,
     ChatRequestModel,
@@ -32,7 +32,7 @@ router = APIRouter(
 logger = get_logger()
 
 
-def _get_planner(
+def _get_orchestrator(
     model: str,
     data_source_id: Optional[int] = None,
     tables: Optional[list[str]] = None,
@@ -40,17 +40,17 @@ def _get_planner(
     session_id: Optional[int] = None,
 ):
     """
-    Get planner
+    Get orchestrator
     """
-    planner = Planner()
-    planner.init_session(
+    orchestrator = CopilotOrchestrator()
+    orchestrator.init_session(
         model,
         data_source_id,
         tables=tables,
         schema=schema,
         session_id=session_id,
     )
-    return planner
+    return orchestrator
 
 
 @router.post("/init-session", response_model=SessionInitResponseModel)
@@ -61,7 +61,7 @@ def init_session(
     Init session with system prompt
     """
     logger.debug("Request: %s", request)
-    planner = _get_planner(
+    orchestrator = _get_orchestrator(
         model=request.model,
         data_source_id=request.data_source_id,
         tables=request.tables,
@@ -69,11 +69,11 @@ def init_session(
         session_id=request.session_id,
     )
 
-    prompt = planner.get_system_prompt()
+    prompt = orchestrator.get_system_prompt()
 
     logger.debug("System prompt: %s", prompt)
 
-    session = planner.get_session_model()
+    session = orchestrator.get_session_model()
     return SessionInitResponseModel(
         system_prompt=prompt,
         session_id=session.id,
@@ -90,14 +90,14 @@ def run_sql(request: RunSqlRequestModel = Body(None)):
     """
     Run SQL
     """
-    planner = _get_planner(
+    orchestrator = _get_orchestrator(
         model="copilot",
         data_source_id=request.data_source_id,
         schema=request.schema_name,
         session_id=request.session_id,
     )
     return StreamingResponse(
-        planner.run_sql(request=request), media_type="application/x-ndjson"
+        orchestrator.run_sql(request=request), media_type="application/x-ndjson"
     )
 
 
@@ -110,12 +110,12 @@ async def chat(
     """
     logger.info("Chat API invoked: %s", request)
 
-    planner = _get_planner(
+    orchestrator = _get_orchestrator(
         model=request.model,
         session_id=request.session_id,
     )
 
-    chat_response = planner.chat(
+    chat_response = orchestrator.chat(
         settings.get_settings_obj().llm_ollama_endpoint, request=request
     )
 
@@ -188,7 +188,7 @@ async def generate_embeddings(
 async def add_user_message(request: AddUserMessageRequestModel = Body(None)):
     logger.debug("Add User Message API invoked: %s", request)
 
-    planner = _get_planner(
+    planner = _get_orchestrator(
         model=request.model,
         session_id=request.session_id,
     )

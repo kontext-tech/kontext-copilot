@@ -1,7 +1,7 @@
 from abc import abstractmethod
 from typing import Optional
 
-from kontext_copilot.copilot._session import CopilotSession
+from kontext_copilot.copilot._copilot_session import CopilotSession
 from kontext_copilot.data.schemas import (
     ChatRoles,
     CreateSessionMessageModel,

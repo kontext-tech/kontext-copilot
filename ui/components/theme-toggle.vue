@@ -62,7 +62,7 @@ const themes = ref<ThemeConfigItem[]>([
    {
       key: "auto",
       name: "System",
-      iconName: "material-symbols:computer-outline-rounded"
+      iconName: "material-symbols:brightness-auto-outline"
    }
 ])
 
