@@ -8,11 +8,13 @@ from kontext_copilot.data.schemas import (
     SessionMessageModel,
     UpdateSessionMessageModel,
 )
-from kontext_copilot.data.schemas._copilot import ActionsModel
 from kontext_copilot.utils import get_logger
 
 
 class BaseTool:
+
+    RUN_SQL_RESULT_DATA_KEY = "run_sql_result"
+
     def __init__(self, tool_name: str, session: CopilotSession) -> None:
         self.tool_name = tool_name
         self.session = session
@@ -25,6 +27,7 @@ class BaseTool:
         """
         self.data_source = self.session.data_source
         self.data_provider = self.session.data_provider
+        self.data = {}
 
     @abstractmethod
     def execute(self, **kwargs):

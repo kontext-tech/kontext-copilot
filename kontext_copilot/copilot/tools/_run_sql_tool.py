@@ -3,9 +3,9 @@ from typing import Iterator
 
 from kontext_copilot.copilot._copilot_session import CopilotSession
 from kontext_copilot.copilot.tools._base_tool import BaseTool
+from kontext_copilot.copilot.tools._charts_recommend_tool import ChartsRecommendTool
 from kontext_copilot.data.schemas import (
     ActionsDataKeys,
-    ActionsModel,
     ActionTypes,
     ChatRoles,
     RunSqlRequestModel,
@@ -17,7 +17,7 @@ class RunSqlTool(BaseTool):
     def __init__(self, session: CopilotSession) -> None:
         super().__init__("Run SQL", session)
 
-    def execute(self, request: RunSqlRequestModel, **kwargs):
+    def execute(self, request: RunSqlRequestModel):
         """
         Execute the tool
         """
@@ -51,6 +51,12 @@ class RunSqlTool(BaseTool):
             if total_records == 0:
                 yield "0 records returned.\n"
             else:
+                # Store result
+                self.session.add_shared_data(
+                    self.message, self.RUN_SQL_RESULT_DATA_KEY, result
+                )
+
+                # Generate response
                 keys = result[0].keys()
                 if total_records > max_records:
                     result = result[:max_records]
@@ -104,6 +110,7 @@ class RunSqlTool(BaseTool):
         # add actions to copy sql
         if not self.message.is_error:
             self.add_sql_related_actions(self.message, self.sql)
+            self.add_recommend_charts_action(self.message)
 
         # Return a message to indicate the SQL execution is done
         yield SessionMessageModel(
@@ -121,6 +128,13 @@ class RunSqlTool(BaseTool):
         ).model_dump_json(by_alias=True) + "\n"
         self.commit_message(self.message)
         self.append_new_line(self.message.id, done=True)
+
+    def add_recommend_charts_action(self, message: SessionMessageModel):
+        """
+        Add recommend charts action to the message
+        """
+        tool = ChartsRecommendTool(self.session)
+        tool.execute(message)
 
     def add_sql_related_actions(self, message: SessionMessageModel, sql: str):
         """
