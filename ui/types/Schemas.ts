@@ -378,3 +378,55 @@ export interface RunSqlModalModel {
    sql: string
    maxRecords?: number
 }
+
+export enum ChartTypes {
+   PIE = "pie",
+   BAR = "bar",
+   LINE = "line"
+}
+
+export enum AggregateTypes {
+   SUM = "sum",
+   AVG = "avg",
+   COUNT = "count",
+   MAX = "max",
+   MIN = "min"
+}
+
+export interface ChartModel {
+   chartType: ChartTypes
+   aggregateType?: AggregateTypes
+}
+
+export interface PieChartModel extends ChartModel {
+   chartType: ChartTypes.PIE
+   title?: string
+   dataColumn: string
+   labelColumn?: string
+}
+
+export interface BarChartModel extends ChartModel {
+   chartType: ChartTypes.BAR
+   title?: string
+   xTitle?: string
+   yTitle?: string
+   xDataColumn: string
+   xLabelColumn?: string
+   yDataColumn: string
+   yLabelColumn?: string
+}
+
+export interface LineChartModel extends ChartModel {
+   chartType: ChartTypes.LINE
+   title?: string
+   xTitle?: string
+   yTitle?: string
+   xDataColumn: string
+   xLabelColumn?: string
+   yDataColumn: string
+   yLabelColumn?: string
+}
+
+export interface ChartListModel {
+   charts: (PieChartModel | BarChartModel | LineChartModel)[]
+}

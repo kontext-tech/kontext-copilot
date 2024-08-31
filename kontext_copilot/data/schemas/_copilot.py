@@ -3,7 +3,7 @@ from datetime import datetime
 from enum import Enum
 from typing import Any, Dict, List, Literal, Optional, Union
 
-from pydantic import field_validator
+from pydantic import Field, field_validator
 
 from kontext_copilot.data.schemas._common import CamelAliasBaseModel
 from kontext_copilot.data.schemas._llm import LlmChatMessage
@@ -271,8 +271,8 @@ class GenerateResponseModel(CamelAliasBaseModel):
 class ColumnStatsModel(CamelAliasBaseModel):
     column_name: str
     column_type: str
-    min_val: float
-    max_val: float
+    min_val: Any
+    max_val: Any
     approx_unique: int
     avg: Optional[float] = None
     std: Optional[float] = None
@@ -284,6 +284,8 @@ class ColumnStatsModel(CamelAliasBaseModel):
 
 
 class QueryStatsModel(CamelAliasBaseModel):
+    cache_table_name: str
+    cached: bool = False
     column_stats: List[ColumnStatsModel]
     categorical_columns: Optional[List[str]] = None
     datetime_columns: Optional[List[str]] = None
@@ -340,4 +342,8 @@ class LineChartModel(ChartModel):
 
 
 class ChartListModel(CamelAliasBaseModel):
-    charts: List[Union[PieChartModel, BarChartModel, LineChartModel]]
+    charts: List[Union[PieChartModel, BarChartModel, LineChartModel]] = Field(
+        alias=ActionsDataKeys.CHARTS
+    )
+    cached: bool = False
+    cache_table_name: Optional[str] = None

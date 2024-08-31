@@ -4,6 +4,7 @@ from kontext_copilot.copilot._copilot_session import CopilotSession
 from kontext_copilot.copilot.tools._base_tool import BaseTool
 from kontext_copilot.copilot.tools._data_analyser import DataAnalyser
 from kontext_copilot.data.schemas import (
+    ActionsDataKeys,
     ActionTypes,
     BarChartModel,
     ChartListModel,
@@ -69,7 +70,9 @@ class ChartsRecommendTool(BaseTool):
                     y_data_column=num_col,
                 )
                 charts_list.charts.append(chart)
-
+        charts_list.cached = stats.cached
+        charts_list.cache_table_name = stats.cache_table_name
         message.add_actions(
-            actions=[ActionTypes.RECOMMEND_CHARTS], data=charts_list.model_dump()
+            actions=[ActionTypes.RECOMMEND_CHARTS],
+            data=charts_list.model_dump(exclude_unset=True),
         )

@@ -9,6 +9,7 @@ from kontext_copilot.data.schemas import (
     QueryStatsModel,
     SessionMessageModel,
 )
+from kontext_copilot.utils import ANA_DB_PATH
 
 
 class StatsColumns(str, Enum):
@@ -34,21 +35,24 @@ class DataAnalyser:
         data: list[dict],
         max_unique_categorical: int = 20,
     ) -> None:
-        self.name = f"view_{message.session_id}_{message.id}"
+        self.view_name = f"view_{message.session_id}_{message.id}"
+        self.tabel_name = f"table_{message.session_id}_{message.id}"
         self.data = pa.Table.from_pylist(data)
         self.max_unique_categorical = max_unique_categorical
 
     def analyse(self) -> QueryStatsModel:
 
-        with duckdb.connect(":memory:") as conn:
+        with duckdb.connect(database=ANA_DB_PATH) as conn:
             # register view
-            conn.register(self.name, self.data)
+            conn.register(self.view_name, self.data)
 
-            query_stats = QueryStatsModel(column_stats=[])
+            query_stats = QueryStatsModel(
+                column_stats=[], cache_table_name=self.tabel_name
+            )
 
             # get summarize of the view
-            query = f"SUMMARIZE {self.name}"
-            summary = conn.execute(query).fetch_arrow_table()
+            query_write = f"SUMMARIZE {self.view_name}"
+            summary = conn.execute(query_write).fetch_arrow_table()
 
             # convert summary to list of ColumnStats
             for row in summary.to_pylist():
@@ -103,5 +107,15 @@ class DataAnalyser:
                     duckdb.typing.DOUBLE,
                 ]
             ]
+
+            # write view to disk
+            query_write = (
+                f"CREATE TABLE {self.tabel_name} AS SELECT * FROM {self.view_name}"
+            )
+            conn.execute(query_write)
+            query_stats.cached = True
+
+            # Drop view
+            conn.execute(f"DROP VIEW {self.view_name}")
 
             return query_stats
