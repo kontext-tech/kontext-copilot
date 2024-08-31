@@ -9,7 +9,7 @@
          :href="item.href"
          target="_blank"
       >
-         {{ item.text }}
+         <Icon name="material-symbols:open-in-new"></Icon> {{ item.text }}
       </BDropdownItem>
    </BDropdown>
 </template>
