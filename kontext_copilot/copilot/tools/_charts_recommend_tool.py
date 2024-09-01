@@ -66,7 +66,7 @@ class ChartsRecommendTool(BaseTool):
         for cat_col in stats.categorical_columns:
             for num_col in stats.numerical_columns:
                 # find out the only column stats for num_col
-                column_stats = self._get_col_stats(num_col, stats)
+                column_stats = self._get_col_stats(cat_col, stats)
 
                 if column_stats.approx_unique <= 10:
                     chart = PieChartModel(
