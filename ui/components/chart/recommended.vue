@@ -29,6 +29,7 @@
             <ChartRenderer
                v-else-if="chartResponseData"
                :data-model="chartResponseData"
+               @chart-resized="handleChartResized"
             />
          </div>
       </div>
@@ -92,6 +93,11 @@ const chartDataFetchState = reactive({
    loading: false,
    error: null
 })
+
+const emits = defineEmits(["chart-resized"])
+const handleChartResized = () => {
+   emits("chart-resized", props.message.id)
+}
 
 const fetchData = async (aggType: AggregateTypes) => {
    if (copilotClient && props.dataSourceId && chartList.value.length > 0) {
