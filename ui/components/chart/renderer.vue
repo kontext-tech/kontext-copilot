@@ -20,7 +20,10 @@ import {
    Colors,
    PointElement,
    LineElement,
-   ArcElement
+   ArcElement,
+   BarController,
+   LineController,
+   PieController
 } from "chart.js"
 import type { ChartRendererProps } from "~/types/UIProps"
 import { Chart } from "vue-chartjs"
@@ -35,7 +38,10 @@ ChartJS.register(
    Colors,
    LineElement,
    PointElement,
-   ArcElement
+   ArcElement,
+   BarController,
+   LineController,
+   PieController
 )
 
 const props = defineProps<{
