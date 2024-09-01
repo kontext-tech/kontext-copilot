@@ -62,6 +62,21 @@ class ChartsRecommendTool(BaseTool):
                 )
                 charts_list.charts.append(chart)
 
+        # Recommend pie charts for category columns
+        for cat_col in stats.categorical_columns:
+            for num_col in stats.numerical_columns:
+                # find out the only column stats for num_col
+                column_stats = self._get_col_stats(num_col, stats)
+
+                if column_stats.approx_unique <= 10:
+                    chart = PieChartModel(
+                        chart_type=ChartTypes.PIE,
+                        title=f"{num_col} by {cat_col}",
+                        data_column=num_col,
+                        label_column=cat_col,
+                    )
+                    charts_list.charts.append(chart)
+
         # Recommend bar & line charts
         for cat_col in stats.categorical_columns:
             for num_col in stats.numerical_columns:
@@ -80,21 +95,6 @@ class ChartsRecommendTool(BaseTool):
                     y_data_column=num_col,
                 )
                 charts_list.charts.append(chart)
-
-        # Recommend pie charts for category columns
-        for cat_col in stats.categorical_columns:
-            for num_col in stats.numerical_columns:
-                # find out the only column stats for num_col
-                column_stats = self._get_col_stats(num_col, stats)
-
-                if column_stats.approx_unique <= 10:
-                    chart = PieChartModel(
-                        chart_type=ChartTypes.PIE,
-                        title=f"{num_col} by {cat_col}",
-                        data_column=num_col,
-                        label_column=cat_col,
-                    )
-                    charts_list.charts.append(chart)
 
         charts_list.cached = stats.cached
         charts_list.cached_table_name = stats.cache_table_name
