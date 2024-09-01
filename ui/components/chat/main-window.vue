@@ -28,6 +28,9 @@
                <ChatMessageCard
                   :message="message"
                   :username="settings.generalUsername"
+                  :data-provider-info="props.dataProviderInfo"
+                  :data-source-id="dataSourceId"
+                  :schema-selector="props.schemaSelector"
                   @delete-clicked="handleDeleteClicked"
                   @run-sql-clicked="handlRunSqlClicked"
                   @abort-clicked="handleAbortClicked"
@@ -43,6 +46,9 @@
                :key="`current-${copilotClient.state.currentMessage.id}`"
                :message="copilotClient.state.currentMessage"
                :username="settings.generalUsername"
+               :data-provider-info="props.dataProviderInfo"
+               :data-source-id="dataSourceId"
+               :schema-selector="props.schemaSelector"
                @delete-clicked="handleDeleteClicked"
                @abort-clicked="handleAbortClicked"
             />
@@ -72,6 +78,8 @@ const input = ref<string>("")
 
 const settings = getSettings()
 const copilotClient = getCopilotClientService()
+
+provide(COPLIOT_CLIENT_KEY, copilotClient)
 
 usePageTitle()
 

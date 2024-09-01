@@ -12,7 +12,9 @@ import type {
    EmbeddingsResponseModel,
    GenerateRequestModel,
    GenerateResponseModel,
-   AddUserMessageRequestModel
+   AddUserMessageRequestModel,
+   ChartDataRequestModel,
+   ChartDataResponseModel
 } from "~/types/Schemas"
 import { AbortableAsyncIterator } from "~/utils/CommonUtils"
 
@@ -191,5 +193,15 @@ export default class LlmProxyService {
          doneCallback
       )
       return abortableAsyncIterator
+   }
+
+   async getChartData(
+      request: ChartDataRequestModel
+   ): Promise<ChartDataResponseModel> {
+      const response = await axios.post<ChartDataResponseModel>(
+         "/copilot/get-chart-data",
+         request
+      )
+      return response.data
    }
 }

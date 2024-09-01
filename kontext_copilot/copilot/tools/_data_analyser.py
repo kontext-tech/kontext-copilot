@@ -33,7 +33,7 @@ class DataAnalyser:
         self,
         message: SessionMessageModel,
         data: list[dict],
-        max_unique_categorical: int = 20,
+        max_unique_categorical: int = 32,
     ) -> None:
         self.view_name = f"view_{message.session_id}_{message.id}"
         self.tabel_name = f"table_{message.session_id}_{message.id}"
@@ -103,8 +103,12 @@ class DataAnalyser:
                 if c.column_type
                 in [
                     duckdb.typing.INTEGER,
+                    duckdb.typing.BIGINT,
+                    duckdb.typing.SMALLINT,
+                    duckdb.typing.TINYINT,
                     duckdb.typing.FLOAT,
                     duckdb.typing.DOUBLE,
+                    duckdb.typing.HUGEINT,
                 ]
             ]
 

@@ -9,8 +9,10 @@ from kontext_copilot.data.schemas import (
     BarChartModel,
     ChartListModel,
     ChartTypes,
+    ColumnStatsModel,
     LineChartModel,
     PieChartModel,
+    QueryStatsModel,
     SessionMessageModel,
 )
 
@@ -26,6 +28,14 @@ class ChartsRecommendTool(BaseTool):
         data = self.session.get_shared_data(message, self.RUN_SQL_RESULT_DATA_KEY)
         if data:
             self._recommend_charts(message, data)
+
+    def _get_col_stats(self, col_name: str, stats: QueryStatsModel) -> ColumnStatsModel:
+        """
+        Get column stats
+        """
+        for col_stat in stats.column_stats:
+            if col_stat.column_name == col_name:
+                return col_stat
 
     def _recommend_charts(
         self, message: SessionMessageModel, data: list[Dict[str, Any]]
@@ -46,9 +56,9 @@ class ChartsRecommendTool(BaseTool):
             for num_col in stats.numerical_columns:
                 chart = PieChartModel(
                     chart_type=ChartTypes.BAR,
-                    title=f"{num_col.column_name} by {bool_col.column_name}",
-                    data_column=num_col.column_name,
-                    label_column=bool_col.column_name,
+                    title=f"{num_col} by {bool_col}",
+                    data_column=num_col,
+                    label_column=bool_col,
                 )
                 charts_list.charts.append(chart)
 
@@ -57,7 +67,7 @@ class ChartsRecommendTool(BaseTool):
             for num_col in stats.numerical_columns:
                 chart = BarChartModel(
                     chart_type=ChartTypes.BAR,
-                    title=f"Bar chart ({num_col} by {cat_col})",
+                    title=f"{num_col} by {cat_col}",
                     x_data_column=cat_col,
                     y_data_column=num_col,
                 )
@@ -65,14 +75,30 @@ class ChartsRecommendTool(BaseTool):
 
                 chart = LineChartModel(
                     chart_type=ChartTypes.LINE,
-                    title=f"Line chart ({num_col} by {cat_col})",
+                    title=f"{num_col} by {cat_col}",
                     x_data_column=cat_col,
                     y_data_column=num_col,
                 )
                 charts_list.charts.append(chart)
+
+        # Recommend pie charts for category columns
+        for cat_col in stats.categorical_columns:
+            for num_col in stats.numerical_columns:
+                # find out the only column stats for num_col
+                column_stats = self._get_col_stats(num_col, stats)
+
+                if column_stats.approx_unique <= 10:
+                    chart = PieChartModel(
+                        chart_type=ChartTypes.PIE,
+                        title=f"{num_col} by {cat_col}",
+                        data_column=num_col,
+                        label_column=cat_col,
+                    )
+                    charts_list.charts.append(chart)
+
         charts_list.cached = stats.cached
-        charts_list.cache_table_name = stats.cache_table_name
+        charts_list.cached_table_name = stats.cache_table_name
         message.add_actions(
             actions=[ActionTypes.RECOMMEND_CHARTS],
-            data=charts_list.model_dump(exclude_unset=True),
+            data={ActionsDataKeys.RECOMMENDED_CHARTS: charts_list},
         )

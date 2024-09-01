@@ -30,7 +30,7 @@ class ActionsDataKeys(str, Enum):
     SQL_TO_PYTHON_PROMPT = "sqlToPythonPrompt"
     SQL_TO_PYSPARK_PROMPT = "sqlToPysparkPrompt"
     FIX_SQL_ERRORS_PROMPT = "fixSqlErrorsPrompt"
-    CHARTS = "charts"
+    RECOMMENDED_CHARTS = "recommendedCharts"
 
 
 class RunSqlRequestModel(CamelAliasBaseModel):
@@ -341,9 +341,32 @@ class LineChartModel(ChartModel):
     y_label_column: Optional[str] = None
 
 
-class ChartListModel(CamelAliasBaseModel):
-    charts: List[Union[PieChartModel, BarChartModel, LineChartModel]] = Field(
-        alias=ActionsDataKeys.CHARTS
-    )
+class ChartDataModel(CamelAliasBaseModel):
+    labels: List[str]
+    datasets: List[Dict[str, Any]]
+
+
+class ChartOptionsModel(CamelAliasBaseModel):
+    plugins: Optional[Dict[str, Any]] = None
+
+
+class ChartDataRequestModel(CamelAliasBaseModel):
+    chart: Union[PieChartModel, BarChartModel, LineChartModel]
     cached: bool = False
-    cache_table_name: Optional[str] = None
+    cached_table_name: Optional[str] = None
+    data_source_id: int
+    schema_name: Optional[str] = None
+    session_id: Optional[int] = None
+    message_id: Optional[int] = None
+
+
+class ChartDataResponseModel(CamelAliasBaseModel):
+    data: ChartDataModel
+    type: ChartTypes
+    options: Optional[ChartOptionsModel] = None
+
+
+class ChartListModel(CamelAliasBaseModel):
+    charts: List[Union[PieChartModel, BarChartModel, LineChartModel]]
+    cached: bool = False
+    cached_table_name: Optional[str] = None

@@ -8,6 +8,8 @@ from kontext_copilot import ollama
 from kontext_copilot.copilot import CopilotOrchestrator
 from kontext_copilot.data.schemas import (
     AddUserMessageRequestModel,
+    ChartDataRequestModel,
+    ChartDataResponseModel,
     ChatRequestModel,
     EmbeddingsRequestModel,
     EmbeddingsResponseModel,
@@ -196,3 +198,20 @@ async def add_user_message(request: AddUserMessageRequestModel = Body(None)):
     return Response(
         planner.session.add_user_message(request.content).model_dump_json(by_alias=True)
     )
+
+
+# endpoint to get chart data
+@router.post("/get-chart-data")
+async def get_chart_data(
+    request: ChartDataRequestModel = Body(None),
+) -> ChartDataResponseModel:
+    """
+    Get chart data
+    """
+    orchestrator = _get_orchestrator(
+        model="copilot",
+        data_source_id=request.data_source_id,
+        schema=request.schema_name,
+        session_id=request.session_id,
+    )
+    return orchestrator.get_chart_data(request=request)
