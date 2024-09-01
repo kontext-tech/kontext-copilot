@@ -4,6 +4,7 @@
       :key="`action-${props.messageId}-${i}`"
    >
       <BButton
+         v-if="action !== ActionTypes.RECOMMEND_CHARTS"
          :id="`action-${props.messageId}-${i}`"
          variant="outline-primary"
          size="sm"

@@ -1,7 +1,6 @@
 from typing import Any, List, Optional
-from kontext_copilot.data.models import DataSourceType, DataSource
 
-
+from kontext_copilot.data.models import DataSourceType
 from kontext_copilot.data.schemas._common import CamelAliasBaseModel
 
 

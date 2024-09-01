@@ -1,6 +1,7 @@
 .vs
 kontext_copilot/ui
 kontext_copilot/data/*.db
+kontext_copilot/data/*.duckdb
 *.gguf
 .eslintcache
 

@@ -3,7 +3,7 @@ from datetime import datetime
 from enum import Enum
 from typing import Any, Dict, List, Literal, Optional, Union
 
-from pydantic import field_validator
+from pydantic import Field, field_validator
 
 from kontext_copilot.data.schemas._common import CamelAliasBaseModel
 from kontext_copilot.data.schemas._llm import LlmChatMessage
@@ -16,6 +16,7 @@ class ActionTypes(str, Enum):
     SQL_TO_PYTHON = "sql_to_python"
     SQL_TO_PYSPARK = "sql_to_pyspark"
     FIX_SQL_ERRORS = "fix_sql_errors"
+    RECOMMEND_CHARTS = "recommend_charts"
 
 
 class ActionsModel(CamelAliasBaseModel):
@@ -29,6 +30,7 @@ class ActionsDataKeys(str, Enum):
     SQL_TO_PYTHON_PROMPT = "sqlToPythonPrompt"
     SQL_TO_PYSPARK_PROMPT = "sqlToPysparkPrompt"
     FIX_SQL_ERRORS_PROMPT = "fixSqlErrorsPrompt"
+    RECOMMENDED_CHARTS = "recommendedCharts"
 
 
 class RunSqlRequestModel(CamelAliasBaseModel):
@@ -264,3 +266,107 @@ class GenerateResponseModel(CamelAliasBaseModel):
     prompt_eval_duration: Optional[float] = None
     eval_count: Optional[int] = None
     eval_duration: Optional[float] = None
+
+
+class ColumnStatsModel(CamelAliasBaseModel):
+    column_name: str
+    column_type: str
+    min_val: Any
+    max_val: Any
+    approx_unique: int
+    avg: Optional[float] = None
+    std: Optional[float] = None
+    q25: Optional[float] = None
+    q50: Optional[float] = None
+    q75: Optional[float] = None
+    count: int
+    null_percentage: float
+
+
+class QueryStatsModel(CamelAliasBaseModel):
+    cache_table_name: str
+    cached: bool = False
+    column_stats: List[ColumnStatsModel]
+    categorical_columns: Optional[List[str]] = None
+    datetime_columns: Optional[List[str]] = None
+    numerical_columns: Optional[List[str]] = None
+    boolean_columns: Optional[List[str]] = None
+
+
+class ChartTypes(str, Enum):
+    PIE = "pie"
+    BAR = "bar"
+    LINE = "line"
+
+
+class AggregateTypes(str, Enum):
+    SUM = "sum"
+    AVG = "avg"
+    COUNT = "count"
+    MAX = "max"
+    MIN = "min"
+
+
+class ChartModel(CamelAliasBaseModel):
+    chart_type: ChartTypes
+    aggregate_type: Optional[AggregateTypes] = None
+
+
+class PieChartModel(ChartModel):
+    chart_type: ChartTypes = ChartTypes.PIE
+    title: Optional[str] = None
+    data_column: str
+    label_column: Optional[str] = None
+
+
+class BarChartModel(ChartModel):
+    chart_type: ChartTypes = ChartTypes.BAR
+    title: Optional[str] = None
+    x_title: Optional[str] = None
+    y_title: Optional[str] = None
+    x_data_column: str
+    x_label_column: Optional[str] = None
+    y_data_column: str
+    y_label_column: Optional[str] = None
+
+
+class LineChartModel(ChartModel):
+    chart_type: ChartTypes = ChartTypes.LINE
+    title: Optional[str] = None
+    x_title: Optional[str] = None
+    y_title: Optional[str] = None
+    x_data_column: str
+    x_label_column: Optional[str] = None
+    y_data_column: str
+    y_label_column: Optional[str] = None
+
+
+class ChartDataModel(CamelAliasBaseModel):
+    labels: List[str]
+    datasets: List[Dict[str, Any]]
+
+
+class ChartOptionsModel(CamelAliasBaseModel):
+    plugins: Optional[Dict[str, Any]] = None
+
+
+class ChartDataRequestModel(CamelAliasBaseModel):
+    chart: Union[PieChartModel, BarChartModel, LineChartModel]
+    cached: bool = False
+    cached_table_name: Optional[str] = None
+    data_source_id: int
+    schema_name: Optional[str] = None
+    session_id: Optional[int] = None
+    message_id: Optional[int] = None
+
+
+class ChartDataResponseModel(CamelAliasBaseModel):
+    data: ChartDataModel
+    type: ChartTypes
+    options: Optional[ChartOptionsModel] = None
+
+
+class ChartListModel(CamelAliasBaseModel):
+    charts: List[Union[PieChartModel, BarChartModel, LineChartModel]]
+    cached: bool = False
+    cached_table_name: Optional[str] = None

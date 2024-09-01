@@ -51,7 +51,8 @@ export enum ActionTypes {
    COPY_SQL = "copy_sql",
    SQL_TO_PYTHON = "sql_to_python",
    SQL_TO_PYSPARK = "sql_to_pyspark",
-   FIX_SQL_ERRORS = "fix_sql_errors"
+   FIX_SQL_ERRORS = "fix_sql_errors",
+   RECOMMEND_CHARTS = "recommend_charts"
 }
 
 export interface ActionsModel {
@@ -64,7 +65,8 @@ export enum ActionsDataKeys {
    SQL_TEXT = "sqlText",
    SQL_TO_PYTHON_PROMPT = "sqlToPythonPrompt",
    SQL_TO_PYSPARK_PROMPT = "sqlToPysparkPrompt",
-   FIX_SQL_ERRORS_PROMPT = "fixSqlErrorsPrompt"
+   FIX_SQL_ERRORS_PROMPT = "fixSqlErrorsPrompt",
+   RECOMMENDED_CHARTS = "recommendedCharts"
 }
 
 export interface CopilotSessionMessage extends LlmChatMessage {
@@ -377,4 +379,83 @@ export interface RunSqlModalModel {
    open: boolean
    sql: string
    maxRecords?: number
+}
+
+export enum ChartTypes {
+   PIE = "pie",
+   BAR = "bar",
+   LINE = "line"
+}
+
+export enum AggregateTypes {
+   SUM = "sum",
+   AVG = "avg",
+   COUNT = "count",
+   MAX = "max",
+   MIN = "min"
+}
+
+export interface ChartModel {
+   chartType: ChartTypes
+   aggregateType?: AggregateTypes
+}
+
+export interface PieChartModel extends ChartModel {
+   chartType: ChartTypes.PIE
+   title?: string
+   dataColumn: string
+   labelColumn?: string
+}
+
+export interface BarChartModel extends ChartModel {
+   chartType: ChartTypes.BAR
+   title?: string
+   xTitle?: string
+   yTitle?: string
+   xDataColumn: string
+   xLabelColumn?: string
+   yDataColumn: string
+   yLabelColumn?: string
+}
+
+export interface LineChartModel extends ChartModel {
+   chartType: ChartTypes.LINE
+   title?: string
+   xTitle?: string
+   yTitle?: string
+   xDataColumn: string
+   xLabelColumn?: string
+   yDataColumn: string
+   yLabelColumn?: string
+}
+
+export interface ChartListModel {
+   charts: (PieChartModel | BarChartModel | LineChartModel)[]
+   cached: boolean
+   cachedTableName?: string
+}
+
+export interface ChartDataModel {
+   labels: string[]
+   datasets: { [key: string]: unknown }[]
+}
+
+export interface ChartOptionsModel {
+   plugins?: { [key: string]: unknown }
+}
+
+export interface ChartDataRequestModel {
+   chart: PieChartModel | BarChartModel | LineChartModel
+   cached?: boolean
+   cachedTableName?: string
+   dataSourceId: number
+   schemaName?: string
+   sessionId?: number
+   messageId?: number
+}
+
+export interface ChartDataResponseModel {
+   data: ChartDataModel
+   type: ChartTypes
+   options?: ChartOptionsModel
 }

@@ -1,10 +1,16 @@
 from typing import Optional
 
+from kontext_copilot.copilot._copilot_session import CopilotSession
 from kontext_copilot.copilot._prompt_factory import PromptFactory as pf
-from kontext_copilot.copilot._session import CopilotSession
+from kontext_copilot.copilot.tools._chart_renderer import ChartRenderer
 from kontext_copilot.copilot.tools._llm_chat_tool import LlmChatTool
 from kontext_copilot.copilot.tools._run_sql_tool import RunSqlTool
-from kontext_copilot.data.schemas import ChatRequestModel, RunSqlRequestModel
+from kontext_copilot.data.schemas import (
+    ChartDataRequestModel,
+    ChartDataResponseModel,
+    ChatRequestModel,
+    RunSqlRequestModel,
+)
 from kontext_copilot.services import (
     DataProviderService,
     get_data_sources_service,
@@ -13,7 +19,7 @@ from kontext_copilot.services import (
 from kontext_copilot.utils import get_logger
 
 
-class Planner:
+class CopilotOrchestrator:
     def __init__(self):
         self._logger = get_logger()
         self._engine = get_engine()
@@ -89,3 +95,11 @@ class Planner:
         """
         self._check_session()
         return self.session.session_model
+
+    def get_chart_data(self, request: ChartDataRequestModel) -> ChartDataResponseModel:
+        """
+        Get chart data
+        """
+        self._check_session()
+        renderer = ChartRenderer(request)
+        return renderer.render()

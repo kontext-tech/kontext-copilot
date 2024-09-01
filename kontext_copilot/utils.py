@@ -12,6 +12,9 @@ PORT = int(os.getenv("KONTEXT_COPILOT_PORT", "8100"))
 DB_PATH = os.path.abspath(
     os.path.join(os.path.dirname(__file__), "data/kontext_copilot.db")
 )
+ANA_DB_PATH = os.path.abspath(
+    os.path.join(os.path.dirname(__file__), "data/kontext_copilot.duckdb")
+)
 DB_URL = os.getenv("KONTEXT_COPILOT_DB_URL", f"sqlite:///{DB_PATH}")
 DEFAULT_MODEL = os.getenv("KONTEXT_COPILOT_LLM_DEFAULT_MODEL", "phi3:mini")
 DEFAULT_ENDPOINT = f"http://{HOST}:{PORT}/llms"

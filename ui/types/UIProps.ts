@@ -1,4 +1,5 @@
 import type {
+   ChartTypes,
    CopilotSessionMessage,
    DataProviderInfoWrapModel,
    LlmToolbarOptions,
@@ -19,6 +20,9 @@ export interface ChatMessageCardProps {
    message: CopilotSessionMessage
    username: string
    allowAbort?: boolean
+   dataProviderInfo?: DataProviderInfoWrapModel
+   schemaSelector?: SchemaSelectorModel
+   dataSourceId?: number
 }
 
 export interface ChatWindowProps {
@@ -34,4 +38,17 @@ export interface LlmSettingsToolbarProps {
    jsonToogle?: boolean
    streamingDefault?: boolean
    jsonDefault?: boolean
+}
+
+export interface ChartRecommendedProps {
+   message: CopilotSessionMessage
+   dataProviderInfo?: DataProviderInfoWrapModel
+   schemaSelector?: SchemaSelectorModel
+   dataSourceId?: number
+}
+
+export interface ChartRendererProps {
+   chartData: object
+   chartType: ChartTypes
+   chartOptions?: object
 }

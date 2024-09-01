@@ -9,7 +9,7 @@
          />
       </div>
 
-      <div class="flex-grow-0 flex-wrap d-flex flex-column">
+      <div class="flex-grow-1 flex-wrap d-flex flex-column">
          <div class="px-1 d-flex align-items-center">
             <strong v-if="message.role === ChatRoles.USER">{{
                username
@@ -80,6 +80,21 @@
                ><Icon name="material-symbols:delete-outline" />
             </BButton>
          </div>
+         <!--Recommend charts-->
+         <div
+            v-if="
+               message.actions &&
+               message.actions.actions &&
+               message.actions.actions.includes(ActionTypes.RECOMMEND_CHARTS)
+            "
+         >
+            <ChartRecommended
+               :data-provider-info="dataProviderInfo"
+               :data-source-id="dataSourceId"
+               :schema-selector="schemaSelector"
+               :message="message"
+            />
+         </div>
       </div>
    </div>
 </template>
@@ -88,7 +103,7 @@
 import type { ChatMessageCardProps } from "~/types/UIProps"
 import markdownit from "markdown-it"
 import { useClipboard } from "@vueuse/core"
-import { ChatRoles } from "~/types/Schemas"
+import { ActionTypes, ChatRoles } from "~/types/Schemas"
 import tableClassPlugin from "~/utils/MarkdownitTableClass"
 
 const props = defineProps<ChatMessageCardProps>()

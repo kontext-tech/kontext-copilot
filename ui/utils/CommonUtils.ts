@@ -4,6 +4,8 @@ import {
 } from "~/types/Errors"
 import type { ErrorResponseModel } from "~/types/Schemas"
 
+export const COPLIOT_CLIENT_KEY = "copilotClient"
+
 export const isEmptyOrNull = (str: string | null): boolean => {
    return str === null || str.trim() === ""
 }

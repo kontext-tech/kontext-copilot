@@ -7,6 +7,7 @@ from kontext_copilot.data.schemas import (
     CreateSessionMessageModel,
     CreateSessionModel,
     PromptNode,
+    SessionMessageModel,
 )
 from kontext_copilot.services import (
     DataProviderService,
@@ -67,6 +68,28 @@ class CopilotSession:
 
         # Add session object to the database
         self._create_or_update_session()
+
+        self.data = {}
+
+    def _get_shared_data_key(self, key: str, message: SessionMessageModel) -> str:
+        return f"shared_data_{key}_{message.id}"
+
+    def add_shared_data(self, message: SessionMessageModel, key: str, data: list[dict]):
+        """
+        Add shared data to the session
+        """
+        self._logger.debug("Adding shared data: %s", key)
+        k = self._get_shared_data_key(key, message)
+        self.data[k] = data
+
+    def get_shared_data(
+        self, message: SessionMessageModel, key: str
+    ) -> Optional[list[dict]]:
+        """
+        Get shared data from the session
+        """
+        k = self._get_shared_data_key(key, message)
+        return self.data.get(k, None)
 
     def _create_or_update_session(self):
         """

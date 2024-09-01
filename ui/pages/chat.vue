@@ -11,7 +11,26 @@
       <template #header-tools>
          <LlmModelSelector simple />
       </template>
-      <template v-if="chatState.chatTypeSelector.chatType" #header-secondary>
+      <template
+         v-if="
+            !chatState.chatTypeSelector.modalOpen &&
+            chatState.chatTypeSelector.chatType === undefined
+         "
+         #header-secondary
+      >
+         <BButton
+            variant="link"
+            class="d-flex align-items-center gap-1"
+            @click="showChatSelector"
+         >
+            <Icon name="material-symbols:edit-square-outline" />
+            New chat
+         </BButton>
+      </template>
+      <template
+         v-else-if="chatState.chatTypeSelector.chatType"
+         #header-secondary
+      >
          <LlmSettingsToolbar
             v-if="
                chatState.chatTypeSelector.chatType === ChatTypes.CHAT_TO_DATA &&

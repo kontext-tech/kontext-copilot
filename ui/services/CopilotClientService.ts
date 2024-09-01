@@ -7,7 +7,11 @@ import {
    type SettingsModel,
    type LlmChatMessage,
    type LLmOptions,
-   type ActionsModel
+   type ActionsModel,
+   type ChartDataResponseModel,
+   type PieChartModel,
+   type BarChartModel,
+   type LineChartModel
 } from "~/types/Schemas"
 import {
    DataProviderServiceRequiredException,
@@ -272,6 +276,26 @@ export default class CopilotClientService {
       }
       this.addMessage(this.state.currentMessage)
       return this.state.currentMessage
+   }
+
+   async getChartData(
+      chart: PieChartModel | BarChartModel | LineChartModel,
+      dataSourceId: number,
+      schema?: string,
+      cached: boolean = true,
+      cachedTableName?: string,
+      messageId?: number
+   ): Promise<ChartDataResponseModel> {
+      this.checkSession()
+      return await this.llmService.getChartData({
+         chart,
+         dataSourceId,
+         schemaName: schema,
+         sessionId: this.state.session?.sessionId,
+         cached,
+         cachedTableName,
+         messageId
+      })
    }
 
    async chat(
