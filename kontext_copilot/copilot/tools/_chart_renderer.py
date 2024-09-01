@@ -102,11 +102,12 @@ class ChartRenderer:
                 data_column = self.chart_model.y_data_column
                 label_column = self.chart_model.x_data_column
 
-            query = f"""SELECT {label_column},
-            {self.agg_type}({data_column}) AS "{data_column_alias}"
+            query = f"""SELECT "{label_column}",
+            {self.agg_type}("{data_column}") AS "{data_column_alias}"
             FROM {self.cached_table_name}
-            GROUP BY {label_column}
-            ORDER BY {label_column}"""
+            GROUP BY "{label_column}"
+            ORDER BY "{label_column}"
+            """
 
             logger.info(f"Running query: {query}")
 
