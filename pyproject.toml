@@ -23,6 +23,7 @@ pydantic = "^2.8.2"
 colorlog = "^6.8.2"
 duckdb = "^1.0.0"
 pyarrow = "^17.0.0"
+duckdb-engine = "^0.13.1"
 [tool.commitizen]
 name = "cz_conventional_commits"
 tag_format = "$version"

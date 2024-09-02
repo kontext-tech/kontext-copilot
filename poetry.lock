@@ -418,6 +418,22 @@ files = [
 ]
 
 [[package]]
+name = "duckdb-engine"
+version = "0.13.1"
+description = "SQLAlchemy driver for duckdb"
+optional = false
+python-versions = "<4,>=3.8"
+files = [
+    {file = "duckdb_engine-0.13.1-py3-none-any.whl", hash = "sha256:ddcb173cb7bc088561aadccd2416ddaf83c61430f82983b4fc362fa16000af74"},
+    {file = "duckdb_engine-0.13.1.tar.gz", hash = "sha256:883510ff0ce6fdbf0ef595c16c92873fa500bcee9a70ec92ab5f511e8542fc6f"},
+]
+
+[package.dependencies]
+duckdb = ">=0.5.0"
+packaging = ">=21"
+sqlalchemy = ">=1.3.22"
+
+[[package]]
 name = "email-validator"
 version = "2.2.0"
 description = "A robust email address syntax and deliverability validation library."
@@ -2162,4 +2178,4 @@ test = ["big-O", "importlib-resources", "jaraco.functools", "jaraco.itertools", 
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9"
-content-hash = "f04aec4ec151e2c393bdab5775e5cafc69816878c8b31bcbfad6ed8a3dfe6409"
+content-hash = "a354fbc61f069f01401572e35c04c5ecc5dddf3971c9a857b3defa4dd3bbe747"

@@ -22,6 +22,16 @@
                   you to run SQL queries and get results quickly.
                </p>
                <DataSourceSelector v-model="dataSourceSelector" auto-select />
+               <br />
+               <BAlert
+                  variant="warning"
+                  :model-value="!dataSourceSelector.model"
+               >
+                  Please add a data source first.
+                  <BLink class="btn btn-outline-secondary" to="/data-sources"
+                     ><Icon name="material-symbols:add" /> Add</BLink
+                  >
+               </BAlert>
             </div>
             <div
                class="card-footer bg-transparent border-top-0 d-flex align-items-center"
