@@ -33,7 +33,7 @@ class DataAnalyser:
         self,
         message: SessionMessageModel,
         data: list[dict],
-        max_unique_categorical: int = 32,
+        max_unique_categorical: int = 256,
     ) -> None:
         self.view_name = f"{ANA_DB_VIEW_PREFIX}{message.session_id}_{message.id}"
         self.tabel_name = f"{ANA_DB_TABLE_PREFIX}{message.session_id}_{message.id}"
