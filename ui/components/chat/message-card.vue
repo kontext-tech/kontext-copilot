@@ -9,7 +9,10 @@
          />
       </div>
 
-      <div class="flex-grow-1 flex-wrap d-flex flex-column">
+      <div
+         class="flex-wrap d-flex flex-column"
+         :class="{ 'flex-grow-1': hasCharts, 'flex-grow-0': !hasCharts }"
+      >
          <div class="px-1 d-flex align-items-center">
             <strong v-if="message.role === ChatRoles.USER">{{
                username
@@ -81,16 +84,8 @@
             </BButton>
          </div>
          <!--Recommend charts-->
-         <div
-            v-if="
-               message.actions &&
-               message.actions.actions &&
-               message.actions.actions.includes(ActionTypes.RECOMMEND_CHARTS)
-            "
-            class="mt-1 col col-md-12 col-lg-8 col-xl-6"
-         >
+         <div v-if="hasCharts" class="mt-1 col-xxl-8">
             <ChartRecommended
-               class="w-100"
                :data-provider-info="dataProviderInfo"
                :data-source-id="dataSourceId"
                :schema-selector="schemaSelector"
@@ -106,7 +101,7 @@
 import type { ChatMessageCardProps } from "~/types/UIProps"
 import markdownit from "markdown-it"
 import { useClipboard } from "@vueuse/core"
-import { ActionTypes, ChatRoles } from "~/types/Schemas"
+import { ChatRoles, ActionTypes } from "~/types/Schemas"
 import tableClassPlugin from "~/utils/MarkdownitTableClass"
 
 const props = defineProps<ChatMessageCardProps>()
@@ -125,6 +120,14 @@ const htmlMessage = computed(() => {
 })
 
 const { copy } = useClipboard()
+
+const hasCharts = computed(() => {
+   return (
+      props.message.actions &&
+      props.message.actions.actions &&
+      props.message.actions.actions.includes(ActionTypes.RECOMMEND_CHARTS)
+   )
+})
 
 const copyMessage = async () => {
    if (props.message.content) copy(props.message.content)
@@ -145,7 +148,6 @@ const runSql = (sql: string, messageId?: number) => {
 const handleChartGenerated = (messageId: number) => {
    emits("chart-generated", messageId)
 }
-
 const emits = defineEmits([
    "abort-clicked",
    "delete-clicked",

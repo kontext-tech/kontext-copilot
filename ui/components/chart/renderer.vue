@@ -97,7 +97,7 @@ const toChartJsOptions = (
 ): ChartRendererProps => {
    const legend = {
       display: true,
-      position: "right",
+      position: "top",
       labels: {
          color: fontColor.value
       }

@@ -66,7 +66,7 @@ export default class CopilotClientService {
    }
 
    private addMessage(message: CopilotSessionMessage) {
-      this.state.messages.push(message)
+      this.state.messages.unshift(message)
    }
 
    async createUserMessage(
@@ -163,6 +163,7 @@ export default class CopilotClientService {
                content: message.content
             } as LlmChatMessage
          })
+         .reverse()
    }
 
    private clearHistory() {

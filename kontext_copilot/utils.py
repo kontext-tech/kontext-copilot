@@ -23,7 +23,7 @@ DEFAULT_ENDPOINT = f"http://{HOST}:{PORT}/llms"
 DEFAULT_ENDPOINT_OLLAMA = os.getenv(
     "KONTEXT_COPILOT_OLLAMA_ENDPOINT", "http://localhost:11434"
 )
-DEFAULT_USERNAME = os.getenv("KONTEXT_COPILOT_APP_NAME", "Kontext User")
+DEFAULT_USERNAME = os.getenv("KONTEXT_COPILOT_APP_NAME", "User")
 
 # Get absolute path of the logging config file
 LOGGING_CONFIG_FILE = os.path.join(os.path.dirname(__file__), "logging_config.ini")

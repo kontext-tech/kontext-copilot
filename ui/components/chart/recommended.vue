@@ -12,9 +12,14 @@
                :options="chartTypeOptions"
                value-field="index"
                text-field="text"
+               @change="fetchData"
             />
 
-            <BFormSelect v-model="aggType" :options="aggTypeOptions" />
+            <BFormSelect
+               v-model="aggType"
+               :options="aggTypeOptions"
+               @change="fetchData"
+            />
          </div>
          <div v-if="chartDataFetchState.loading" class="text-center">
             <BSpinner variant="primary" />
@@ -94,11 +99,11 @@ const handleChartGenerated = () => {
    emits("chart-generated", props.message.id)
 }
 
-const fetchData = async (aggType: AggregateTypes) => {
+const fetchData = async () => {
    if (copilotClient && props.dataSourceId && chartList.value.length > 0) {
       chartDataFetchState.loading = true
       chartDataFetchState.error = null
-      chart.value.aggregateType = aggType
+      chart.value.aggregateType = aggType.value
       try {
          const data = await copilotClient.getChartData(
             chart.value,
@@ -118,14 +123,7 @@ const fetchData = async (aggType: AggregateTypes) => {
    }
 }
 
-/* Check if new values different from old values and fetchData only true */
-watch(
-   [chartIndex, aggType],
-   async ([chartIndex, aggType], [newChartIndex, newAggType]) => {
-      if (chartIndex !== newChartIndex || aggType !== newAggType) {
-         await fetchData(aggType)
-      }
-   },
-   { immediate: true }
-)
+onMounted(() => {
+   fetchData()
+})
 </script>
