@@ -4,39 +4,8 @@
          <div
             v-if="settings"
             ref="chatMain"
-            class="flex-grow-1 flex-shrink-1 overflow-y-auto"
+            class="flex-grow-1 flex-shrink-1 overflow-y-auto d-flex flex-column-reverse"
          >
-            <div v-if="dataSourceId" class="py-1 d-flex align-items-top mx-1">
-               <BButton
-                  variant="link"
-                  @click="
-                     handleUserInput(
-                        'Suggest three questions to ask about this database.'
-                     )
-                  "
-               >
-                  <Icon name="material-symbols:magic-button-outline" /> Suggest
-                  questions to ask</BButton
-               >
-            </div>
-            <template
-               v-for="(message, i) in copilotClient.state.messages.filter(
-                  (m) => !m.isSystemPrompt
-               )"
-               :key="`${i}-${message.role}`"
-            >
-               <ChatMessageCard
-                  :message="message"
-                  :username="settings.generalUsername"
-                  :data-provider-info="props.dataProviderInfo"
-                  :data-source-id="dataSourceId"
-                  :schema-selector="props.schemaSelector"
-                  @delete-clicked="handleDeleteClicked"
-                  @run-sql-clicked="handlRunSqlClicked"
-                  @abort-clicked="handleAbortClicked"
-                  @user-input="handleUserInput"
-               />
-            </template>
             <ChatMessageCard
                v-if="
                   !copilotClient.state.currentMessage?.isSystemPrompt &&
@@ -52,6 +21,37 @@
                @delete-clicked="handleDeleteClicked"
                @abort-clicked="handleAbortClicked"
             />
+            <template
+               v-for="message in copilotClient.state.messages.filter(
+                  (m) => !m.isSystemPrompt
+               )"
+               :key="`${message.id}-${message.role}`"
+            >
+               <ChatMessageCard
+                  :message="message"
+                  :username="settings.generalUsername"
+                  :data-provider-info="props.dataProviderInfo"
+                  :data-source-id="dataSourceId"
+                  :schema-selector="props.schemaSelector"
+                  @delete-clicked="handleDeleteClicked"
+                  @run-sql-clicked="handlRunSqlClicked"
+                  @abort-clicked="handleAbortClicked"
+                  @user-input="handleUserInput"
+               />
+            </template>
+            <div v-if="dataSourceId" class="py-1 d-flex align-items-top mx-1">
+               <BButton
+                  variant="link"
+                  @click="
+                     handleUserInput(
+                        'Suggest three questions to ask about this database.'
+                     )
+                  "
+               >
+                  <Icon name="material-symbols:magic-button-outline" /> Suggest
+                  questions to ask</BButton
+               >
+            </div>
          </div>
          <ChatInputBox
             ref="chatInputBox"
@@ -83,13 +83,8 @@ provide(COPLIOT_CLIENT_KEY, copilotClient)
 
 usePageTitle()
 
-const scrollToBottom = async () => {
-   // Scroll to the bottom of the chat-main element
-   await nextTick()
-   if (chatMain.value) {
-      chatMain.value.scrollTop = chatMain.value.scrollHeight
-   }
-   chatInputBox.value?.chatInput?.focus()
+const refocus = async (focus: boolean = true) => {
+   if (focus) chatInputBox.value?.chatInput?.focus()
 }
 
 const callback: CopilotChatCallback = (
@@ -97,7 +92,7 @@ const callback: CopilotChatCallback = (
    message: string | null,
    done: boolean
 ) => {
-   scrollToBottom()
+   refocus()
    if (done) input.value = ""
 }
 
@@ -137,7 +132,7 @@ const handleUserInput = (input: string) => {
    } else {
       copilotClient.chat(input, props.llmOptions.model, callback)
    }
-   scrollToBottom()
+   refocus()
 }
 
 const props = defineProps<ChatWindowProps>()

@@ -9,7 +9,7 @@ from kontext_copilot.data.schemas import (
     QueryStatsModel,
     SessionMessageModel,
 )
-from kontext_copilot.utils import ANA_DB_PATH
+from kontext_copilot.utils import ANA_DB_PATH, ANA_DB_TABLE_PREFIX, ANA_DB_VIEW_PREFIX
 
 
 class StatsColumns(str, Enum):
@@ -33,10 +33,10 @@ class DataAnalyser:
         self,
         message: SessionMessageModel,
         data: list[dict],
-        max_unique_categorical: int = 32,
+        max_unique_categorical: int = 256,
     ) -> None:
-        self.view_name = f"view_{message.session_id}_{message.id}"
-        self.tabel_name = f"table_{message.session_id}_{message.id}"
+        self.view_name = f"{ANA_DB_VIEW_PREFIX}{message.session_id}_{message.id}"
+        self.tabel_name = f"{ANA_DB_TABLE_PREFIX}{message.session_id}_{message.id}"
         self.data = pa.Table.from_pylist(data)
         self.max_unique_categorical = max_unique_categorical
 

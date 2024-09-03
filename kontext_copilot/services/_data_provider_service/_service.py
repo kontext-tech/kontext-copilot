@@ -1,6 +1,6 @@
 from kontext_copilot.data.models import DataSourceType
-from kontext_copilot.services._data_provider_service._provider import BaseProvider
 from kontext_copilot.data.schemas import DataSourceModel
+from kontext_copilot.services._data_provider_service._provider import BaseProvider
 
 
 class DataProviderService:
@@ -16,7 +16,7 @@ class DataProviderService:
         """
         Get the data provider based on the data source type.
         """
-        if source.type == DataSourceType.SQLite:
+        if source.type == DataSourceType.SQLite or source.type == DataSourceType.DuckDB:
             return BaseProvider(source)
         else:
             raise ValueError(f"Unsupported data source type: {source.type}")

@@ -15,13 +15,15 @@ DB_PATH = os.path.abspath(
 ANA_DB_PATH = os.path.abspath(
     os.path.join(os.path.dirname(__file__), "data/kontext_copilot.duckdb")
 )
+ANA_DB_TABLE_PREFIX = "table_"
+ANA_DB_VIEW_PREFIX = "view_"
 DB_URL = os.getenv("KONTEXT_COPILOT_DB_URL", f"sqlite:///{DB_PATH}")
 DEFAULT_MODEL = os.getenv("KONTEXT_COPILOT_LLM_DEFAULT_MODEL", "phi3:mini")
 DEFAULT_ENDPOINT = f"http://{HOST}:{PORT}/llms"
 DEFAULT_ENDPOINT_OLLAMA = os.getenv(
     "KONTEXT_COPILOT_OLLAMA_ENDPOINT", "http://localhost:11434"
 )
-DEFAULT_USERNAME = os.getenv("KONTEXT_COPILOT_APP_NAME", "Kontext User")
+DEFAULT_USERNAME = os.getenv("KONTEXT_COPILOT_APP_NAME", "User")
 
 # Get absolute path of the logging config file
 LOGGING_CONFIG_FILE = os.path.join(os.path.dirname(__file__), "logging_config.ini")

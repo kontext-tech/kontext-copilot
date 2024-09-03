@@ -111,6 +111,19 @@ const dataSourceCreateModel = ref<DataSourceCreateModel>({
    ...props.createModel
 })
 
+watch(
+   () => dataSourceCreateModel.value.type,
+   (newVal) => {
+      if (newVal) {
+         if (newVal == DataSourceType.SQLite) {
+            dataSourceCreateModel.value.connStr = "sqlite:////path/to/db"
+         } else if (newVal == DataSourceType.DuckDB) {
+            dataSourceCreateModel.value.connStr = "duckdb:////path/to/db"
+         }
+      }
+   }
+)
+
 defineExpose({
    setFormEntered,
    formValid,

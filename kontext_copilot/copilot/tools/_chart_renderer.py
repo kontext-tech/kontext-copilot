@@ -102,7 +102,7 @@ class ChartRenderer:
                 data_column = self.chart_model.y_data_column
                 label_column = self.chart_model.x_data_column
 
-            query = f"""SELECT "{label_column}",
+            query = f"""SELECT COALESCE("{label_column}", '(NULL)') AS "{label_column}",
             {self.agg_type}("{data_column}") AS "{data_column_alias}"
             FROM {self.cached_table_name}
             GROUP BY "{label_column}"

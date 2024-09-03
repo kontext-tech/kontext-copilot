@@ -48,6 +48,7 @@ class BaseProvider(ABC):
         """
         return self.get_source_type() not in [
             DataSourceType.SQLite,
+            DataSourceType.DuckDB,
         ]
 
     def get_schemas(self) -> Optional[List[str]]:
