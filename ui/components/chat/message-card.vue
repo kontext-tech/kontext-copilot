@@ -87,12 +87,15 @@
                message.actions.actions &&
                message.actions.actions.includes(ActionTypes.RECOMMEND_CHARTS)
             "
+            class="mt-1 col col-md-12 col-lg-8 col-xl-6"
          >
             <ChartRecommended
+               class="w-100"
                :data-provider-info="dataProviderInfo"
                :data-source-id="dataSourceId"
                :schema-selector="schemaSelector"
                :message="message"
+               @chart-generated="handleChartGenerated"
             />
          </div>
       </div>
@@ -139,10 +142,15 @@ const runSql = (sql: string, messageId?: number) => {
    emits("run-sql-clicked", sql, messageId)
 }
 
+const handleChartGenerated = (messageId: number) => {
+   emits("chart-generated", messageId)
+}
+
 const emits = defineEmits([
    "abort-clicked",
    "delete-clicked",
    "run-sql-clicked",
-   "user-input"
+   "user-input",
+   "chart-generated"
 ])
 </script>

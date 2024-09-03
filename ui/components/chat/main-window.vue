@@ -35,6 +35,7 @@
                   @run-sql-clicked="handlRunSqlClicked"
                   @abort-clicked="handleAbortClicked"
                   @user-input="handleUserInput"
+                  @chart-generated="handleChartGenerated"
                />
             </template>
             <ChatMessageCard
@@ -83,13 +84,13 @@ provide(COPLIOT_CLIENT_KEY, copilotClient)
 
 usePageTitle()
 
-const scrollToBottom = async () => {
+const scrollToBottom = async (focus: boolean = true) => {
    // Scroll to the bottom of the chat-main element
    await nextTick()
    if (chatMain.value) {
       chatMain.value.scrollTop = chatMain.value.scrollHeight
    }
-   chatInputBox.value?.chatInput?.focus()
+   if (focus) chatInputBox.value?.chatInput?.focus()
 }
 
 const callback: CopilotChatCallback = (
@@ -138,6 +139,17 @@ const handleUserInput = (input: string) => {
       copilotClient.chat(input, props.llmOptions.model, callback)
    }
    scrollToBottom()
+}
+
+const handleChartGenerated = (messageId: number) => {
+   // Check if messageId is the last message
+   if (
+      copilotClient.state.messages.length > 0 &&
+      copilotClient.state.messages[copilotClient.state.messages.length - 1]
+         .id === messageId
+   ) {
+      scrollToBottom(false)
+   }
 }
 
 const props = defineProps<ChatWindowProps>()

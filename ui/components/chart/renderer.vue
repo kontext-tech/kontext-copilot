@@ -3,7 +3,6 @@
       :type="data.chartType"
       :data="data.chartData"
       :options="data.chartOptions"
-      @resize="handleResize"
    />
 </template>
 
@@ -88,10 +87,9 @@ const fontColor = computed(() => {
    return colorMode.value === "dark" ? "#6c757d" : "#212529"
 })
 
-const emits = defineEmits(["chart-resized"])
-const handleResize = () => {
-   emits("chart-resized")
-}
+const emits = defineEmits(["chart-generated"])
+
+const rendered = ref(false)
 
 const toChartJsOptions = (
    model: ChartDataResponseModel,
@@ -108,7 +106,15 @@ const toChartJsOptions = (
       responsive: true,
       maintainAspectRatio: true,
       color: defaultColors,
-      plugins: {} as { legend: object; title: object }
+      plugins: {} as { legend: object; title: object },
+      animation: {
+         onComplete: function () {
+            if (!rendered.value) {
+               rendered.value = true
+               emits("chart-generated")
+            }
+         }
+      }
    }
 
    // Merge the options
