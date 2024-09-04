@@ -105,10 +105,16 @@ class BaseProvider(ABC):
             schemas = self.get_schemas()
         else:
             schemas = [schema]
-        for s in schemas:
-            for table in self.get_tables(s):
+        if schemas is not None:
+            for s in schemas:
+                for table in self.get_tables(s):
+                    tables.append(
+                        Table(table, metadata, autoload_with=self.engine, schema=s)
+                    )
+        else:
+            for table in self.get_tables(schema):
                 tables.append(
-                    Table(table, metadata, autoload_with=self.engine, schema=s)
+                    Table(table, metadata, autoload_with=self.engine, schema=schema)
                 )
         return tables
 

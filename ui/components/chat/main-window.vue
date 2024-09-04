@@ -173,6 +173,6 @@ watch(
    async () => {
       await initSession()
    },
-   { deep: true, immediate: true }
+   { deep: true }
 )
 </script>
