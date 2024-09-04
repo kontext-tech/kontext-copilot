@@ -23,7 +23,7 @@ class DataSourceType(str, Enum):
     DuckDB = "DuckDB"
     # PostgreSQL = "PostgreSQL"
     # MySQL = "MySQL"
-    # SQLServer = "SQLServer"
+    SQLServer = "SQLServer"
     # Oracle = "Oracle"
     # MongoDB = "MongoDB"
     # Redis = "Redis"

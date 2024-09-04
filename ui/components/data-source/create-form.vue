@@ -55,7 +55,7 @@
             label-class="mb-1"
             class="mb-3"
          >
-            <BFormInput
+            <BFormTextarea
                id="dataSourceConnStr"
                v-model="dataSourceCreateModel.connStr"
                required
@@ -73,6 +73,7 @@
 </template>
 
 <script setup lang="ts">
+import { BFormTextarea } from "bootstrap-vue-next"
 import { DataSourceType, type DataSourceCreateModel } from "~/types/Schemas"
 
 const formEntered = ref(false)
@@ -119,6 +120,9 @@ watch(
             dataSourceCreateModel.value.connStr = "sqlite:////path/to/db"
          } else if (newVal == DataSourceType.DuckDB) {
             dataSourceCreateModel.value.connStr = "duckdb:////path/to/db"
+         } else if (newVal == DataSourceType.SQLServer) {
+            dataSourceCreateModel.value.connStr =
+               "mssql+pyodbc://user:password@host:port/databasename?driver=ODBC+Driver+18+for+SQL+Server&TrustServerCertificate=yes"
          }
       }
    }
