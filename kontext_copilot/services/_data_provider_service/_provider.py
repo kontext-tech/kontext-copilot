@@ -55,7 +55,7 @@ class BaseProvider(ABC):
         """
         Get a list of schemas from the data source.
         """
-        if not self.supports_schema():
+        if self.supports_schema():
             return self.inspector.get_schema_names()
         return None
 
@@ -67,10 +67,12 @@ class BaseProvider(ABC):
         if self.supports_schema():
             schemas = self.get_schemas()
             for schema in schemas:
+                # Check if there is any table in the schema
+                tables = self.get_tables(schema)
+                if not tables or len(tables) == 0:
+                    continue
                 schema_tables.append(
-                    SchemaTablesModel(
-                        schema_name=schema, tables=self.get_tables(schema)
-                    )
+                    SchemaTablesModel(schema_name=schema, tables=tables)
                 )
             return schema_tables
         else:
@@ -99,10 +101,21 @@ class BaseProvider(ABC):
         """
         metadata = MetaData()
         tables = []
-        for table in self.get_tables(schema):
-            tables.append(
-                Table(table, metadata, autoload_with=self.engine, schema=schema)
-            )
+        if schema is None:
+            schemas = self.get_schemas()
+        else:
+            schemas = [schema]
+        if schemas is not None:
+            for s in schemas:
+                for table in self.get_tables(s):
+                    tables.append(
+                        Table(table, metadata, autoload_with=self.engine, schema=s)
+                    )
+        else:
+            for table in self.get_tables(schema):
+                tables.append(
+                    Table(table, metadata, autoload_with=self.engine, schema=schema)
+                )
         return tables
 
     def get_columns_info(

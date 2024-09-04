@@ -52,7 +52,7 @@
             label-class="mb-1"
             class="mb-3"
          >
-            <BFormInput
+            <BFormTextarea
                id="dataSourceConnStr"
                v-model="model.connStr"
                required

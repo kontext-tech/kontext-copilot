@@ -16,7 +16,12 @@ class DataProviderService:
         """
         Get the data provider based on the data source type.
         """
-        if source.type == DataSourceType.SQLite or source.type == DataSourceType.DuckDB:
+        supported_types = [
+            DataSourceType.SQLite,
+            DataSourceType.DuckDB,
+            DataSourceType.SQLServer,
+        ]
+        if source.type in supported_types:
             return BaseProvider(source)
         else:
             raise ValueError(f"Unsupported data source type: {source.type}")

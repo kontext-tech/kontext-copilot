@@ -15,6 +15,7 @@
             v-for="(m, index) in dataProviderInfo.model.metadata"
             v-else
             :key="index"
+            class="mb-3"
          >
             <DataProviderSchemaDisplay
                :schema="m"
