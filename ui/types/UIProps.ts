@@ -1,5 +1,6 @@
 import type {
    ChartTypes,
+   ChatTypes,
    CopilotSessionMessage,
    DataProviderInfoWrapModel,
    LlmToolbarOptions,
@@ -30,6 +31,7 @@ export interface ChatWindowProps {
    schemaSelector?: SchemaSelectorModel
    dataSourceId?: number
    llmOptions: LlmToolbarOptions
+   chatType: ChatTypes
 }
 
 export interface LlmSettingsToolbarProps {
