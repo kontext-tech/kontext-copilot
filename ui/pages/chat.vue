@@ -90,7 +90,7 @@
          v-if="chatState.chatTypeSelector.chatType === ChatTypes.GENGERAL_CHAT"
          v-model:session-title="chatState.sessionTitle"
          :llm-options="chatState.llmOptions"
-         :chat-type-selector="chatState.chatTypeSelector"
+         :chat-type="chatState.chatTypeSelector.chatType"
          class="mt-3 px-4"
       ></ChatMainWindow>
       <BTabs
@@ -122,6 +122,7 @@
                :data-provider-info="chatState.dataProvider"
                :schema-selector="chatState.schemaSelector"
                :data-source-id="chatState.dataSource?.model?.id"
+               :chat-type="chatState.chatTypeSelector.chatType"
                :llm-options="chatState.llmOptions"
             />
          </BTab>
@@ -181,34 +182,12 @@ const chatState = reactive<ChatStateModel>(_.cloneDeep(chatStateDefault))
 
 const dataProviderService = getDataProviderService()
 
-const reset = () => {
-   resetSchemaSelector()
-   // Object.assign(chatState.dataSource, _.cloneDeep(chatStateDefault.dataSource))
-   Object.assign(
-      chatState.dataProvider,
-      _.cloneDeep(chatStateDefault.dataProvider)
-   )
-   // Only reset streaming & format and keep model as is
-   chatState.llmOptions.streaming = chatStateDefault.llmOptions.streaming
-   chatState.llmOptions.format = chatStateDefault.llmOptions.format
-   Object.assign(
-      chatState.chatTypeSelector,
-      _.cloneDeep(chatStateDefault.chatTypeSelector)
-   )
-   chatState.sessionTitle = chatStateDefault.sessionTitle
-}
-
-const resetSchemaSelector = () => {
-   chatState.schemaSelector = _.cloneDeep(chatStateDefault.schemaSelector)
-}
-
 const handleDataSourceSelected = async (dataSourceId: number) => {
    chatState.dataProvider.isLoading = true
    await dataProviderService
       .getDataProviderInfo(dataSourceId)
       .then((data) => {
          chatState.dataProvider.model = data
-         resetSchemaSelector()
       })
       .catch((err) => {
          console.error(err)
@@ -224,13 +203,13 @@ const showChatSelector = () => {
 }
 
 const handleChatTypeSelected = (chatType: ChatTypes) => {
-   reset()
-   chatState.chatTypeSelector.chatType = chatType
-   chatState.chatTypeSelector.modalOpen = false
-   chatState.chatTypeSelector.show = false
-   if (chatState.dataSource.model) {
-      handleDataSourceSelected(chatState.dataSource.model.id)
-   }
+   console.log("chatType", chatType)
+   chatState.dataProvider = _.cloneDeep(chatStateDefault.dataProvider)
+   chatState.schemaSelector = _.cloneDeep(chatStateDefault.schemaSelector)
+   // Only reset streaming & format and keep model as is
+   chatState.llmOptions.streaming = chatStateDefault.llmOptions.streaming
+   chatState.llmOptions.format = chatStateDefault.llmOptions.format
+   chatState.sessionTitle = chatStateDefault.sessionTitle
 }
 
 const refresh = async (dataSourceId: number) => {

@@ -137,16 +137,8 @@ const handleUserInput = (input: string) => {
 
 const props = defineProps<ChatWindowProps>()
 
-const initSession = async () => {
+const initSession = async (reinit: boolean) => {
    if (props.llmOptions.model) {
-      let reinit = true
-      // If the data source and model are the same  or are all undefined, reinitialize the session
-      if (
-         copilotClient.state.session?.dataSourceId === props.dataSourceId &&
-         copilotClient.state.session?.model === props.llmOptions.model
-      ) {
-         reinit = false
-      }
       await copilotClient.initCopilotSession(
          {
             model: props.llmOptions.model,
@@ -166,13 +158,22 @@ const initSession = async () => {
 watch(
    [
       () => props.llmOptions.model,
+      () => props.chatType,
       () => props.dataProviderInfo?.model?.id,
       () => props.schemaSelector?.schema,
       () => props.schemaSelector?.tables
    ],
-   async () => {
-      await initSession()
+   async ([_, chatType], [_pre, prevChatType]) => {
+      let reinit = true
+      if (
+         copilotClient.state.session?.dataSourceId === props.dataSourceId &&
+         copilotClient.state.session?.model === props.llmOptions.model &&
+         chatType === prevChatType
+      ) {
+         reinit = false
+      }
+      await initSession(reinit)
    },
-   { deep: true }
+   { deep: true, immediate: true }
 )
 </script>
