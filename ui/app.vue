@@ -1,16 +1,25 @@
 <template>
-   <NuxtLayout v-if="settingsWrapper.loaded">
+   <NuxtLayout v-if="ready">
       <NuxtPage />
    </NuxtLayout>
-   <div
+   <InitSetup
       v-else
-      class="d-flex justify-content-center align-items-center gap-1 vh-100"
-   >
-      <BSpinner variant="primary" />
-      <span class="fw-bold">Loading ...</span>
-   </div>
+      ref="init"
+      :settings-wrapper="settingsWrapper"
+      @llm-connected="handleLlmConnected"
+   />
 </template>
 
 <script setup lang="ts">
+import InitSetup from "./components/init-setup.vue"
+
+const init = ref<InstanceType<typeof InitSetup>>()
 const { settingsWrapper } = useAppServices()
+const llmConnected = ref(false)
+
+const handleLlmConnected = () => {
+   llmConnected.value = true
+}
+
+const ready = computed(() => settingsWrapper.loaded && llmConnected.value)
 </script>

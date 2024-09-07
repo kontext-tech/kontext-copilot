@@ -3,6 +3,9 @@ import type { LlmModelResponse } from "~/types/Schemas"
 
 const models = ref<LlmModelResponse[]>([])
 const defaultModel = ref<LlmModelResponse>()
+const error = ref<string | null>(null)
+const isLoading = ref<boolean>(false)
+const loaded = ref<boolean>(false)
 
 export default function useModels() {
    const settings = getSettings()
@@ -12,11 +15,19 @@ export default function useModels() {
    const llmService = getLlmProxyService()
 
    const getModels = async () => {
-      if (!llmService.value) throw new LlmProxyServiceRequiredException()
-
       if (models.value.length <= 0) {
-         const response = await llmService.value.getModels()
-         models.value = response.models
+         try {
+            if (!llmService.value) throw new LlmProxyServiceRequiredException()
+            isLoading.value = true
+            const response = await llmService.value.getModels()
+            models.value = response.models
+            loaded.value = true
+         } catch (err) {
+            error.value = err instanceof Error ? err.message : String(err)
+            loaded.value = false
+         } finally {
+            isLoading.value = false
+         }
       }
       const model = models.value.find(
          (model) => model.name === defaultModelConfig.value
@@ -34,5 +45,13 @@ export default function useModels() {
       getModels()
    })
 
-   return { models, defaultModel, setDefaultModel, getModels }
+   return {
+      models,
+      defaultModel,
+      setDefaultModel,
+      getModels,
+      isLoading,
+      loaded,
+      error
+   }
 }

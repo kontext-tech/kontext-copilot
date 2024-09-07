@@ -42,7 +42,7 @@ export default function useAppServices() {
             appConfig.apiBaseUrl
          )
          // get models
-         await proxy.getModels()
+         // await proxy.getModels()
          llmProxyService.value = proxy
          settingsWrapper.error = null
          settingsWrapper.loaded = true
