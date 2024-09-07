@@ -52,6 +52,19 @@
                   questions to ask</BButton
                >
             </div>
+            <BAlert
+               v-if="chatType === ChatTypes.CHAT_TO_DATA"
+               variant="secondary"
+               :model-value="true"
+               class="d-flex align-items-top gap-1 mx-1 my-3"
+            >
+               <Icon
+                  name="material-symbols:warning-outline"
+                  class="text-warning"
+               />
+               Please note that LLM-generated answers may not be accurate.
+               Please verify commands or SQL scripts before use.
+            </BAlert>
          </div>
          <ChatInputBox
             ref="chatInputBox"
@@ -68,6 +81,7 @@
 import type { CopilotChatCallback } from "~/services/CopilotClientService"
 import type { ChatWindowProps } from "~/types/UIProps"
 import ChatInputBox from "~/components/chat/input-box.vue"
+import { ChatTypes } from "~/types/Schemas"
 
 const sessionTitle = defineModel<string>("sessionTitle")
 

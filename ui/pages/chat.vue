@@ -202,8 +202,7 @@ const showChatSelector = () => {
    chatState.chatTypeSelector.show = true
 }
 
-const handleChatTypeSelected = (chatType: ChatTypes) => {
-   console.log("chatType", chatType)
+const handleChatTypeSelected = () => {
    chatState.dataProvider = _.cloneDeep(chatStateDefault.dataProvider)
    chatState.schemaSelector = _.cloneDeep(chatStateDefault.schemaSelector)
    // Only reset streaming & format and keep model as is

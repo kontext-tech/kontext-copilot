@@ -5,8 +5,10 @@
       title="Run SQL"
       :size="props.size"
       :ok-disabled="okDisabled"
+      ok-title="Run"
       @ok="runSql"
    >
+      <span class="my-1 fw-bold">Are you sure to run the following SQL?</span>
       <div
          v-if="sqlStatements.length > 1"
          class="d-flex justify-content-between align-items-center mb-3 gap-3"
