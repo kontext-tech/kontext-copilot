@@ -8,7 +8,7 @@ homepage = "https://kontext.tech/copilot"
 repository = "https://github.com/kontext-tech/kontext-copilot"
 license = "MIT"
 # Include the static website folder in the package
-include = ["kontext_copilot/ui/**/*", "kontext_copilot/copilot/**/*.json", "kontext_copilot/copilot/**/*.md", "kontext_copilot/data/Chinook_Sqlite.db", "kontext_copilot/data/Chinook-LICENSE.md"]
+include = ["kontext_copilot/ui/**/*", "kontext_copilot/copilot/**/*.json", "kontext_copilot/copilot/**/*.md", "kontext_copilot/data/Chinook_Sqlite.db", "kontext_copilot/data/Chinook-LICENSE.md", "kontext_copilot/data/alembic/alembic.ini"]
 
 [tool.poetry.dependencies]
 python = "^3.9"
@@ -46,6 +46,10 @@ pillow = "^10.2.0"
 ruff = ">=0.1.8,<0.5.0"
 
 commitizen = "^3.27.0"
+
+[tool.poetry.scripts]
+kontext-copilot = "kontext_copilot.main:main"
+
 [tool.ruff]
 line-length = 999
 indent-width = 2

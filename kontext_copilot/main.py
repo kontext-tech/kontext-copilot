@@ -3,19 +3,26 @@
 import os
 from contextlib import asynccontextmanager
 
-from fastapi import Depends, FastAPI, Request
+from alembic import command
+from alembic.config import Config
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 
 from kontext_copilot.api import copilot, data_providers, data_sources, prompts, settings
 from kontext_copilot.data.schemas import ErrorResponseModel
-from kontext_copilot.services import (
-    DataSourceService,
-    get_data_sources_service,
-    get_engine,
+from kontext_copilot.services import get_data_sources_service, get_engine
+from kontext_copilot.utils import (
+    CLIENT_APP_DIR,
+    HOST,
+    IS_DEV,
+    IS_LOCAL,
+    PORT,
+    get_logger,
 )
-from kontext_copilot.utils import CLIENT_APP_DIR, HOST, IS_LOCAL, PORT, get_logger
+
+logger = get_logger()
 
 
 def ensure_sample_data_source():
@@ -25,11 +32,12 @@ def ensure_sample_data_source():
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    logger = get_logger()
+
     try:
         logger.info("Starting Kontext Copilot")
         # Ensure sample database is added.
         ensure_sample_data_source()
+
         yield
     finally:
         logger.info("Shutting down Kontext Copilot")
@@ -39,11 +47,12 @@ app = FastAPI(lifespan=lifespan)
 
 # CORS configuration
 origins = [
-    "http://localhost:8101",
-    "http://127.0.0.1:8101",
     f"http://localhost:{PORT}",
     f"http://127.0.0.1::{PORT}",
 ]
+if IS_DEV:
+    origins.append("http://localhost:8101")
+    origins.append("http://127.0.0.1:8101")
 
 app.add_middleware(
     CORSMiddleware,
@@ -82,11 +91,54 @@ async def generic_exception_handler(request: Request, exc: Exception):
     )
 
 
-if __name__ == "__main__":
+def run_migrations():
+    # Get abs path of the ini file ./data/alembic/alembic.ini
+    logger.critical("Running Alembic migrations")
+
+    logger.info(f"Running migrations from script: {__file__}")
+
+    config_path = os.path.join(
+        os.path.abspath(os.path.dirname(__file__)), "data/alembic/alembic.ini"
+    )
+
+    current_working_directory = os.getcwd()
+
+    # Define the working directory
+    working_directory = os.path.abspath(os.path.dirname(config_path))
+    # Change the current working directory
+    os.chdir(working_directory)
+    logger.info(f"Working directory: {working_directory}")
+
+    logger.info(f"Using Alembic config file: {config_path}")
+
+    alembic_cfg = Config(config_path)
+
+    command.upgrade(alembic_cfg, "head")
+
+    os.chdir(current_working_directory)
+    logger.info(f"Changed working directory back to: {current_working_directory}")
+
+
+def main():
     import uvicorn
+
+    # Setup working directory
+    wd = os.path.abspath(os.path.dirname(__file__))
+    os.chdir(wd)
+    logger.info(f"Setup working directory: {wd}")
+
+    # Run Alembric migrations
+    run_migrations()
 
     uvicorn.run(
         app,
         host=HOST,
         port=PORT,
     )
+
+    # Urls for the frontend
+    logger.info(f"Frontend URL: http://{HOST}:{PORT}/ui")
+
+
+if __name__ == "__main__":
+    main()
