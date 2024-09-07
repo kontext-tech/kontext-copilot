@@ -1,14 +1,14 @@
 [tool.poetry]
 name = "kontext-copilot"
 version = "0.1.0"
-description = "Kontext Copilot is an AI empowered tool for data analytics that runs on your local computer."
+description = "Kontext Copilot is an AI empowered assistant for data analytics that can run on your local computer."
 authors = ["Kontext <enquiry@kontext.tech>"]
 readme = "README.md"
-homepage = "https://kontext.tech"
+homepage = "https://kontext.tech/copilot"
 repository = "https://github.com/kontext-tech/kontext-copilot"
 license = "MIT"
 # Include the static website folder in the package
-include = ["kontext_copilot/ui/**/*", "kontext_copilot/copilot/**/*.json", "kontext_copilot/copilot/**/*.md"]
+include = ["kontext_copilot/ui/**/*", "kontext_copilot/copilot/**/*.json", "kontext_copilot/copilot/**/*.md", "kontext_copilot/data/Chinook_Sqlite.db", "kontext_copilot/data/Chinook-LICENSE.md"]
 
 [tool.poetry.dependencies]
 python = "^3.9"

@@ -3,14 +3,24 @@
 import os
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI, Request
+from fastapi import Depends, FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 
 from kontext_copilot.api import copilot, data_providers, data_sources, prompts, settings
 from kontext_copilot.data.schemas import ErrorResponseModel
+from kontext_copilot.services import (
+    DataSourceService,
+    get_data_sources_service,
+    get_engine,
+)
 from kontext_copilot.utils import CLIENT_APP_DIR, HOST, IS_LOCAL, PORT, get_logger
+
+
+def ensure_sample_data_source():
+    dss = get_data_sources_service(get_engine())
+    dss.ensure_sample_db()
 
 
 @asynccontextmanager
@@ -18,6 +28,8 @@ async def lifespan(app: FastAPI):
     logger = get_logger()
     try:
         logger.info("Starting Kontext Copilot")
+        # Ensure sample database is added.
+        ensure_sample_data_source()
         yield
     finally:
         logger.info("Shutting down Kontext Copilot")
