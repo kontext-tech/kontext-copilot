@@ -18,11 +18,11 @@ jobs:
            uses: actions/checkout@v4
            with:
               fetch-depth: 0
-              token: "${{ secrets.GITHUB_TOKEN }}"
+              token: "${{ secrets.KONTEXT_COPILOT_WRKFLOW_TRIGGER_TOKEN }}"
          - id: cz
            name: Create bump and changelog
            uses: commitizen-tools/commitizen-action@master
            with:
-              github_token: ${{ secrets.GITHUB_TOKEN }}
+              github_token: ${{ secrets.KONTEXT_COPILOT_WRKFLOW_TRIGGER_TOKEN }}
          - name: Print Version
            run: echo "Bumped to version ${{ steps.cz.outputs.version }}"
