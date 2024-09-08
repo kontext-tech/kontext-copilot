@@ -1,3 +1,10 @@
+## v0.3.1 (2024-09-08)
+
+### Fix
+
+- add workflow_dispatch for version bump flow
+-  commitizen cz bump triggers for other workflows: https://commitizen-tools.github.io/commitizen/tutorials/github_actions/
+
 ## v0.3.0 (2024-09-08)
 
 ## 0.2.0 (2024-09-08)
