@@ -1,10 +1,43 @@
 # Kontext Copilot
 
-Kontext Copilot is an AI empowered tool for data analytics that runs on your local computer.
+Kontext Copilot is an AI empowered assistant for data analytics that runs on your local computer.
 
-## Development
+## Prerequisites
+
+-  Python 3.9+
+-  [Ollama](https://ollama.com/) or other compatible LLM serving tools. Ollama is recommended for the current release.
+
+## Installation
+
+```
+pip install kontext-copilot
+```
+
+Launch the tool:
+
+```
+kontext-copilot
+```
+
+> For more details about installation, refer to [**Kontext Copilot Installation**](https://kontext.tech/article/1385/kontext-copilot-installation)
+
+## Get started
+
+Kontext Copilot is still at early stage. Please follow the guide below to evaluate the tool and to provide feedbacks.
+
+[**Get started with Kontext Copilot**](https://kontext.tech/article/1386/get-started-with-kontext-copilot)
+
+![kontext-copilot-example](https://cdn.kontext.tech/Images/ai/kontext-copilot-light.gif)
+
+## Change logs
+
+[**Change logs**](./CHANGELOG.md)
+
+## For developers and contributors
 
 This section shows you how to setup local environment to participate in development of kontext-copilot.
+
+> Note - repo
 
 ### Setup Python environment
 
@@ -79,12 +112,6 @@ cz c
 
 ```
 poetry build
-```
-
-### Upload to PyPi
-
-```
-poetry publish
 ```
 
 ### Initialize local database
