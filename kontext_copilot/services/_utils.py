@@ -1,6 +1,6 @@
 from sqlalchemy import Engine, create_engine
 
-from kontext_copilot.utils import DB_URL
+from kontext_copilot.utils import DB_URL, IS_DEV
 
 
 class DatabaseEngine:
@@ -14,8 +14,9 @@ class DatabaseEngine:
 
     def __init__(self):
         if self._engine is None:
+            echo = True if IS_DEV else False
             self._engine = create_engine(
-                DB_URL, echo=True, pool_size=10, max_overflow=0
+                DB_URL, echo=echo, pool_size=10, max_overflow=0
             )
 
     def _get_engine(self) -> Engine:

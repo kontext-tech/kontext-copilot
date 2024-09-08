@@ -1,188 +1,190 @@
 {
-    "version": "2.0.0",
-    "tasks": [
-        {
-            "label": "ollama:serve",
-            "type": "shell",
-            "command": "ollama serve",
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            },
-            "problemMatcher": [],
-            "presentation": {
-                "reveal": "always",
-                "panel": "new"
+   "version": "2.0.0",
+   "tasks": [
+      {
+         "label": "ollama:serve",
+         "type": "shell",
+         "command": "ollama serve",
+         "group": {
+            "kind": "build",
+            "isDefault": true
+         },
+         "problemMatcher": [],
+         "presentation": {
+            "reveal": "always",
+            "panel": "new"
+         }
+      },
+      {
+         "type": "npm",
+         "script": "dev",
+         "problemMatcher": [],
+         "label": "ui:dev",
+         "detail": "Run dev script: nuxt dev",
+         "group": {
+            "kind": "build",
+            "isDefault": true
+         },
+         "options": {
+            "cwd": "${workspaceFolder}/ui"
+         }
+      },
+      {
+         "type": "npm",
+         "script": "generate",
+         "problemMatcher": [],
+         "label": "ui:generate",
+         "detail": "Run generate script: nuxt generate",
+         "group": {
+            "kind": "build",
+            "isDefault": false
+         },
+         "options": {
+            "cwd": "${workspaceFolder}/ui"
+         }
+      },
+      {
+         "type": "npm",
+         "script": "lint",
+         "problemMatcher": [],
+         "label": "ui:lint",
+         "detail": "Run lint script",
+         "group": {
+            "kind": "build",
+            "isDefault": false
+         },
+         "options": {
+            "cwd": "${workspaceFolder}/ui"
+         }
+      },
+      {
+         "type": "npm",
+         "script": "lintfix",
+         "problemMatcher": [],
+         "label": "ui:lintfix",
+         "detail": "Run lintfix script",
+         "group": {
+            "kind": "build",
+            "isDefault": false
+         },
+         "options": {
+            "cwd": "${workspaceFolder}/ui"
+         }
+      },
+      {
+         "label": "fastapi:dev:development",
+         "type": "shell",
+         "detail": "For local development (without /ui endpoint); run Kontext Copilot local website (KONTEXT_COPILOT_ENV=development); ",
+         "command": "fastapi",
+         "args": [
+            "dev", // Ensure this matches your FastAPI app instance and file name
+            "--reload",
+            "--host",
+            "localhost",
+            "--port",
+            "8100"
+         ],
+         "problemMatcher": [],
+         "group": {
+            "kind": "build",
+            "isDefault": false
+         },
+         "options": {
+            "cwd": "${workspaceFolder}/kontext_copilot",
+            "env": {
+               "KONTEXT_COPILOT_ENV": "development",
+               "KONTEXT_COPILOT_PORT": "8100"
             }
-        },
-        {
-            "type": "npm",
-            "script": "dev",
-            "problemMatcher": [],
-            "label": "ui:dev",
-            "detail": "Run dev script: nuxt dev",
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            },
-            "options": {
-                "cwd": "${workspaceFolder}/ui"
+         }
+      },
+      {
+         "label": "fastapi:dev:local",
+         "type": "shell",
+         "detail": "Run Kontext Copilot local website (KONTEXT_COPILOT_ENV=local) with endpoint /ui pointing to generated frontend for frontend.",
+         "command": "fastapi",
+         "args": [
+            "dev", // Ensure this matches your FastAPI app instance and file name
+            "--reload",
+            "--host",
+            "localhost",
+            "--port",
+            "8100"
+         ],
+         "problemMatcher": [],
+         "group": {
+            "kind": "build",
+            "isDefault": false
+         },
+         "options": {
+            "cwd": "${workspaceFolder}/kontext_copilot",
+            "env": {
+               "KONTEXT_COPILOT_ENV": "local",
+               "KONTEXT_COPILOT_PORT": "8100",
+               "KONTEXT_COPILOT_CLIENTAPP_DIR": "${workspaceFolder}/ui/.output/public"
             }
-        },
-        {
-            "type": "npm",
-            "script": "generate",
-            "problemMatcher": [],
-            "label": "ui:generate",
-            "detail": "Run generate script: nuxt generate",
-            "group": {
-                "kind": "build",
-                "isDefault": false
-            },
-            "options": {
-                "cwd": "${workspaceFolder}/ui"
-            }
-        },
-        {
-            "type": "npm",
-            "script": "lint",
-            "problemMatcher": [],
-            "label": "ui:lint",
-            "detail": "Run lint script",
-            "group": {
-                "kind": "build",
-                "isDefault": false
-            },
-            "options": {
-                "cwd": "${workspaceFolder}/ui"
-            }
-        },
-        {
-            "type": "npm",
-            "script": "lintfix",
-            "problemMatcher": [],
-            "label": "ui:lintfix",
-            "detail": "Run lintfix script",
-            "group": {
-                "kind": "build",
-                "isDefault": false
-            },
-            "options": {
-                "cwd": "${workspaceFolder}/ui"
-            }
-        },
-        {
-            "label": "fastapi:dev:development",
-            "type": "shell",
-            "detail": "For local development (without /ui endpoint); run Kontext Copilot local website (KONTEXT_COPILOT_ENV=development); ",
-            "command": "fastapi",
-            "args": [
-                "dev", // Ensure this matches your FastAPI app instance and file name
-                "--reload",
-                "--host",
-                "localhost",
-                "--port",
-                "8100"
-            ],
-            "problemMatcher": [],
-            "group": {
-                "kind": "build",
-                "isDefault": false
-            },
-            "options": {
-                "cwd": "${workspaceFolder}/kontext_copilot",
-                "env": {
-                    "KONTEXT_COPILOT_ENV": "development",
-                    "KONTEXT_COPILOT_PORT": "8100",
-                }
-            }
-        },
-        {
-            "label": "fastapi:dev:local",
-            "type": "shell",
-            "detail": "Run Kontext Copilot local website (KONTEXT_COPILOT_ENV=local) with endpoint /ui pointing to generated frontend for frontend.",
-            "command": "fastapi",
-            "args": [
-                "dev", // Ensure this matches your FastAPI app instance and file name
-                "--reload",
-                "--host",
-                "localhost",
-                "--port",
-                "8100"
-            ],
-            "problemMatcher": [],
-            "group": {
-                "kind": "build",
-                "isDefault": false
-            },
-            "options": {
-                "cwd": "${workspaceFolder}/kontext_copilot",
-                "env": {
-                    "KONTEXT_COPILOT_ENV": "local",
-                    "KONTEXT_COPILOT_PORT": "8100",
-                    "KONTEXT_COPILOT_CLIENTAPP_DIR": "${workspaceFolder}/ui/.output/public"
-                }
-            }
-        },
-        {
-            "label": "build all (build.ps1)",
-            "type": "shell",
-            "command": "powershell",
-            "args": [
-                "-ExecutionPolicy",
-                "Bypass",
-                "-File",
-                "${workspaceFolder}/build.ps1"
-            ],
-            "problemMatcher": [],
-            "group": {
-                "kind": "build",
-                "isDefault": false
-            },
-            "detail": "Execute the build.ps1 script to build the project."
-        },
-        {
-            "label": "alembic: autogenerate revision",
-            "type": "shell",
-            "command": "alembic",
-            "args": [
-                "revision",
-                "--autogenerate",
-                "-m",
-                "${input:alembicMessage}"
-            ],
-            "problemMatcher": [],
-            "group": "build",
-            "detail": "Generate a new Alembic revision file with autodetected changes."
-        },
-        {
-            "label": "alembic: upgrade to head",
-            "type": "shell",
-            "command": "alembic",
-            "args": [
-                "upgrade",
-                "head"
-            ],
-            "problemMatcher": [],
-            "group": "build",
-            "detail": "Upgrade the database schema to the latest revision."
-        },
-        {
-            "label": "start:all",
-            "detail": "Start all services (fastapi:dev:development, ui:dev)",
-            "dependsOn": [
-                "fastapi:dev:development",
-                "ui:dev"
-            ],
-            "problemMatcher": [],
-            "dependsOrder": "parallel"
-        }
-    ],
-    "inputs": [
-        {
-            "id": "alembicMessage",
-            "type": "promptString",
-            "description": "Enter Alembic revision message:"
-        }
-    ]
+         }
+      },
+      {
+         "label": "build all (build.ps1)",
+         "type": "shell",
+         "command": "powershell",
+         "args": [
+            "-ExecutionPolicy",
+            "Bypass",
+            "-File",
+            "${workspaceFolder}/build.ps1"
+         ],
+         "problemMatcher": [],
+         "group": {
+            "kind": "build",
+            "isDefault": false
+         },
+         "detail": "Execute the build.ps1 script to build the project."
+      },
+      {
+         "label": "alembic: autogenerate revision",
+         "type": "shell",
+         "command": "alembic",
+         "args": [
+            "-c",
+            "./alembic.ini",
+            "revision",
+            "--autogenerate",
+            "-m",
+            "${input:alembicMessage}"
+         ],
+         "problemMatcher": [],
+         "group": "build",
+         "detail": "Generate a new Alembic revision file with autodetected changes.",
+         "options": {
+            "cwd": "${workspaceFolder}/kontext_copilot/data/alembic"
+         }
+      },
+      {
+         "label": "alembic: upgrade to head",
+         "type": "shell",
+         "command": "alembic",
+         "args": ["-c", "./alembic.ini", "upgrade", "head"],
+         "problemMatcher": [],
+         "group": "build",
+         "detail": "Upgrade the database schema to the latest revision.",
+         "options": {
+            "cwd": "${workspaceFolder}/kontext_copilot/data/alembic"
+         }
+      },
+      {
+         "label": "start:all",
+         "detail": "Start all services (fastapi:dev:development, ui:dev)",
+         "dependsOn": ["fastapi:dev:development", "ui:dev"],
+         "problemMatcher": [],
+         "dependsOrder": "parallel"
+      }
+   ],
+   "inputs": [
+      {
+         "id": "alembicMessage",
+         "type": "promptString",
+         "description": "Enter Alembic revision message:"
+      }
+   ]
 }

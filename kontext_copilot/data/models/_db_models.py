@@ -34,7 +34,7 @@ class DataSource(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String)
     description = Column(String)
-    type = Column(SQLEnum(DataSourceType))
+    type = Column(SQLEnum(DataSourceType, length=255))
     conn_str = Column(String)
     conn_str_encrypted = Column(Boolean, default=False)
 

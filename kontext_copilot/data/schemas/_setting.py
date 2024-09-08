@@ -2,9 +2,9 @@ from typing import Optional, Union
 
 from kontext_copilot.data.schemas._common import CamelAliasBaseModel
 from kontext_copilot.utils import (
-    DEFAULT_MODEL,
     DEFAULT_ENDPOINT,
     DEFAULT_ENDPOINT_OLLAMA,
+    DEFAULT_MODEL,
     DEFAULT_USERNAME,
 )
 
@@ -43,7 +43,7 @@ class LlmSettingsModel(CamelAliasBaseModel):
     """
 
     llm_default_model: str = DEFAULT_MODEL
-    llm_temperature: float = 0.5
+    llm_temperature: float = 0.1
     # llm_max_tokens: int = 100
     llm_top_p: float = 0.95
     llm_top_k: float = 40

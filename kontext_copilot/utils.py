@@ -4,17 +4,18 @@ import os
 
 import colorlog
 
-ENV_NAME = os.getenv("KONTEXT_COPILOT_ENV", "development")
+APP_DIR = os.path.abspath(os.path.dirname(__file__))
+
+ENV_NAME = os.getenv("KONTEXT_COPILOT_ENV", "local")
 IS_LOCAL = ENV_NAME == "local"
-CLIENT_APP_DIR = os.getenv("KONTEXT_COPILOT_CLIENTAPP_DIR", "./ui")
+IS_DEV = ENV_NAME == "development"
+CLIENT_APP_DIR = os.path.abspath(
+    os.getenv("KONTEXT_COPILOT_CLIENTAPP_DIR", os.path.join(APP_DIR, "./ui"))
+)
 HOST = os.getenv("KONTEXT_COPILOT_HOST", "localhost")
 PORT = int(os.getenv("KONTEXT_COPILOT_PORT", "8100"))
-DB_PATH = os.path.abspath(
-    os.path.join(os.path.dirname(__file__), "data/kontext_copilot.db")
-)
-ANA_DB_PATH = os.path.abspath(
-    os.path.join(os.path.dirname(__file__), "data/kontext_copilot.duckdb")
-)
+DB_PATH = os.path.abspath(os.path.join(APP_DIR, "data/kontext_copilot.db"))
+ANA_DB_PATH = os.path.abspath(os.path.join(APP_DIR, "data/kontext_copilot.duckdb"))
 ANA_DB_TABLE_PREFIX = "table_"
 ANA_DB_VIEW_PREFIX = "view_"
 DB_URL = os.getenv("KONTEXT_COPILOT_DB_URL", f"sqlite:///{DB_PATH}")

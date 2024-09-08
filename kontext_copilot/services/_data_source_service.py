@@ -1,16 +1,20 @@
+import os
 from typing import List, Optional
 
 from fastapi import Depends
 from sqlalchemy import Engine
 from sqlalchemy.orm import sessionmaker
 
-from kontext_copilot.data.models import DataSource
+from kontext_copilot.data.models import DataSource, DataSourceType
 from kontext_copilot.data.schemas import (
     DataSourceCreateModel,
     DataSourceModel,
     DataSourceUpdateModel,
 )
 from kontext_copilot.services._utils import get_engine
+from kontext_copilot.utils import get_logger
+
+logger = get_logger()
 
 
 class DataSourceService:
@@ -116,6 +120,43 @@ class DataSourceService:
                 session.commit()
                 return DataSourceModel.from_db_model(data_source)
             return None
+
+    def ensure_sample_db(self):
+        """
+        Ensures that the database contains sample data.
+        """
+        chinook_name = "Chinook"
+        with self.session_maker() as session:
+            # Check if there is a SQLite database named Chinbook
+            chinook = (
+                session.query(DataSource)
+                .filter(
+                    DataSource.type == DataSourceType.SQLite,
+                    DataSource.name == chinook_name,
+                )
+                .first()
+            )
+
+            # Get the abs path of the Chinook SQLite database in ../data/Chinook_Sqlite.db
+            chinook_path = os.path.abspath(
+                os.path.join(os.path.dirname(__file__), "../data/Chinook_Sqlite.db")
+            )
+
+            if chinook is None:
+                logger.info(
+                    "Adding sample data source: Chinook; path = %s", chinook_path
+                )
+                sample_data = [
+                    DataSource(
+                        name=chinook_name,
+                        description="This is a sample data source.",
+                        type=DataSourceType.SQLite,
+                        conn_str="sqlite:///{}".format(chinook_path),
+                        conn_str_encrypted=False,
+                    ),
+                ]
+                session.add_all(sample_data)
+                session.commit()
 
 
 def get_data_sources_service(

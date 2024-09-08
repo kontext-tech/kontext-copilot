@@ -1,8 +1,8 @@
 """init
 
-Revision ID: 679b473992ca
+Revision ID: a60eafe5e3f9
 Revises:
-Create Date: 2024-09-02 20:42:22.978553
+Create Date: 2024-09-08 08:38:03.290917
 
 """
 
@@ -13,7 +13,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = "679b473992ca"
+revision: str = "a60eafe5e3f9"
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -26,7 +26,11 @@ def upgrade() -> None:
         sa.Column("id", sa.Integer(), autoincrement=True, nullable=False),
         sa.Column("name", sa.String(), nullable=True),
         sa.Column("description", sa.String(), nullable=True),
-        sa.Column("type", sa.Enum("SQLite", name="datasourcetype"), nullable=True),
+        sa.Column(
+            "type",
+            sa.Enum("SQLite", "DuckDB", "SQLServer", name="datasourcetype", length=255),
+            nullable=True,
+        ),
         sa.Column("conn_str", sa.String(), nullable=True),
         sa.Column("conn_str_encrypted", sa.Boolean(), nullable=True),
         sa.PrimaryKeyConstraint("id"),

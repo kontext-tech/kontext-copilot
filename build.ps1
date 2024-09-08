@@ -5,13 +5,19 @@
 $ErrorActionPreference = 'Stop'
 
 # Build ui
-Set-Location .\ui
+Set-Location ./ui
 Write-Output "Building ui"
 npm run generate
 
+# Ensure destination directory exists
+$destinationPath = "../kontext_copilot/ui"
+if (-Not (Test-Path -Path $destinationPath)) {
+    New-Item -Path $destinationPath -ItemType Directory
+}
+
 # Copy .output/public to ../kontext_copilot/ui
 Write-Output "Copying ui output to kontext_copilot/ui"
-Copy-Item -Path .output\public\* -Destination ..\kontext_copilot\ui\ -Recurse -Force
+Copy-Item -Path .output/public/* -Destination $destinationPath -Recurse -Force
 
 Set-Location ..
 
