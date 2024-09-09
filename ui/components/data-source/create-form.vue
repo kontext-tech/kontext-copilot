@@ -123,6 +123,9 @@ watch(
          } else if (newVal == DataSourceType.SQLServer) {
             dataSourceCreateModel.value.connStr =
                "mssql+pyodbc://user:password@host:port/databasename?driver=ODBC+Driver+18+for+SQL+Server&TrustServerCertificate=yes"
+         } else if (newVal == DataSourceType.PostgreSQL) {
+            dataSourceCreateModel.value.connStr =
+               "postgresql+psycopg://user:password@host:port/databasename?key=value&key=value"
          }
       }
    }

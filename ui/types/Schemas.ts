@@ -144,7 +144,7 @@ export interface PromptListModel {
 export enum DataSourceType {
    SQLite = "SQLite",
    DuckDB = "DuckDB",
-   // PostgreSQL = "PostgreSQL",
+   PostgreSQL = "PostgreSQL",
    // MySQL = "MySQL",
    SQLServer = "SQLServer"
    // Oracle = "Oracle",
