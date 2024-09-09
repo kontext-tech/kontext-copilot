@@ -20,6 +20,7 @@ class DataProviderService:
             DataSourceType.SQLite,
             DataSourceType.DuckDB,
             DataSourceType.SQLServer,
+            DataSourceType.PostgreSQL,
         ]
         if source.type in supported_types:
             return BaseProvider(source)

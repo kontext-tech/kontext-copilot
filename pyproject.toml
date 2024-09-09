@@ -25,6 +25,7 @@ duckdb = "^1.0.0"
 pyarrow = "^17.0.0"
 duckdb-engine = "^0.13.1"
 pyodbc = "^5.1.0"
+psycopg = {extras = ["binary"], version = "^3.2.1"}
 [tool.commitizen]
 name = "cz_conventional_commits"
 tag_format = "v$version"

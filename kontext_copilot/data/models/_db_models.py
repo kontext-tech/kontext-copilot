@@ -21,7 +21,7 @@ class Setting(Base):
 class DataSourceType(str, Enum):
     SQLite = "SQLite"
     DuckDB = "DuckDB"
-    # PostgreSQL = "PostgreSQL"
+    PostgreSQL = "PostgreSQL"
     # MySQL = "MySQL"
     SQLServer = "SQLServer"
     # Oracle = "Oracle"
