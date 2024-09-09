@@ -81,13 +81,13 @@ class ChartRenderer:
             dataset["label"] = (
                 self.chart_model.x_title
                 if hasattr(self.chart_model, "x_title")
-                else f"{self.chart_model.data_column} via {self.agg_type}"
+                else f"{self.chart_model.data_column} via {self.agg_type.name}"
             )
         else:
             dataset["label"] = (
                 self.chart_model.y_title
                 if hasattr(self.chart_model, "y_title")
-                else f" {self.agg_type}({self.chart_model.y_data_column})"
+                else f" {self.agg_type.name}({self.chart_model.y_data_column})"
             )
 
         with self._get_conn() as conn:
@@ -96,14 +96,12 @@ class ChartRenderer:
                 data_column = self.chart_model.data_column
                 label_column = self.chart_model.label_column
             else:
-                data_column_alias = (
-                    f"{self.chart_model.y_data_column} - {self.agg_type.capitalize()}"
-                )
+                data_column_alias = f"{self.chart_model.y_data_column} - {self.agg_type.value.capitalize()}"
                 data_column = self.chart_model.y_data_column
                 label_column = self.chart_model.x_data_column
 
             query = f"""SELECT COALESCE("{label_column}", '(NULL)') AS "{label_column}",
-            {self.agg_type}("{data_column}") AS "{data_column_alias}"
+            {self.agg_type.value}("{data_column}") AS "{data_column_alias}"
             FROM {self.cached_table_name}
             GROUP BY "{label_column}"
             ORDER BY "{label_column}"
