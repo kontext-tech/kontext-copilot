@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "kontext-copilot"
-version = "0.3.1"
+version = "0.3.2"
 description = "Kontext Copilot is an AI empowered assistant for data analytics that can run on your local computer."
 authors = ["Kontext <enquiry@kontext.tech>"]
 readme = "README.md"

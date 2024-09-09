@@ -1,3 +1,9 @@
+## v0.3.2 (2024-09-09)
+
+### Fix
+
+- duckdb.duckdb.CatalogException: Catalog Error: Scalar Function with name sum does not exist!
+
 ## v0.3.1 (2024-09-08)
 
 ### Fix
