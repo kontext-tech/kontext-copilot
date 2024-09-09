@@ -1,0 +1,41 @@
+name: Run Pre-Commit Hooks
+
+on:
+   push:
+      branches:
+         - main
+   pull_request:
+
+jobs:
+   pre-commit:
+      name: Run Pre-Commit
+      runs-on: ubuntu-latest
+
+      steps:
+         - name: Checkout code
+           uses: actions/checkout@v4
+
+         - name: Set up Python
+           uses: actions/setup-python@v5
+           with:
+              python-version: "3.9" # Use the appropriate Python version
+
+         - name: Install Node.js
+           uses: actions/setup-node@v3
+           with:
+              node-version: "20.16.0"
+
+         - name: Install npm dependencies
+           run: npm install
+           working-directory: ./ui
+
+         - name: Install pre-commit
+           run: pip install pre-commit
+
+         - name: Run pre-commit on all files for pull requests
+           if: github.event_name == 'pull_request'
+           run: pre-commit run --all-files
+
+         - name: Run pre-commit on changed files for pushes
+           if: github.event_name != 'pull_request'
+           run: pre-commit run

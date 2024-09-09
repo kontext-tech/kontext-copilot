@@ -19,7 +19,7 @@ Launch the tool:
 kontext-copilot
 ```
 
-> For more details about installation, refer to [**Kontext Copilot Installation**](https://kontext.tech/article/1385/kontext-copilot-installation)
+For more details about installation, refer to [**Kontext Copilot Installation**](https://kontext.tech/article/1385/kontext-copilot-installation)
 
 ## Get started
 
@@ -31,13 +31,13 @@ Kontext Copilot is still at early stage. Please follow the guide below to evalua
 
 ## Change logs
 
-[**Change logs**](./CHANGELOG.md)
+[**Change logs**](https://github.com/kontext-tech/kontext-copilot/blob/main/CHANGELOG.md)
 
 ## For developers and contributors
 
 This section shows you how to setup local environment to participate in development of kontext-copilot.
 
-> Note - repo
+VS Code is recommended.
 
 ### Setup Python environment
 
