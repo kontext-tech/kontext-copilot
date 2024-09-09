@@ -1,3 +1,9 @@
+## v0.4.0 (2024-09-09)
+
+### Feat
+
+- added support for PostgreSQL using psycopg 3
+
 ## v0.3.2 (2024-09-09)
 
 ### Fix
