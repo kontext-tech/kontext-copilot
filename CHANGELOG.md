@@ -1,3 +1,9 @@
+## v0.5.0 (2024-09-10)
+
+### Feat
+
+- added env var KONTEXT_COPILOT_DEFAULT_SYS_PROMPT to set differe… (#50)
+
 ## v0.4.0 (2024-09-09)
 
 ### Feat
