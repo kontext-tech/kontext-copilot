@@ -2,6 +2,8 @@
 
 Kontext Copilot is an AI empowered assistant for data analytics that runs on your local computer.
 
+![kontext-copilot-example](https://cdn.kontext.tech/Images/ai/kontext-copilot-light.gif)
+
 ## Prerequisites
 
 -  Python 3.9+
@@ -27,7 +29,9 @@ Kontext Copilot is still at early stage. Please follow the guide below to evalua
 
 [**Get started with Kontext Copilot**](https://kontext.tech/article/1386/get-started-with-kontext-copilot)
 
-![kontext-copilot-example](https://cdn.kontext.tech/Images/ai/kontext-copilot-light.gif)
+## Roadmap
+
+![kontext-copilot-roadmap](https://kontext.tech/api/flex/diagram/diagram-1388)
 
 ## Change logs
 
