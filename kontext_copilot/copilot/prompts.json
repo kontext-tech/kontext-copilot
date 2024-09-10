@@ -17,6 +17,14 @@
          "system_defined": true
       },
       {
+         "id": "system-prompt-da-metadata-refined",
+         "name": "System Prompt - Data Analytics (using Metadata)",
+         "prompt": null,
+         "system_prompt": "./prompts/system-prompt-da-metadata-refined.md",
+         "user_input": null,
+         "system_defined": true
+      },
+      {
          "id": "sentiment-analysis",
          "name": "Sentiment Analysis",
          "prompt": "./prompts/sentiment-analysis.md",
