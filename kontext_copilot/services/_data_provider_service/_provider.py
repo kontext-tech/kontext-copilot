@@ -11,6 +11,9 @@ from kontext_copilot.data.schemas import (
     DataSourceModel,
     SchemaTablesModel,
 )
+from kontext_copilot.utils import get_logger
+
+logger = get_logger()
 
 
 class BaseProvider(ABC):
@@ -210,7 +213,8 @@ class BaseProvider(ABC):
         """
         with self.engine.connect() as conn:
             if schema is not None:
-                conn.execute(f"USE {schema}")
+                conn.execute(text("USE :schema"), {"schema": schema})
+            logger.debug(f"Executing SQL: {sql}")
             statement = text(sql)
             result = conn.execute(statement=statement)
             if result.returns_rows == False:
