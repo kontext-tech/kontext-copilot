@@ -126,6 +126,10 @@ watch(
          } else if (newVal == DataSourceType.PostgreSQL) {
             dataSourceCreateModel.value.connStr =
                "postgresql+psycopg://user:password@host:port/databasename?key=value&key=value"
+         } else if (newVal == DataSourceType.CSV) {
+            dataSourceCreateModel.value.connStr = "/path/to/file.csv"
+         } else if (newVal == DataSourceType.Parquet) {
+            dataSourceCreateModel.value.connStr = "/path/to/file.parquet"
          }
       }
    }

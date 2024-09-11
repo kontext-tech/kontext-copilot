@@ -38,3 +38,10 @@ def get_logger(env: str = ENV_NAME) -> logging.Logger:
 logger = get_logger()
 
 logger.info("Environment: %s", ENV_NAME)
+
+
+def get_db_path(db_name: str) -> str:
+    """
+    Get the absolute path of the database file.
+    """
+    return os.path.abspath(os.path.join(APP_DIR, f"data/{db_name}"))

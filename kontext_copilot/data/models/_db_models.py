@@ -27,6 +27,8 @@ class DataSourceType(str, Enum):
     # Oracle = "Oracle"
     # MongoDB = "MongoDB"
     # Redis = "Redis"
+    CSV = "CSV"
+    Parquet = "Parquet"
 
 
 class DataSource(Base):
