@@ -51,8 +51,8 @@ class DataAnalyser:
             )
 
             # get summarize of the view
-            query_write = f"SUMMARIZE ?"
-            summary = conn.execute(query_write, (self.view_name)).fetch_arrow_table()
+            query_write = f"SUMMARIZE {self.view_name}"
+            summary = conn.execute(query_write).fetch_arrow_table()
 
             # convert summary to list of ColumnStats
             for row in summary.to_pylist():
@@ -113,11 +113,13 @@ class DataAnalyser:
             ]
 
             # write view to disk
-            query_write = f"CREATE TABLE ? AS SELECT * FROM ?"
-            conn.execute(query_write, (self.tabel_name, self.view_name))
+            query_write = (
+                f"CREATE TABLE {self.tabel_name} AS SELECT * FROM {self.view_name}"
+            )
+            conn.execute(query_write)
             query_stats.cached = True
 
             # Drop view
-            conn.execute(f"DROP VIEW ?", (self.view_name))
+            conn.execute(f"DROP VIEW {self.view_name}")
 
             return query_stats

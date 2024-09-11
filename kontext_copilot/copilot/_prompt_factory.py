@@ -5,6 +5,7 @@ from typing import List
 
 from sqlalchemy import Table
 
+from kontext_copilot.data.models import DataSourceType
 from kontext_copilot.data.schemas import (
     DataSourceModel,
     PromptBuilder,
@@ -50,9 +51,16 @@ class PromptFactory:
 
         logger.info("Creating system prompt for data source: %s", data_source.name)
 
-        prompt_model = PromptFactory.get_prompt_template_by_id(
-            os.getenv("KONTEXT_COPILOT_DEFAULT_SYS_PROMPT", "system-prompt-da-metadata")
-        )
+        if data_source.type in [DataSourceType.CSV, DataSourceType.Parquet]:
+            prompt_model = PromptFactory.get_prompt_template_by_id(
+                "system-prompt-da-metadata-file-source"
+            )
+        else:
+            prompt_model = PromptFactory.get_prompt_template_by_id(
+                os.getenv(
+                    "KONTEXT_COPILOT_DEFAULT_SYS_PROMPT", "system-prompt-da-metadata"
+                )
+            )
 
         logger.debug("Prompt template: %s", prompt_model)
 
