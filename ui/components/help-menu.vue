@@ -25,6 +25,11 @@ const items = [
    },
    {
       id: 2,
+      text: "GitHub",
+      href: appConfig.kontextCopilotGitHubUrl
+   },
+   {
+      id: 3,
       text: "LinkedIn",
       href: appConfig.kontextCopilotLinkedInUrl
    }

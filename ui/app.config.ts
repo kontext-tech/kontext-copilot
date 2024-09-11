@@ -11,7 +11,10 @@ export default defineAppConfig({
    kontextCopilotUrl: "https://kontext.tech/copilot?campaign_id=client",
    kontextCopilotLinkedInUrl:
       "https://www.linkedin.com/company/kontext-technology",
+   kontextCopilotGitHubUrl: "https://github.com/kontext-tech/kontext-copilot",
    kontextCopilotRssUrl: "https://kontext.tech/api/flex/rss/250",
+   kontextCopilotInstallationUrl:
+      "https://kontext.tech/article/1385/kontext-copilot-installation",
    settingKeys: {
       llmTemperture: "llm_temperature",
       llmEndpoint: "llm_endpoint",

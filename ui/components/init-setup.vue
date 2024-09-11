@@ -49,6 +49,13 @@
                   <b> {{ llmError }}</b> <br />
                   Please make sure LLM service is running and the endpoint URL
                   is correct.
+
+                  <BLink
+                     :href="appConfig.kontextCopilotInstallationUrl"
+                     class="btn btn-outline-primary"
+                     target="_blank"
+                     >Installation guide</BLink
+                  >
                </BAlert>
                <template v-if="!llmConnected && llmError">
                   <LlmEndpointSetting class="my-1" />
@@ -69,6 +76,7 @@
 </template>
 <script setup lang="ts">
 import { BAlert } from "bootstrap-vue-next"
+import appConfig from "~/app.config"
 import logo from "~/assets/images/logo.svg"
 import type { SettingsModelWrapper } from "~/types/Schemas"
 

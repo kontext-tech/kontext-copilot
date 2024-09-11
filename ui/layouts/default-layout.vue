@@ -68,6 +68,13 @@
                <div class="d-flex align-items-center gap-1 ms-auto">
                   <slot name="header-tools" />
                   <LlmSettingsButton />
+                  <a
+                     class="btn btn-sm btn-link"
+                     :href="appConfig.kontextCopilotGitHubUrl"
+                     target="_blank"
+                  >
+                     <Icon name="grommet-icons:github" size="18" />
+                  </a>
                   <HelpMenu />
                   <ThemeToggle simple />
                </div>
