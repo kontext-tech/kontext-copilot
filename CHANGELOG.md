@@ -1,3 +1,9 @@
+## v0.6.2 (2024-09-11)
+
+### Fix
+
+- sql injection for schema (but not sql run as it is designed for that). (#56)
+
 ## v0.6.1 (2024-09-11)
 
 ### Fix
