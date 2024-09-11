@@ -51,7 +51,7 @@ class PromptFactory:
         logger.info("Creating system prompt for data source: %s", data_source.name)
 
         prompt_model = PromptFactory.get_prompt_template_by_id(
-            "system-prompt-da-metadata"
+            os.getenv("KONTEXT_COPILOT_DEFAULT_SYS_PROMPT", "system-prompt-da-metadata")
         )
 
         logger.debug("Prompt template: %s", prompt_model)
