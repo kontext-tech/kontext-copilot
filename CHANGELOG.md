@@ -1,3 +1,9 @@
+## v0.6.1 (2024-09-11)
+
+### Fix
+
+- sanitize html using vue dom purify package. (#55)
+
 ## v0.6.0 (2024-09-11)
 
 ### Feat
