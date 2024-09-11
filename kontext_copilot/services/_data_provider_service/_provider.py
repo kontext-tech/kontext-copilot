@@ -23,7 +23,6 @@ class BaseProvider(ABC):
         # Create engine
         self.engine = BaseProvider.__create_engine(source.conn_str)
         self.inspector = Inspector.from_engine(self.engine)
-        self.inspector.get_schema_names
 
     @staticmethod
     def __create_engine(conn_str: str) -> Engine:
@@ -49,6 +48,8 @@ class BaseProvider(ABC):
         return self.get_source_type() not in [
             DataSourceType.SQLite,
             DataSourceType.DuckDB,
+            DataSourceType.CSV,
+            DataSourceType.Parquet,
         ]
 
     def get_schemas(self) -> Optional[List[str]]:
@@ -196,9 +197,9 @@ class BaseProvider(ABC):
         """
         Get data from the data source.
         """
-        sql = f"SELECT * FROM {table}"
-        if schema is not None:
-            sql = f"SELECT * FROM {schema}.{table}"
+        sql = self.get_table_select_sql(
+            table=table, schema=schema, record_count=record_count
+        )
         return self.run_sql(sql=sql, record_count=record_count)
 
     def run_sql(

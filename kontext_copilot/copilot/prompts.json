@@ -17,6 +17,14 @@
          "system_defined": true
       },
       {
+         "id": "system-prompt-da-metadata-file-source",
+         "name": "System Prompt - Data Analytics (using Metadata) for file sources",
+         "prompt": null,
+         "system_prompt": "./prompts/system-prompt-da-metadata-file-source.md",
+         "user_input": null,
+         "system_defined": true
+      },
+      {
          "id": "system-prompt-da-metadata-refined",
          "name": "System Prompt - Data Analytics (using Metadata)",
          "prompt": null,
