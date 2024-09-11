@@ -28,9 +28,9 @@
             />
          </div>
          <div
+            v-dompurify-html="htmlMessage"
             class="p-3 rounded bg-body-tertiary my-1 message-card"
             :class="{ 'bg-danger-subtle': message.isError }"
-            v-html="htmlMessage"
          />
          <div v-if="message.generating">
             <BButton
