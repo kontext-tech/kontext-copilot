@@ -24,6 +24,7 @@
       "nuxt": "^3.13.1",
       "vue": "^3.4.35",
       "vue-chartjs": "^5.3.1",
+      "vue-dompurify-html": "^5.1.0",
       "vue-router": "^4.4.2"
    },
    "devDependencies": {
