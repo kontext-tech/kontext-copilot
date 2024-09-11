@@ -1,3 +1,9 @@
+## v0.6.0 (2024-09-11)
+
+### Feat
+
+- added file sources for CSV and parquet files. (#53)
+
 ## v0.5.0 (2024-09-10)
 
 ### Feat
