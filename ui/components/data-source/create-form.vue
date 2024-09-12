@@ -130,6 +130,9 @@ watch(
             dataSourceCreateModel.value.connStr = "/path/to/file.csv"
          } else if (newVal == DataSourceType.Parquet) {
             dataSourceCreateModel.value.connStr = "/path/to/file.parquet"
+         } else if (newVal == DataSourceType.Oracle) {
+            dataSourceCreateModel.value.connStr =
+               "oracle+oracledb://user:pass@hostname:port[/dbname][?service_name=<service>[&key=value&key=value...]]"
          }
       }
    }
