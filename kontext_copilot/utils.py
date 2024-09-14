@@ -1,3 +1,4 @@
+import inspect
 import logging
 import logging.config
 import os
@@ -32,7 +33,12 @@ logging.config.fileConfig(LOGGING_CONFIG_FILE, disable_existing_loggers=False)
 
 
 def get_logger(env: str = ENV_NAME) -> logging.Logger:
-    return logging.getLogger(f"kontextAI{env}")
+    # Get the caller's module name
+    caller_frame = inspect.stack()[1]
+    caller_module = inspect.getmodule(caller_frame[0])
+    caller_module_name = caller_module.__name__ if caller_module else "unknown"
+    logger_name = f"{env}.{caller_module_name}"
+    return logging.getLogger(logger_name)
 
 
 logger = get_logger()
@@ -44,4 +50,4 @@ def get_db_path(db_name: str) -> str:
     """
     Get the absolute path of the database file.
     """
-    return os.path.abspath(os.path.join(APP_DIR, f"data/{db_name}"))
+    return os.path.abspath(os.path.join(APP_DIR, "data", db_name))
