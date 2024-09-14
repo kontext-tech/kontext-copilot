@@ -1,3 +1,4 @@
+import inspect
 import logging
 import logging.config
 import os
@@ -13,7 +14,7 @@ CLIENT_APP_DIR = os.path.abspath(
     os.getenv("KONTEXT_COPILOT_CLIENTAPP_DIR", os.path.join(APP_DIR, "./ui"))
 )
 HOST = os.getenv("KONTEXT_COPILOT_HOST", "localhost")
-PORT = int(os.getenv("KONTEXT_COPILOT_PORT", "8100"))
+PORT = int(os.getenv("KONTEXT_COPILOT_PORT", "8000"))
 DB_PATH = os.path.abspath(os.path.join(APP_DIR, "data/kontext_copilot.db"))
 ANA_DB_PATH = os.path.abspath(os.path.join(APP_DIR, "data/kontext_copilot.duckdb"))
 ANA_DB_TABLE_PREFIX = "table_"
@@ -32,7 +33,12 @@ logging.config.fileConfig(LOGGING_CONFIG_FILE, disable_existing_loggers=False)
 
 
 def get_logger(env: str = ENV_NAME) -> logging.Logger:
-    return logging.getLogger(f"kontextAI{env}")
+    # Get the caller's module name
+    caller_frame = inspect.stack()[1]
+    caller_module = inspect.getmodule(caller_frame[0])
+    caller_module_name = caller_module.__name__ if caller_module else "unknown"
+    logger_name = f"{env}.{caller_module_name}"
+    return logging.getLogger(logger_name)
 
 
 logger = get_logger()
@@ -44,4 +50,4 @@ def get_db_path(db_name: str) -> str:
     """
     Get the absolute path of the database file.
     """
-    return os.path.abspath(os.path.join(APP_DIR, f"data/{db_name}"))
+    return os.path.abspath(os.path.join(APP_DIR, "data", db_name))

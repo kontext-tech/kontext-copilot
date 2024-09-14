@@ -34,6 +34,9 @@ def ensure_sample_data_source():
 async def lifespan(app: FastAPI):
 
     try:
+        # Run Alembric migrations
+        run_migrations()
+
         logger.info("Starting Kontext Copilot")
         # Ensure sample database is added.
         ensure_sample_data_source()
@@ -51,8 +54,8 @@ origins = [
     f"http://127.0.0.1::{PORT}",
 ]
 if IS_DEV:
-    origins.append("http://localhost:8101")
-    origins.append("http://127.0.0.1:8101")
+    origins.append("http://localhost:3000")
+    origins.append("http://127.0.0.1:3000")
 
 app.add_middleware(
     CORSMiddleware,
@@ -93,7 +96,7 @@ async def generic_exception_handler(request: Request, exc: Exception):
 
 def run_migrations():
     # Get abs path of the ini file ./data/alembic/alembic.ini
-    logger.critical("Running Alembic migrations")
+    logger.info("Running Alembic migrations")
 
     logger.info(f"Running migrations from script: {__file__}")
 
@@ -119,26 +122,20 @@ def run_migrations():
     logger.info(f"Changed working directory back to: {current_working_directory}")
 
 
-def main():
+def _main():
     import uvicorn
 
-    # Setup working directory
-    wd = os.path.abspath(os.path.dirname(__file__))
-    os.chdir(wd)
-    logger.info(f"Setup working directory: {wd}")
-
-    # Run Alembric migrations
-    run_migrations()
+    logger.info(f"Starting Kontext Copilot on {HOST}:{PORT}")
 
     uvicorn.run(
         app,
         host=HOST,
         port=PORT,
     )
-
     # Urls for the frontend
-    logger.info(f"Frontend URL: http://{HOST}:{PORT}/ui")
+    if IS_LOCAL:
+        logger.info(f"Frontend URL: http://{HOST}:{PORT}/ui")
 
 
 if __name__ == "__main__":
-    main()
+    _main()

@@ -15,13 +15,13 @@
                 "--host",
                 "localhost",
                 "--port",
-                "8100"
+                "8000"
             ],
             "console": "integratedTerminal",
             "jinja": true,
             "env": {
                 "KONTEXT_COPILOT_ENV": "development",
-                "KONTEXT_COPILOT_PORT": "8100",
+                "KONTEXT_COPILOT_PORT": "8000",
             },
             "cwd": "${workspaceFolder}/kontext_copilot",
             "python": "${workspaceFolder}/.venv/Scripts/python.exe" // Windows path
@@ -37,12 +37,12 @@
                 "--host",
                 "localhost",
                 "--port",
-                "8100"
+                "8000"
             ],
             "jinja": true,
             "env": {
                 "KONTEXT_COPILOT_ENV": "development",
-                "KONTEXT_COPILOT_PORT": "8100",
+                "KONTEXT_COPILOT_PORT": "8000",
             },
             "cwd": "${workspaceFolder}/kontext_copilot",
             "python": "${workspaceFolder}/.venv/bin/python" // Linux or macOS path

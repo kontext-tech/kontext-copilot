@@ -77,12 +77,12 @@
          "detail": "For local development (without /ui endpoint); run Kontext Copilot local website (KONTEXT_COPILOT_ENV=development); ",
          "command": "fastapi",
          "args": [
-            "dev", // Ensure this matches your FastAPI app instance and file name
+            "dev",
             "--reload",
             "--host",
             "localhost",
             "--port",
-            "8100"
+            "8000"
          ],
          "problemMatcher": [],
          "group": {
@@ -93,7 +93,7 @@
             "cwd": "${workspaceFolder}/kontext_copilot",
             "env": {
                "KONTEXT_COPILOT_ENV": "development",
-               "KONTEXT_COPILOT_PORT": "8100"
+               "KONTEXT_COPILOT_PORT": "8000"
             }
          }
       },
@@ -103,12 +103,12 @@
          "detail": "Run Kontext Copilot local website (KONTEXT_COPILOT_ENV=local) with endpoint /ui pointing to generated frontend for frontend.",
          "command": "fastapi",
          "args": [
-            "dev", // Ensure this matches your FastAPI app instance and file name
+            "dev",
             "--reload",
             "--host",
             "localhost",
             "--port",
-            "8100"
+            "8000"
          ],
          "problemMatcher": [],
          "group": {
@@ -119,7 +119,7 @@
             "cwd": "${workspaceFolder}/kontext_copilot",
             "env": {
                "KONTEXT_COPILOT_ENV": "local",
-               "KONTEXT_COPILOT_PORT": "8100",
+               "KONTEXT_COPILOT_PORT": "8000",
                "KONTEXT_COPILOT_CLIENTAPP_DIR": "${workspaceFolder}/ui/.output/public"
             }
          }
@@ -164,7 +164,12 @@
          "label": "alembic: upgrade to head",
          "type": "shell",
          "command": "alembic",
-         "args": ["-c", "./alembic.ini", "upgrade", "head"],
+         "args": [
+            "-c",
+            "./alembic.ini",
+            "upgrade",
+            "head"
+         ],
          "problemMatcher": [],
          "group": "build",
          "detail": "Upgrade the database schema to the latest revision.",
@@ -175,7 +180,10 @@
       {
          "label": "start:all",
          "detail": "Start all services (fastapi:dev:development, ui:dev)",
-         "dependsOn": ["fastapi:dev:development", "ui:dev"],
+         "dependsOn": [
+            "fastapi:dev:development",
+            "ui:dev"
+         ],
          "problemMatcher": [],
          "dependsOrder": "parallel"
       }

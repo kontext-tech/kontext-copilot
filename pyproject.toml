@@ -50,7 +50,7 @@ ruff = ">=0.1.8,<0.5.0"
 commitizen = "^3.27.0"
 
 [tool.poetry.scripts]
-kontext-copilot = "kontext_copilot.main:main"
+kontext-copilot = "kontext_copilot.main:_main"
 
 [tool.ruff]
 line-length = 999

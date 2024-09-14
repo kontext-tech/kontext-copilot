@@ -23,8 +23,18 @@ const items = [
       text: "Project site",
       href: appConfig.kontextCopilotUrl
    },
+   // {
+   //    id: 2,
+   //    text: "Discord",
+   //    href: appConfig.kontextDiscordUrl
+   // },
+   // {
+   //    id: 3,
+   //    text: "GitHub",
+   //    href: appConfig.kontextCopilotGitHubUrl
+   // },
    {
-      id: 2,
+      id: 4,
       text: "LinkedIn",
       href: appConfig.kontextCopilotLinkedInUrl
    }
