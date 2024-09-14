@@ -13,7 +13,7 @@ CLIENT_APP_DIR = os.path.abspath(
     os.getenv("KONTEXT_COPILOT_CLIENTAPP_DIR", os.path.join(APP_DIR, "./ui"))
 )
 HOST = os.getenv("KONTEXT_COPILOT_HOST", "localhost")
-PORT = int(os.getenv("KONTEXT_COPILOT_PORT", "8100"))
+PORT = int(os.getenv("KONTEXT_COPILOT_PORT", "8000"))
 DB_PATH = os.path.abspath(os.path.join(APP_DIR, "data/kontext_copilot.db"))
 ANA_DB_PATH = os.path.abspath(os.path.join(APP_DIR, "data/kontext_copilot.duckdb"))
 ANA_DB_TABLE_PREFIX = "table_"
