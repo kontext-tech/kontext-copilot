@@ -3,6 +3,15 @@ const baseURL = "/ui/"
 export default defineNuxtConfig({
    devtools: { enabled: false },
    ssr: false,
+   vite: {
+      css: {
+         preprocessorOptions: {
+            scss: {
+               silenceDeprecations: ["mixed-decls"]
+            }
+         }
+      }
+   },
 
    typescript: {
       strict: true,

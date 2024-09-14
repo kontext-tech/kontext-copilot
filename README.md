@@ -31,7 +31,8 @@ Kontext Copilot is still at early stage. Please follow the guide below to evalua
 
 ## Roadmap
 
-![kontext-copilot-roadmap](https://kontext.tech/api/flex/diagram/diagram-1388)
+> Refer to [https://kontext.tech/diagram/1388/kontext-copilot-roadmap](https://kontext.tech/diagram/1388/kontext-copilot-roadmap) for latest roadmap.
+> ![kontext-copilot-roadmap](https://kontext.tech/api/flex/diagram/diagram-1388)
 
 ## Change logs
 

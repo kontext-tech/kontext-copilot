@@ -24,7 +24,7 @@ class DataSourceType(str, Enum):
     PostgreSQL = "PostgreSQL"
     # MySQL = "MySQL"
     SQLServer = "SQLServer"
-    # Oracle = "Oracle"
+    Oracle = "Oracle"
     # MongoDB = "MongoDB"
     # Redis = "Redis"
     CSV = "CSV"

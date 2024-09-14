@@ -26,6 +26,7 @@ class DataProviderService:
             DataSourceType.DuckDB,
             DataSourceType.SQLServer,
             DataSourceType.PostgreSQL,
+            DataSourceType.Oracle,
         ]
         file_provider_types = [DataSourceType.CSV, DataSourceType.Parquet]
 

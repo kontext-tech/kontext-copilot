@@ -1,3 +1,9 @@
+## v0.7.0 (2024-09-12)
+
+### Feat
+
+- added support for Oracle database (#58)
+
 ## v0.6.2 (2024-09-11)
 
 ### Fix
