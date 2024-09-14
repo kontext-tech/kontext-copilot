@@ -1,3 +1,9 @@
+## v0.7.2 (2024-09-14)
+
+### Fix
+
+- prompts to return simple explainations always. (#62)
+
 ## v0.7.1 (2024-09-14)
 
 ### Refactor
