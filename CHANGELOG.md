@@ -1,3 +1,9 @@
+## v0.7.1 (2024-09-14)
+
+### Refactor
+
+- added github link and installation guide link for splash sc… (#60)
+
 ## v0.7.0 (2024-09-12)
 
 ### Feat
