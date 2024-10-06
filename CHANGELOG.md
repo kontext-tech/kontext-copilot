@@ -1,3 +1,9 @@
+## v0.7.3 (2024-10-06)
+
+### Fix
+
+- Update app.config.ts discord url setting (#65)
+
 ## v0.7.2 (2024-09-14)
 
 ### Fix

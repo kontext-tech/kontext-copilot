@@ -4,7 +4,7 @@
 <b>Kontext Copilot is an AI empowered assistant for data analytics that runs on your local computer.</b>
 <p align="center">
   <a href="https://kontext.tech/copilot" target="_blank"><strong>Project</strong></a> ·
-  <a href="https://discord.gg/MYna8q5J" target="_blank"><strong>Discord</strong></a> ·
+  <a href="https://discord.gg/GZQQsv6TZv" target="_blank"><strong>Discord</strong></a> ·
   <a href="https://kontext.tech/diagram/1388/kontext-copilot-roadmap" target="_blank"><strong>Roadmap</strong></a> ·
   <a href="https://kontext.tech/article/1385/kontext-copilot-installation" target="_blank"><strong>Installation</strong></a> ·
   <a href="https://kontext.tech/article/1386/get-started-with-kontext-copilot" target="_blank"><strong>Docs</strong></a>
