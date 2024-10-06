@@ -15,7 +15,7 @@ export default defineAppConfig({
    kontextCopilotRssUrl: "https://kontext.tech/api/flex/rss/250",
    kontextCopilotInstallationUrl:
       "https://kontext.tech/article/1385/kontext-copilot-installation",
-   kontextDiscordUrl: "https://discord.com/invite/MYna8q5J",
+   kontextDiscordUrl: "https://discord.com/invite/GZQQsv6TZv",
    settingKeys: {
       llmTemperture: "llm_temperature",
       llmEndpoint: "llm_endpoint",
